@@ -1,5 +1,7 @@
 package io.keinix.timesync;
 
-class AuthenticatorActivity {
+import android.accounts.AccountAuthenticatorActivity;
+
+class AuthenticatorActivity extends AccountAuthenticatorActivity {
 
 }

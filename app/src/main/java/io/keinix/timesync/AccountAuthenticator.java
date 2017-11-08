@@ -12,27 +12,14 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 
-public class RedditAccountAuthenticator extends AbstractAccountAuthenticator {
+public class AccountAuthenticator extends AbstractAccountAuthenticator {
 
-    private static final String REDDIT_AUTH_URL =
-            "https://www.reddit.com/api/v1/authorize.compact?client_id=%s" +
-                    "&response_type=code&state=%s&redirect_uri=%s&" +
-                    "duration=permanent&scope=identity";
-    public static final String REDDIT_CLIENT_ID = "gX4PnW7oHz7dgQ";
 
-    public static final String REDDIT_REDIRECT_URL = "https://www.keinix.io/timesync";
-
-    //TODO: check if this needs to be changed to actual random string
-    public static final String REDDIT_STATE = "RANDOM_STRING";
-
-    public static final String REDDIT_ACCESS_TOKEN = "https://www.reddit.com/api/v1/access_token";
-
-    public static final String REDDIT_URL = String.format(REDDIT_AUTH_URL, REDDIT_CLIENT_ID, REDDIT_STATE, REDDIT_REDIRECT_URL);
 
 
     private Context mContext;
 
-    public RedditAccountAuthenticator(Context context) {
+    public AccountAuthenticator(Context context) {
         super(context);
         mContext = context;
     }
@@ -48,9 +35,9 @@ public class RedditAccountAuthenticator extends AbstractAccountAuthenticator {
                              Bundle options) throws NetworkErrorException {
 
         final Intent intent = new Intent(mContext, AuthenticatorActivity.class);
-        intent.putExtra("ACCOUNT_TYPE", accountType);
-        intent.putExtra("AUTH_TOKEN_TYPE", authTokenType);
-        intent.putExtra("is_adding_new_account", true);
+        intent.putExtra(AccountConstants.ACCOUNT_TYPE, accountType);
+        intent.putExtra(AccountConstants.AUTH_TOKEN_TYPE, authTokenType);
+        intent.putExtra(AccountConstants.IS_ADDING_NEW_ACCOUNT, true);
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, accountAuthenticatorResponse);
 
         final Bundle bundle = new Bundle();
@@ -83,12 +70,11 @@ public class RedditAccountAuthenticator extends AbstractAccountAuthenticator {
         // no token saved previously
         final Intent intent = new Intent(mContext, AuthenticatorActivity.class);
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, accountAuthenticatorResponse);
-        intent.putExtra("ACCOUNT_TYPE", account.type);
-        intent.putExtra("AUTH_TOKEN_TYPE", authTokenType);
+        intent.putExtra(AccountConstants.ACCOUNT_TYPE, account.type);
+        intent.putExtra(AccountConstants.AUTH_TOKEN_TYPE, authTokenType);
         final Bundle bundle = new Bundle();
         bundle.putParcelable(AccountManager.KEY_INTENT, intent);
-
-
+        return bundle;
     }
 
     @Override
