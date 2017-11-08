@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -43,15 +44,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void attemptAccountManager() {
+        Log.d("FINDME", "buttonlicked");
         AccountManager am = AccountManager.get(this);
 
-        am.addAccount(AccountConstants.ACCOUNT_TYPE_REDDIT,
-                "perminat",
+        Account[] accounts = am.getAccounts();
+        Log.d("FINDEM", Integer.toString(accounts.length));
+        for (Account account : accounts) {
+            Log.d("FINEME", account.toString());
+        }
+
+        am.addAccount(AccountConstants.ACCOUNT_TYPE_REDDIT, AccountConstants.KEY_AUTH_TOKEN_TYPE,
                 null,
                 null,
                 null,
                 null,
                 null);
+
+
+
     }
 
     public void startRedditSignIn() {
