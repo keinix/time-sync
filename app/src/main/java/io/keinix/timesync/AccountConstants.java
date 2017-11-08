@@ -3,13 +3,15 @@ package io.keinix.timesync;
 public final class AccountConstants {
 
     //<------------AccountManager constants------------->
-    public static final String ACCOUNT_TYPE = "account_type";
-    public static final String AUTH_TOKEN_TYPE = "auth_token_type";
-    public static final String IS_ADDING_NEW_ACCOUNT = "is_adding_new_account";
+    public static final String KEY_ACCOUNT_TYPE = "account_type";
+    public static final String KEY_AUTH_TOKEN_TYPE = "auth_token_type";
+    public static final String KEY_IS_ADDING_NEW_ACCOUNT = "is_adding_new_account";
 
 
 
     //<----------------- REDDIT API --------------------->
+    public static final String ACCOUNT_TYPE_REDDIT = "account_type_reddit";
+
     private static final String REDDIT_AUTH_URL =
             "https://www.reddit.com/api/v1/authorize.compact?client_id=%s" +
                     "&response_type=code&state=%s&redirect_uri=%s&" +

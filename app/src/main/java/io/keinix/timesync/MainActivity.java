@@ -39,7 +39,19 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
 
-        redditSignInButton.setOnClickListener(v -> startRedditSignIn());
+        redditSignInButton.setOnClickListener(v -> attemptAccountManager());
+    }
+
+    public void attemptAccountManager() {
+        AccountManager am = AccountManager.get(this);
+
+        am.addAccount(AccountConstants.ACCOUNT_TYPE_REDDIT,
+                "perminat",
+                null,
+                null,
+                null,
+                null,
+                null);
     }
 
     public void startRedditSignIn() {
