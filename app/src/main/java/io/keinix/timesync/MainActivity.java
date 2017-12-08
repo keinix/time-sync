@@ -12,26 +12,13 @@ import android.widget.Button;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import io.keinix.timesync.Activities.AddAccountActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String REDDIT_AUTH_URL =
-            "https://www.reddit.com/api/v1/authorize.compact?client_id=%s" +
-                    "&response_type=code&state=%s&redirect_uri=%s&" +
-                    "duration=permanent&scope=identity";
-    public static final String REDDIT_CLIENT_ID = "gX4PnW7oHz7dgQ";
+   @BindView(R.id.redditButton) Button redditSignInButton;
 
-    public static final String REDDIT_REDIRECT_URL = "https://www.keinix.io/timesync";
-
-    //TODO: check if this needs to be changed to actual random string
-    public static final String REDDIT_STATE = "RANDOM_STRING";
-
-    public static final String REDDIT_ACCESS_TOKEN = "https://www.reddit.com/api/v1/access_token";
-
-    public static final String REDDIT_URL = String.format(REDDIT_AUTH_URL, REDDIT_CLIENT_ID, REDDIT_STATE, REDDIT_REDIRECT_URL);
-
-
-    @BindView(R.id.redditButton) Button redditSignInButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,39 +26,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-
-        redditSignInButton.setOnClickListener(v -> attemptAccountManager());
-    }
-
-    public void attemptAccountManager() {
-        Log.d("FINDME", "buttonlicked");
-        AccountManager am = AccountManager.get(this);
-
-        Account[] accounts = am.getAccounts();
-        Log.d("FINDEM", Integer.toString(accounts.length));
-        for (Account account : accounts) {
-            Log.d("FINEME", account.toString());
-        }
-
-        am.addAccount(AccountConstants.ACCOUNT_TYPE_REDDIT, AccountConstants.KEY_AUTH_TOKEN_TYPE,
-                null,
-                null,
-                null,
-                null,
-                null);
-
+        redditSignInButton.setOnClickListener(v -> launchLogin());
 
 
     }
+
+    private void launchLogin() {
+        Intent intent = new Intent(this, AddAccountActivity.class);
+        startActivity(intent);
+    }
+
 
     public void startRedditSignIn() {
 //        String url = String.format(REDDIT_AUTH_URL, REDDIT_CLIENT_ID, REDDIT_STATE, REDDIT_REDIRECT_URL);
 //        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 //        startActivity(intent);
-        AccountManager am = AccountManager.get(this);
-        Account[] accounts = am.getAccountsByType("https://www.reddit.com/");
-
     }
+
     public void redditApiSignIn() {
         String scope = "identity edit flair history mysubreddits privatemessages read report save submit subscribe vote";
         String authUrl = "https://www.reddit.com/api/v1/authorize?client_id=CLIENT_ID&response_type=TYPE&" +

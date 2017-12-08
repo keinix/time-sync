@@ -1,18 +1,10 @@
-package io.keinix.timesync;
+package io.keinix.timesync.reddit;
 
-public final class AccountConstants {
+public final class Constants {
 
-    //<------------AccountManager constants------------->
-    public static final String KEY_ACCOUNT_TYPE = "account_type";
-    public static final String KEY_AUTH_TOKEN_TYPE = "auth_token_type";
-    public static final String KEY_IS_ADDING_NEW_ACCOUNT = "is_adding_new_account";
+    // constants used while loging in and making queries
 
-
-
-    //<----------------- REDDIT API --------------------->
-    public static final String ACCOUNT_TYPE_REDDIT = "account_type_reddit";
-
-    private static final String REDDIT_AUTH_URL =
+    public static final String REDDIT_AUTH_URL =
             "https://www.reddit.com/api/v1/authorize.compact?client_id=%s" +
                     "&response_type=code&state=%s&redirect_uri=%s&" +
                     "duration=permanent&scope=identity";
@@ -26,4 +18,5 @@ public final class AccountConstants {
     public static final String REDDIT_ACCESS_TOKEN = "https://www.reddit.com/api/v1/access_token";
 
     public static final String REDDIT_URL = String.format(REDDIT_AUTH_URL, REDDIT_CLIENT_ID, REDDIT_STATE, REDDIT_REDIRECT_URL);
+
 }
