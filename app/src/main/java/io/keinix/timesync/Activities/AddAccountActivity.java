@@ -2,12 +2,15 @@ package io.keinix.timesync.Activities;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import java.net.URI;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -16,7 +19,7 @@ import io.keinix.timesync.reddit.Constants;
 
 public class AddAccountActivity extends AppCompatActivity {
 
-    private boolean isAddingRedditAccount = false;
+    private boolean isAddingRedditAccount;
 
     @BindView(R.id.redditLoginButton) Button mRedditLoginButton;
 
@@ -38,8 +41,8 @@ public class AddAccountActivity extends AppCompatActivity {
     }
 
     private void redditConsentCallback() {
-        isAddingRedditAccount = false;
 
+        // TODO: add check for redirect Uri
         if(getIntent()!= null && Intent.ACTION_VIEW.equals(getIntent().getAction())) {
             Uri uri = getIntent().getData();
             if(uri.getQueryParameter("error") != null) {
@@ -60,9 +63,7 @@ public class AddAccountActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        if (isAddingRedditAccount) {
-            redditConsentCallback();
-        }
+        redditConsentCallback();
     }
+
 }
