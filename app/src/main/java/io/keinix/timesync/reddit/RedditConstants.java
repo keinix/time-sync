@@ -1,6 +1,6 @@
 package io.keinix.timesync.reddit;
 
-public final class Constants {
+public final class RedditConstants {
 
     // constants used while loging in and making queries
 

@@ -10,8 +10,18 @@ public class RedditAccessToken {
 
     private String access_token;
 
+    private String refresh_token;
+
     public String getScope() {
         return scope;
+    }
+
+    public String getRefresh_token() {
+        return refresh_token;
+    }
+
+    public void setRefresh_token(String refresh_token) {
+        this.refresh_token = refresh_token;
     }
 
     public void setScope(String scope) {
@@ -40,5 +50,16 @@ public class RedditAccessToken {
 
     public void setAccess_token(String access_token) {
         this.access_token = access_token;
+    }
+
+    @Override
+    public String toString() {
+        return "RedditAccessToken{" +
+                "scope='" + scope + '\'' +
+                ", token_type='" + token_type + '\'' +
+                ", expires_in='" + expires_in + '\'' +
+                ", access_token='" + access_token + '\'' +
+                ", refresh_token='" + refresh_token + '\'' +
+                '}';
     }
 }
