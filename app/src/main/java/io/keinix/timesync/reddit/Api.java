@@ -10,7 +10,7 @@ import retrofit2.http.QueryMap;
 
 public interface Api {
 
-    @POST("https://www.reddit.com/api/v1/access_token")
+    @POST("access_token/")
     Call<RedditAccessToken> login (
             @HeaderMap Map<String, String> headers,
             @QueryMap Map<String,String> parameters

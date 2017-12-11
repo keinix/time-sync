@@ -15,7 +15,7 @@ public final class RedditConstants {
     //TODO: check if this needs to be changed to actual random string
     public static final String REDDIT_STATE = "RANDOM_STRING";
 
-    public static final String REDDIT_ACCESS_TOKEN = "https://www.reddit.com/api/v1/access_token";
+    public static final String REDDIT_BASE_URL = "https://www.reddit.com/api/v1/";
 
     public static final String REDDIT_URL = String.format(REDDIT_AUTH_URL, REDDIT_CLIENT_ID, REDDIT_STATE, REDDIT_REDIRECT_URL);
 

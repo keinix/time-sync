@@ -71,6 +71,7 @@ public class AddAccountActivity extends AppCompatActivity {
 
         if (mRetrofit == null) {
             mRetrofit = new Retrofit.Builder()
+                    .baseUrl(RedditConstants.REDDIT_BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
@@ -90,12 +91,18 @@ public class AddAccountActivity extends AppCompatActivity {
         call.enqueue(new Callback<RedditAccessToken>() {
             @Override
             public void onResponse(Call<RedditAccessToken> call, Response<RedditAccessToken> response) {
-                Log.d()
+                if (response.toString() == null) {
+                    Log.d("findme", "call from reddit: " + call.toString());
+                } else {
+                    Log.d("Findme", "body: " + response.body().toString());
+                    Log.d("Findme", "response: " + response.toString());
+                }
+
             }
 
             @Override
             public void onFailure(Call<RedditAccessToken> call, Throwable t) {
-
+                Log.e("Fineme", "onFailure: " + t.getMessage());
             }
         });
 
