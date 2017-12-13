@@ -18,6 +18,7 @@ import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.Api;
 import io.keinix.timesync.reddit.RedditConstants;
 import io.keinix.timesync.reddit.model.RedditAccessToken;
+import okhttp3.MediaType;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -78,29 +79,24 @@ public class AddAccountActivity extends AppCompatActivity {
         }
         Api api = mRetrofit.create(Api.class);
 
-        //TODO: see if you can replace this with OKHTTP Credentials class
         String authString = RedditConstants.REDDIT_CLIENT_ID + ":";
         String encodedAuthString = Base64.encodeToString(authString.getBytes(), Base64.NO_WRAP);
 
         Map<String, String> headers = new HashMap<>();
+        // headers.put("Content-Type", "application/x-www-form-urlencoded");
+        // headers.put("Accept", "application/json");
         headers.put("Authorization", "Basic " + encodedAuthString);
         headers.put("grant_type" , "authorization_code");
         headers.put("code", code);
         headers.put("redirect_uri", RedditConstants.REDDIT_REDIRECT_URL);
-        headers.put("content-type", "application/x-www-form-urlencoded");
+        headers.put("User-Agent", RedditConstants.REDDIT_USER_AGENT);
 
-
-        Call<RedditAccessToken> call = api.login(headers);
+        Call<RedditAccessToken> call = api.login(headers, MediaType.parse("application/x-www-form-urlencoded"));
         call.enqueue(new Callback<RedditAccessToken>() {
             @Override
             public void onResponse(Call<RedditAccessToken> call, Response<RedditAccessToken> response) {
-                if (response.toString() == null) {
-                    Log.d("findme", "call from reddit: " + call.toString());
-                } else {
-
                     Log.d("Findme", "body: " + response.body().toString());
                     Log.d("Findme", "response: " + response.toString());
-                }
             }
 
             @Override
