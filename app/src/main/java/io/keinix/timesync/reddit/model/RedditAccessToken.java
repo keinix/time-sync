@@ -1,15 +1,27 @@
 package io.keinix.timesync.reddit.model;
 
-public class RedditAccessToken {
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
+public class RedditAccessToken {
+    @SerializedName("scope")
+    @Expose
     private String scope;
 
+    @SerializedName("token_type")
+    @Expose
     private String token_type;
 
-    private String expires_in;
+    @SerializedName("expires_in")
+    @Expose
+    private long expires_in;
 
+    @SerializedName("access_token")
+    @Expose
     private String access_token;
 
+    @SerializedName("refresh_token")
+    @Expose
     private String refresh_token;
 
     public String getScope() {
@@ -36,11 +48,11 @@ public class RedditAccessToken {
         this.token_type = token_type;
     }
 
-    public String getExpires_in() {
+    public long getExpires_in() {
         return expires_in;
     }
 
-    public void setExpires_in(String expires_in) {
+    public void setExpires_in(long expires_in) {
         this.expires_in = expires_in;
     }
 

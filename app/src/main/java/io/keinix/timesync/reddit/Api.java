@@ -12,7 +12,6 @@ public interface Api {
 
     @POST("access_token/")
     Call<RedditAccessToken> login (
-            @HeaderMap Map<String, String> headers,
-            @QueryMap Map<String,String> parameters
+            @HeaderMap Map<String, String> headers
     );
 }

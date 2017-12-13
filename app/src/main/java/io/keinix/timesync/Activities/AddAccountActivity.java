@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
@@ -77,27 +78,28 @@ public class AddAccountActivity extends AppCompatActivity {
         }
         Api api = mRetrofit.create(Api.class);
 
+        //TODO: see if you can replace this with OKHTTP Credentials class
+        String authString = RedditConstants.REDDIT_CLIENT_ID + ":";
+        String encodedAuthString = Base64.encodeToString(authString.getBytes(), Base64.NO_WRAP);
+
         Map<String, String> headers = new HashMap<>();
-        headers.put("user", RedditConstants.REDDIT_CLIENT_ID);
-        headers.put("password", "");
-
-        Map<String, String> queryParameters = new HashMap<>();
-        queryParameters.put("grant_type" , "refresh_token");
-        queryParameters.put("code", code);
-        queryParameters.put("redirect_uri", RedditConstants.REDDIT_REDIRECT_URL);
+        headers.put("Authorization", "Basic " + encodedAuthString);
+        headers.put("grant_type" , "authorization_code");
+        headers.put("code", code);
+        headers.put("redirect_uri", RedditConstants.REDDIT_REDIRECT_URL);
 
 
-        Call<RedditAccessToken> call = api.login(headers, queryParameters);
+        Call<RedditAccessToken> call = api.login(headers);
         call.enqueue(new Callback<RedditAccessToken>() {
             @Override
             public void onResponse(Call<RedditAccessToken> call, Response<RedditAccessToken> response) {
                 if (response.toString() == null) {
                     Log.d("findme", "call from reddit: " + call.toString());
                 } else {
+
                     Log.d("Findme", "body: " + response.body().toString());
                     Log.d("Findme", "response: " + response.toString());
                 }
-
             }
 
             @Override
