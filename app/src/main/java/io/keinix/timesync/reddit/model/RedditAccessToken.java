@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class RedditAccessToken {
+
     @SerializedName("scope")
     @Expose
     private String scope;
@@ -23,6 +24,10 @@ public class RedditAccessToken {
     @SerializedName("refresh_token")
     @Expose
     private String refresh_token;
+
+    @SerializedName("error")
+    @Expose
+    private String error;
 
     public String getScope() {
         return scope;
@@ -69,9 +74,18 @@ public class RedditAccessToken {
         return "RedditAccessToken{" +
                 "scope='" + scope + '\'' +
                 ", token_type='" + token_type + '\'' +
+                ", error='" + error + '\'' +
                 ", expires_in='" + expires_in + '\'' +
                 ", access_token='" + access_token + '\'' +
                 ", refresh_token='" + refresh_token + '\'' +
                 '}';
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
     }
 }

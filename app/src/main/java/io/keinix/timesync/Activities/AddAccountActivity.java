@@ -87,6 +87,7 @@ public class AddAccountActivity extends AppCompatActivity {
         headers.put("grant_type" , "authorization_code");
         headers.put("code", code);
         headers.put("redirect_uri", RedditConstants.REDDIT_REDIRECT_URL);
+        headers.put("content-type", "application/x-www-form-urlencoded");
 
 
         Call<RedditAccessToken> call = api.login(headers);
