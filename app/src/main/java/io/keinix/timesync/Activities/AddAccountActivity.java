@@ -83,15 +83,16 @@ public class AddAccountActivity extends AppCompatActivity {
         String encodedAuthString = Base64.encodeToString(authString.getBytes(), Base64.NO_WRAP);
 
         Map<String, String> headers = new HashMap<>();
-        // headers.put("Content-Type", "application/x-www-form-urlencoded");
-        // headers.put("Accept", "application/json");
         headers.put("Authorization", "Basic " + encodedAuthString);
-        headers.put("grant_type" , "authorization_code");
-        headers.put("code", code);
-        headers.put("redirect_uri", RedditConstants.REDDIT_REDIRECT_URL);
-        headers.put("User-Agent", RedditConstants.REDDIT_USER_AGENT);
 
-        Call<RedditAccessToken> call = api.login(headers, MediaType.parse("application/x-www-form-urlencoded"));
+        Map<String, String> fields = new HashMap<>();
+        fields.put("grant_type", "authorization_code");
+        fields.put("code", code);
+        fields.put("redirect_uri", RedditConstants.REDDIT_REDIRECT_URL);
+        fields.put("User-Agent", RedditConstants.REDDIT_USER_AGENT);
+
+
+        Call<RedditAccessToken> call = api.login(headers, fields);
         call.enqueue(new Callback<RedditAccessToken>() {
             @Override
             public void onResponse(Call<RedditAccessToken> call, Response<RedditAccessToken> response) {
