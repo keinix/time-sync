@@ -1,23 +1,19 @@
 package io.keinix.timesync;
 
-import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Intent;
-import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.keinix.timesync.Activities.AddAccountActivity;
+import io.keinix.timesync.Fragments.FeedFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-   @BindView(R.id.redditButton) Button redditSignInButton;
+   // @BindView(R.id.redditButton) Button redditSignInButton;
 
 
     @Override
@@ -26,8 +22,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        redditSignInButton.setOnClickListener(v -> launchLogin());
+        // redditSignInButton.setOnClickListener(v -> launchLogin());
 
+        FeedFragment feedFragment = new FeedFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.placeHolder, feedFragment);
+        fragmentTransaction.commit();
 
     }
 
