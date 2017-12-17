@@ -7,9 +7,16 @@ import android.view.ViewGroup;
 
 import java.util.zip.Inflater;
 
+import io.keinix.timesync.Fragments.FeedFragment;
+import io.keinix.timesync.Fragments.FeedFragment.FeedItemInterface;
 import io.keinix.timesync.R;
 
 public class FeedAdapter extends RecyclerView.Adapter {
+    FeedItemInterface mFeedItemInterface;
+
+    public FeedAdapter(FeedItemInterface feedItemInterface) {
+        mFeedItemInterface = feedItemInterface;
+    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -28,15 +35,20 @@ public class FeedAdapter extends RecyclerView.Adapter {
         return 0;
     }
 
-    private class FeedViewHolder extends RecyclerView.ViewHolder {
-
+    private class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private int mIndex;
 
         public FeedViewHolder(View itemView) {
             super(itemView);
         }
 
         public void bindView(int position) {
+            mIndex = position;
+        }
 
+        @Override
+        public void onClick(View v) {
+            //TODO:implemept methods from feed itemInterface
         }
     }
 }

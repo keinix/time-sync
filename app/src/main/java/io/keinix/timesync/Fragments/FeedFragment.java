@@ -20,12 +20,13 @@ public class FeedFragment extends Fragment {
     @BindView(R.id.feedRecyclerView) RecyclerView feedRecyclerView;
 
 
-    public interface feedItemInterface {
+    public interface FeedItemInterface {
         //TODO: implement this in MainActivity then get a reference using getActivity()
         //TODO: put the methods in the onclickListeners
         void voteUp(int index);
         void voteDown(int index);
         void share(int index);
+        void launchCommentFragment(int index);
     }
 
     @Nullable
@@ -33,9 +34,10 @@ public class FeedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(getActivity());
         View view = inflater.inflate(R.layout.fragment_feed, container, false);
+        FeedItemInterface feedItemInterface = (FeedItemInterface) getActivity();
         getActivity().setTitle("Feed");
 
-        FeedAdapter feedAdapter = new FeedAdapter();
+        FeedAdapter feedAdapter = new FeedAdapter(feedItemInterface);
         feedRecyclerView.setAdapter(feedAdapter);
         feedRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         return view;

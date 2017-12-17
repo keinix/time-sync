@@ -18,7 +18,6 @@ import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.Api;
 import io.keinix.timesync.reddit.RedditConstants;
 import io.keinix.timesync.reddit.model.RedditAccessToken;
-import okhttp3.MediaType;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

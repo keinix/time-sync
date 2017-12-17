@@ -9,12 +9,16 @@ import android.support.v7.app.AppCompatActivity;
 
 import butterknife.ButterKnife;
 import io.keinix.timesync.Activities.AddAccountActivity;
+import io.keinix.timesync.Fragments.CommentsFragment;
 import io.keinix.timesync.Fragments.FeedFragment;
+import io.keinix.timesync.Fragments.ViewPagerFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FeedFragment.FeedItemInterface {
 
    // @BindView(R.id.redditButton) Button redditSignInButton;
-
+    public static final String TAG_FEED_FRAGMENT = "TAG_FEED_FRAGMENT";
+    public static final String TAG_VIEW_PAGER_FRAGMENT = "TAG_VIEW_PAGER_FRAGMENT";
+    public static final String TAG_COMMENTS_FRAGMENT = "TAG_COMMENTS_FRAGMENT";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,11 +28,15 @@ public class MainActivity extends AppCompatActivity {
 
         // redditSignInButton.setOnClickListener(v -> launchLogin());
 
-        FeedFragment feedFragment = new FeedFragment();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.placeHolder, feedFragment);
-        fragmentTransaction.commit();
+        FeedFragment savedFragment = (FeedFragment) getSupportFragmentManager()
+                .findFragmentByTag(TAG_VIEW_PAGER_FRAGMENT);
+        if (savedFragment == null) {
+            ViewPagerFragment viewPagerFragment = new ViewPagerFragment();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.add(R.id.placeHolder, viewPagerFragment, TAG_VIEW_PAGER_FRAGMENT);
+            fragmentTransaction.commit();
+        }
 
     }
 
@@ -55,5 +63,34 @@ public class MainActivity extends AppCompatActivity {
 
         AccountManager am = AccountManager.get(this);
 
+    }
+
+    @Override
+    public void voteUp(int index) {
+
+    }
+
+    @Override
+    public void voteDown(int index) {
+
+    }
+
+    @Override
+    public void share(int index) {
+
+    }
+
+    @Override
+    public void launchCommentFragment(int index) {
+        CommentsFragment commentsFragment = new CommentsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(CommentsFragment.KEY_INDEX, index);
+        commentsFragment.setArguments(bundle);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.placeHolder, commentsFragment, TAG_COMMENTS_FRAGMENT);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 }
