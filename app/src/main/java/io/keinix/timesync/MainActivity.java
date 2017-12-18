@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
 
         // redditSignInButton.setOnClickListener(v -> launchLogin());
 
-        FeedFragment savedFragment = (FeedFragment) getSupportFragmentManager()
+        ViewPagerFragment savedFragment = (ViewPagerFragment) getSupportFragmentManager()
                 .findFragmentByTag(TAG_VIEW_PAGER_FRAGMENT);
         if (savedFragment == null) {
             ViewPagerFragment viewPagerFragment = new ViewPagerFragment();

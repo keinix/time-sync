@@ -24,9 +24,9 @@ public class CommentsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mIndex = getArguments().getInt(KEY_INDEX);
-        ButterKnife.bind(getActivity());
         View view = inflater.inflate(R.layout.fragment_comments, container, false);
+        mIndex = getArguments().getInt(KEY_INDEX);
+        ButterKnife.bind(this, view);
 
         return view;
     }

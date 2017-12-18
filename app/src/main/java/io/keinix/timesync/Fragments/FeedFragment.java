@@ -32,8 +32,8 @@ public class FeedFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        ButterKnife.bind(getActivity());
         View view = inflater.inflate(R.layout.fragment_feed, container, false);
+        ButterKnife.bind(this, view);
         FeedItemInterface feedItemInterface = (FeedItemInterface) getActivity();
         getActivity().setTitle("Feed");
 
