@@ -45,9 +45,9 @@ public class ViewPagerFragment extends Fragment {
         //TODO:change icon color when a tab is selected
         TabLayout tabLayout = view.findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
-        tabLayout.getTabAt(0).setIcon(R.mipmap.ic_format_align_center_black_24dp);
-        tabLayout.getTabAt(1).setIcon(R.mipmap.ic_message_black_24dp);
-        tabLayout.getTabAt(2).setIcon(R.mipmap.ic_people_black_24dp);
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_format_align_center_white_24dp);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_message_white_24dp);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_people_white_24dp);
 
         return view;
     }
