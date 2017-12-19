@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -34,6 +35,7 @@ public class ViewPagerFragment extends Fragment {
                 }
             }
 
+
             @Override
             public int getCount() {
                 return 3;
@@ -43,7 +45,9 @@ public class ViewPagerFragment extends Fragment {
         //TODO:change icon color when a tab is selected
         TabLayout tabLayout = view.findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
-        tabLayout.getTabAt(0).setIcon()
+        tabLayout.getTabAt(0).setIcon(R.mipmap.ic_format_align_center_black_24dp);
+        tabLayout.getTabAt(1).setIcon(R.mipmap.ic_message_black_24dp);
+        tabLayout.getTabAt(2).setIcon(R.mipmap.ic_people_black_24dp);
 
         return view;
     }
