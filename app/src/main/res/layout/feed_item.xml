@@ -26,7 +26,7 @@
             <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="170dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
@@ -54,12 +54,12 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="2dp"
                 android:layout_marginTop="8dp"
-                app:srcCompat="@drawable/ic_arrow_upward_white_18dp"
+                app:srcCompat="@drawable/ic_arrow_upward_white_24dp"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toBottomOf="@+id/postTitleTextView"/>
 
             <TextView
-                android:id="@+id/viewCountTextView"
+                android:id="@+id/upVoteCountTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -70,15 +70,26 @@
                 card_view:layout_constraintStart_toEndOf="@+id/upVoteImageButton"
                 card_view:layout_constraintTop_toBottomOf="@+id/postTitleTextView"/>
 
+            <TextView
+                android:id="@+id/commentCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="356"
+                android:textColor="@android:color/white"
+                card_view:layout_constraintStart_toEndOf="@+id/commentImageButton"
+                card_view:layout_constraintTop_toBottomOf="@+id/postTitleTextView"
+                card_view:layout_goneMarginLeft="8dp"/>
+
             <ImageButton
                 android:id="@+id/shareImageButton"
                 android:layout_width="25dp"
                 android:layout_height="20dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
                 app:srcCompat="@drawable/ic_share"
-                card_view:layout_constraintStart_toEndOf="@+id/viewCountTextView"
+                card_view:layout_constraintStart_toEndOf="@+id/commentCount"
                 card_view:layout_constraintTop_toBottomOf="@+id/postTitleTextView"/>
 
             <TextView
@@ -94,6 +105,28 @@
                 android:background="@color/colorPrimaryReducedOpasity"
                 card_view:layout_constraintStart_toStartOf="@+id/imageView"
                 tools:layout_editor_absoluteY="129dp"/>
+
+            <ImageButton
+                android:id="@+id/downVoteImageButton"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                app:srcCompat="@drawable/downvote"
+                card_view:layout_constraintStart_toEndOf="@+id/upVoteCountTextView"
+                card_view:layout_constraintTop_toBottomOf="@+id/postTitleTextView"/>
+
+            <ImageButton
+                android:id="@+id/commentImageButton"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                app:srcCompat="@drawable/ic_mode_comment_white_24dp"
+                card_view:layout_constraintStart_toEndOf="@+id/downVoteImageButton"
+                card_view:layout_constraintTop_toBottomOf="@+id/postTitleTextView"/>
+
+
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v7.widget.CardView>
