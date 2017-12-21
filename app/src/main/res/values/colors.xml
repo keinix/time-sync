@@ -4,4 +4,5 @@
     <color name="colorPrimaryReducedOpasity">#80333232</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#c1fff8</color>
+    <color name="colorCountText">#b7b5b5</color>
 </resources>

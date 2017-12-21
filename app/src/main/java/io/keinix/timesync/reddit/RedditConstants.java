@@ -19,6 +19,6 @@ public final class RedditConstants {
 
     public static final String REDDIT_URL = String.format(REDDIT_AUTH_URL, REDDIT_CLIENT_ID, REDDIT_STATE, REDDIT_REDIRECT_URL);
 
-    public static final String REDDIT_USER_AGENT = "TimeSync/0.1 by /u/keinix";
+    public static final String REDDIT_USER_AGENT = "android:io.keinix.timeSync:v0.1 (by /u/keinix)";
 
 }

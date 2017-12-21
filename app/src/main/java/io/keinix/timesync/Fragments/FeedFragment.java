@@ -35,7 +35,7 @@ public class FeedFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_feed, container, false);
         ButterKnife.bind(this, view);
         FeedItemInterface feedItemInterface = (FeedItemInterface) getActivity();
-        getActivity().setTitle("Feed");
+        getActivity().setTitle("RedditFeed");
 
         FeedAdapter feedAdapter = new FeedAdapter(feedItemInterface);
         feedRecyclerView.setAdapter(feedAdapter);
