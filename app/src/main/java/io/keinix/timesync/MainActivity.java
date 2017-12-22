@@ -16,6 +16,7 @@ import butterknife.ButterKnife;
 import io.keinix.timesync.Activities.AddAccountActivity;
 import io.keinix.timesync.Fragments.CommentsFragment;
 import io.keinix.timesync.Fragments.FeedFragment;
+import io.keinix.timesync.Fragments.MessagesFragment;
 import io.keinix.timesync.Fragments.ViewPagerFragment;
 import io.keinix.timesync.adapters.FeedAdapter;
 import io.keinix.timesync.reddit.Api;
@@ -28,7 +29,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity implements FeedFragment.FeedItemInterface {
+public class MainActivity extends AppCompatActivity implements FeedFragment.FeedItemInterface,
+        MessagesFragment.MessagesInterface {
 
     // @BindView(R.id.redditButton) Button redditSignInButton;
     public static final String TAG_FEED_FRAGMENT = "TAG_FEED_FRAGMENT";
@@ -36,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
     public static final String TAB_ACCOUNT_FRAGMENT = "TAB_ACCOUNT_FRAGMENT";
     public static final String TAG_VIEW_PAGER_FRAGMENT = "TAG_VIEW_PAGER_FRAGMENT";
     public static final String TAG_COMMENTS_FRAGMENT = "TAG_COMMENTS_FRAGMENT";
+    public static final String EXTRA_REDDIT_TOKEN = "EXTRA_REDDIT_TOKEN";
+    public static final int REQUEST_CODE_ACCOUNT_LOGIN = 1000;
 
     private String redditToken;
 
@@ -54,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.placeHolder, viewPagerFragment, TAG_VIEW_PAGER_FRAGMENT);
+            fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
         }
     }
@@ -82,6 +87,23 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
         AccountManager am = AccountManager.get(this);
 
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("FINDME", "onActivityResult called");
+
+        if (requestCode == REQUEST_CODE_ACCOUNT_LOGIN) {
+            Log.d("FINDME", "onActivityResult: request code equal!");
+            Log.d("FINDME", "resultcode: " + resultCode);
+            if (resultCode == RESULT_OK) {
+                redditToken = data.getStringExtra(EXTRA_REDDIT_TOKEN);
+            }
+        }
+    }
+
+    // -----------Feed Fragment Interface Methods-----------------
+
 
     @Override
     public void voteUp(int index) {
@@ -114,8 +136,9 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
 
     @Override
     public void populateRedditFeed(FeedAdapter adapter) {
-
+        Log.d("FINDME", "populateRedditFeed called");
         if (redditToken != null) {
+            adapter.getSwipeRefreshLayout().setRefreshing(true);
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(RedditConstants.REDDIT_BASE_URL_OAUTH2)
                     .addConverterFactory(GsonConverterFactory.create())
@@ -133,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
                 public void onResponse(Call<RedditFeed> call, Response<RedditFeed> response) {
                     adapter.setRedditFeed(response.body());
                     adapter.notifyDataSetChanged();
+                    adapter.getSwipeRefreshLayout().setRefreshing(false);
                 }
                 @Override
                 public void onFailure(Call<RedditFeed> call, Throwable t) {
@@ -140,7 +164,16 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
                 }
             });
         } else {
+            adapter.getSwipeRefreshLayout().setRefreshing(false);
             Toast.makeText(this, "Please Login with Reddit", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    // -----------Message Fragment Interface Methods-----------------
+
+    @Override
+    public void tempLogin() {
+        Intent intent = new Intent(this, AddAccountActivity.class);
+        startActivityForResult(intent, REQUEST_CODE_ACCOUNT_LOGIN);
     }
 }

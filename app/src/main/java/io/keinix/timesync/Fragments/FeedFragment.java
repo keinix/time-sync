@@ -3,6 +3,7 @@ package io.keinix.timesync.Fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,10 +19,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 
 
-public class FeedFragment extends Fragment {
+public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.feedRecyclerView) RecyclerView feedRecyclerView;
+    @BindView(R.id.feedFragment) SwipeRefreshLayout mSwipeRefreshLayout;
 
+    FeedItemInterface mFeedItemInterface;
+    private FeedAdapter mFeedAdapter;
 
     public interface FeedItemInterface {
         //TODO: implement this in MainActivity then get a reference using getActivity()
@@ -38,12 +42,22 @@ public class FeedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_feed, container, false);
         ButterKnife.bind(this, view);
-        FeedItemInterface feedItemInterface = (FeedItemInterface) getActivity();
+        mFeedItemInterface = (FeedItemInterface) getActivity();
         getActivity().setTitle("RedditFeed");
 
-        FeedAdapter feedAdapter = new FeedAdapter(feedItemInterface);
-        feedRecyclerView.setAdapter(feedAdapter);
+        mFeedAdapter = new FeedAdapter(mFeedItemInterface, mSwipeRefreshLayout);
+        feedRecyclerView.setAdapter(mFeedAdapter);
         feedRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        setUpSwipeRefresh();
         return view;
+    }
+
+    public void setUpSwipeRefresh() {
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+    }
+
+    @Override
+    public void onRefresh() {
+        mFeedItemInterface.populateRedditFeed(mFeedAdapter);
     }
 }

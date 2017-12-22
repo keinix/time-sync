@@ -1,7 +1,10 @@
 package io.keinix.timesync.Activities;
 
+import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -14,6 +17,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.keinix.timesync.MainActivity;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.Api;
 import io.keinix.timesync.reddit.RedditConstants;
@@ -27,6 +31,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class AddAccountActivity extends AppCompatActivity {
 
     Retrofit mRetrofit;
+    Intent mResultIntent;
+    String mRedditToken;
+    android.support.v4.app.FragmentManager mFragmentManager;
 
     @BindView(R.id.redditLoginButton) Button mRedditLoginButton;
 
@@ -35,6 +42,7 @@ public class AddAccountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_account);
         ButterKnife.bind(this);
+        mFragmentManager = getSupportFragmentManager();
 
         mRedditLoginButton.setOnClickListener(v -> {
             redditLogin();
@@ -95,8 +103,9 @@ public class AddAccountActivity extends AppCompatActivity {
         call.enqueue(new Callback<RedditAccessToken>() {
             @Override
             public void onResponse(Call<RedditAccessToken> call, Response<RedditAccessToken> response) {
-                    Log.d("Findme", "body: " + response.body().toString());
-                    Log.d("Findme", "response: " + response.toString());
+                Log.d("Findme", "body: " + response.body().toString());
+                Log.d("Findme", "response: " + response.toString());
+                mRedditToken = response.body().getAccess_token();
             }
 
             @Override
@@ -108,9 +117,30 @@ public class AddAccountActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        outState.putString(MainActivity.EXTRA_REDDIT_TOKEN, mRedditToken);
+
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mRedditToken = savedInstanceState.getString(MainActivity.EXTRA_REDDIT_TOKEN);
+    }
+
+
+
+    @Override
     protected void onResume() {
         super.onResume();
         redditConsentCallback();
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra(MainActivity.EXTRA_REDDIT_TOKEN, mRedditToken);
+        setResult(RESULT_OK, mResultIntent);
+        super.onBackPressed();
+    }
 }
