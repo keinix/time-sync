@@ -124,7 +124,7 @@ public class Data_ {
     private String title;
     @SerializedName("created_utc")
     @Expose
-    private int createdUtc;
+    private long createdUtc;
     @SerializedName("subreddit_name_prefixed")
     @Expose
     private String subredditNamePrefixed;
@@ -459,11 +459,11 @@ public class Data_ {
         this.title = title;
     }
 
-    public int getCreatedUtc() {
+    public long getCreatedUtc() {
         return createdUtc;
     }
 
-    public void setCreatedUtc(int createdUtc) {
+    public void setCreatedUtc(long createdUtc) {
         this.createdUtc = createdUtc;
     }
 

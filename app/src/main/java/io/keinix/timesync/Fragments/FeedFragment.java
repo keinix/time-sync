@@ -13,6 +13,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.timesync.R;
 import io.keinix.timesync.adapters.FeedAdapter;
+import io.keinix.timesync.reddit.model.RedditFeed;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 
 public class FeedFragment extends Fragment {
@@ -27,6 +30,7 @@ public class FeedFragment extends Fragment {
         void voteDown(int index);
         void share(int index);
         void launchCommentFragment(int index);
+        void populateRedditFeed(FeedAdapter adapter);
     }
 
     @Nullable
@@ -41,7 +45,5 @@ public class FeedFragment extends Fragment {
         feedRecyclerView.setAdapter(feedAdapter);
         feedRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         return view;
-
-
     }
 }

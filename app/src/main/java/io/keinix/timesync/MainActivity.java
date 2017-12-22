@@ -6,19 +6,38 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.widget.Toast;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import io.keinix.timesync.Activities.AddAccountActivity;
 import io.keinix.timesync.Fragments.CommentsFragment;
 import io.keinix.timesync.Fragments.FeedFragment;
 import io.keinix.timesync.Fragments.ViewPagerFragment;
+import io.keinix.timesync.adapters.FeedAdapter;
+import io.keinix.timesync.reddit.Api;
+import io.keinix.timesync.reddit.RedditConstants;
+import io.keinix.timesync.reddit.model.RedditAccessToken;
+import io.keinix.timesync.reddit.model.RedditFeed;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements FeedFragment.FeedItemInterface {
 
-   // @BindView(R.id.redditButton) Button redditSignInButton;
+    // @BindView(R.id.redditButton) Button redditSignInButton;
     public static final String TAG_FEED_FRAGMENT = "TAG_FEED_FRAGMENT";
+    public static final String TAG_MESSAGES_FRAGMENT = "TAG_MESSAGES_FRAGMENT";
+    public static final String TAB_ACCOUNT_FRAGMENT = "TAB_ACCOUNT_FRAGMENT";
     public static final String TAG_VIEW_PAGER_FRAGMENT = "TAG_VIEW_PAGER_FRAGMENT";
     public static final String TAG_COMMENTS_FRAGMENT = "TAG_COMMENTS_FRAGMENT";
+
+    private String redditToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
             fragmentTransaction.add(R.id.placeHolder, viewPagerFragment, TAG_VIEW_PAGER_FRAGMENT);
             fragmentTransaction.commit();
         }
-
     }
 
     private void launchLogin() {
@@ -92,5 +110,37 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
         fragmentTransaction.replace(R.id.placeHolder, commentsFragment, TAG_COMMENTS_FRAGMENT);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void populateRedditFeed(FeedAdapter adapter) {
+
+        if (redditToken != null) {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(RedditConstants.REDDIT_BASE_URL_OAUTH2)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            Api api = retrofit.create(Api.class);
+
+            Map<String, String> headers = new HashMap<>();
+            headers.put("Authorization", redditToken);
+            headers.put("User-Agent", RedditConstants.REDDIT_USER_AGENT);
+
+            Call<RedditFeed> call = api.getFeed(headers);
+            call.enqueue(new Callback<RedditFeed>() {
+                @Override
+                public void onResponse(Call<RedditFeed> call, Response<RedditFeed> response) {
+                    adapter.setRedditFeed(response.body());
+                    adapter.notifyDataSetChanged();
+                }
+                @Override
+                public void onFailure(Call<RedditFeed> call, Throwable t) {
+                    Log.d("FINDME", "onFailure called from populateRedditFeed");
+                }
+            });
+        } else {
+            Toast.makeText(this, "Please Login with Reddit", Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -17,6 +17,8 @@ public final class RedditConstants {
 
     public static final String REDDIT_BASE_URL = "https://www.reddit.com/api/v1/";
 
+    public static final String REDDIT_BASE_URL_OAUTH2 = "https://oauth.reddit.com";
+
     public static final String REDDIT_URL = String.format(REDDIT_AUTH_URL, REDDIT_CLIENT_ID, REDDIT_STATE, REDDIT_REDIRECT_URL);
 
     public static final String REDDIT_USER_AGENT = "android:io.keinix.timeSync:v0.1 (by /u/keinix)";
