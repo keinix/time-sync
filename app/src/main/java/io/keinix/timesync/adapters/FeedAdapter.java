@@ -14,7 +14,6 @@ import butterknife.ButterKnife;
 import io.keinix.timesync.Fragments.FeedFragment.FeedItemInterface;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.model.Data_;
-import io.keinix.timesync.reddit.model.Image;
 import io.keinix.timesync.reddit.model.RedditFeed;
 
 public class FeedAdapter extends RecyclerView.Adapter {

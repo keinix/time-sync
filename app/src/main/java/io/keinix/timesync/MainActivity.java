@@ -22,7 +22,6 @@ import io.keinix.timesync.Fragments.ViewPagerFragment;
 import io.keinix.timesync.adapters.FeedAdapter;
 import io.keinix.timesync.reddit.Api;
 import io.keinix.timesync.reddit.RedditConstants;
-import io.keinix.timesync.reddit.model.RedditAccessToken;
 import io.keinix.timesync.reddit.model.RedditFeed;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -96,7 +95,12 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
     public void populateRedditFeed(FeedAdapter adapter) {
         Log.d("FINDME", "populateRedditFeed called");
         Account accounts[] = mAccountManager.getAccountsByType(RedditConstants.ACCOUNT_TYPE);
+
+        for (Account account : accounts) {
+            Log.d("FINDME", account.name + " " + account.type);
+        }
         String redditToken = mAccountManager.peekAuthToken(accounts[0], RedditConstants.KEY_ACCESS_TOKEN);
+        Log.d("FINDME", "redditToken: " + redditToken);
 
         if (redditToken != null) {
             adapter.getSwipeRefreshLayout().setRefreshing(true);
@@ -115,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
             call.enqueue(new Callback<RedditFeed>() {
                 @Override
                 public void onResponse(Call<RedditFeed> call, Response<RedditFeed> response) {
+                    Log.d("FINdME", response.body().toString());
                     adapter.setRedditFeed(response.body());
                     adapter.notifyDataSetChanged();
                     adapter.getSwipeRefreshLayout().setRefreshing(false);

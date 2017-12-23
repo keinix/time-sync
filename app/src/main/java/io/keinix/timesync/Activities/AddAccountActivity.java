@@ -1,11 +1,10 @@
 package io.keinix.timesync.Activities;
 
 import android.accounts.Account;
+import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -28,7 +27,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class AddAccountActivity extends AppCompatActivity {
+public class AddAccountActivity extends AccountAuthenticatorActivity {
 
     private Retrofit mRetrofit;
     private AccountManager mAccountManager;

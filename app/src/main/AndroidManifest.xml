@@ -34,11 +34,16 @@
                       android:scheme="https"
                       android:path="/timesync" />
             </intent-filter>
+
+        </activity>
+
+        <service android:name=".services.AuthenticatorService">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
-            <meta-data android:name="android.accounts.AccountAuthenticator" android:resource="@xml/authenticator" />
-        </activity>
+            <meta-data android:name="android.accounts.AccountAuthenticator"
+                       android:resource="@xml/authenticator" />
+        </service>
 
     </application>
 
