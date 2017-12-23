@@ -23,4 +23,16 @@ public final class RedditConstants {
 
     public static final String REDDIT_USER_AGENT = "android:io.keinix.timeSync:v0.1 (by /u/keinix)";
 
+
+    // for Account Manager
+    public static final String ACCOUNT_TYPE = "io.keinix";
+
+    public static final String ACCOUNT_NAME = "TimeSync (Reddit)";
+
+    public static final String KEY_ACCESS_TOKEN = "KEY_ACCESS_TOKEN";
+
+    public static final String KEY_REFRESH_TOKEN = "KEY_REFRESH_TOKEN";
+
+    public static final String KEY_EXPIRES_IN = "KEY_EXPIRES_IN";
+
 }

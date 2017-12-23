@@ -1,10 +1,10 @@
 package io.keinix.timesync.Activities;
 
-import android.app.FragmentManager;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.PersistableBundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -30,10 +30,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AddAccountActivity extends AppCompatActivity {
 
-    Retrofit mRetrofit;
-    Intent mResultIntent;
-    String mRedditToken;
-    android.support.v4.app.FragmentManager mFragmentManager;
+    private Retrofit mRetrofit;
+    private AccountManager mAccountManager;
 
     @BindView(R.id.redditLoginButton) Button mRedditLoginButton;
 
@@ -42,7 +40,6 @@ public class AddAccountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_account);
         ButterKnife.bind(this);
-        mFragmentManager = getSupportFragmentManager();
 
         mRedditLoginButton.setOnClickListener(v -> {
             redditLogin();
@@ -73,7 +70,6 @@ public class AddAccountActivity extends AppCompatActivity {
                 }
             }
         }
-
     }
 
     private void getAccessToken(String code) {
@@ -105,7 +101,20 @@ public class AddAccountActivity extends AppCompatActivity {
             public void onResponse(Call<RedditAccessToken> call, Response<RedditAccessToken> response) {
                 Log.d("Findme", "body: " + response.body().toString());
                 Log.d("Findme", "response: " + response.toString());
-                mRedditToken = response.body().getAccess_token();
+
+
+                if (response.body().getError() == null) {
+                    AccountManager am = AccountManager.get(AddAccountActivity.this);
+                    Bundle userdata = new Bundle();
+                    userdata.putString(RedditConstants.KEY_REFRESH_TOKEN, response.body().getRefresh_token());
+                    userdata.putLong(RedditConstants.KEY_EXPIRES_IN, response.body().getExpires_in());
+
+                    Account account = new Account(RedditConstants.ACCOUNT_NAME, RedditConstants.ACCOUNT_TYPE);
+                    am.addAccountExplicitly(account, "123", userdata);
+                    am.setAuthToken(account, RedditConstants.KEY_ACCESS_TOKEN, response.body().getAccess_token());
+                } else {
+                    Toast.makeText(AddAccountActivity.this, "There was an error", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
@@ -117,20 +126,6 @@ public class AddAccountActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        outState.putString(MainActivity.EXTRA_REDDIT_TOKEN, mRedditToken);
-
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        mRedditToken = savedInstanceState.getString(MainActivity.EXTRA_REDDIT_TOKEN);
-    }
-
-
-
-    @Override
     protected void onResume() {
         super.onResume();
         redditConsentCallback();
@@ -138,9 +133,7 @@ public class AddAccountActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra(MainActivity.EXTRA_REDDIT_TOKEN, mRedditToken);
-        setResult(RESULT_OK, mResultIntent);
-        super.onBackPressed();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }

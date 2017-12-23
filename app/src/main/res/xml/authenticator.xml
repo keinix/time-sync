@@ -1,5 +1,5 @@
 <account-authenticator xmlns:android="http://schemas.android.com/apk/res/android"
-                       android:accountType="com.udinic.auth_example"
+                       android:accountType="io.keinix"
                        android:icon="@mipmap/ic_launcher_round"
                        android:smallIcon="@mipmap/ic_launcher_round"
                        android:label="@string/label"

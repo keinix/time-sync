@@ -1,5 +1,6 @@
 package io.keinix.timesync;
 
+import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,7 +33,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity implements FeedFragment.FeedItemInterface,
         MessagesFragment.MessagesInterface {
 
-    // @BindView(R.id.redditButton) Button redditSignInButton;
     public static final String TAG_FEED_FRAGMENT = "TAG_FEED_FRAGMENT";
     public static final String TAG_MESSAGES_FRAGMENT = "TAG_MESSAGES_FRAGMENT";
     public static final String TAB_ACCOUNT_FRAGMENT = "TAB_ACCOUNT_FRAGMENT";
@@ -41,15 +41,14 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
     public static final String EXTRA_REDDIT_TOKEN = "EXTRA_REDDIT_TOKEN";
     public static final int REQUEST_CODE_ACCOUNT_LOGIN = 1000;
 
-    private String redditToken;
+    public AccountManager mAccountManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
-        // redditSignInButton.setOnClickListener(v -> launchLogin());
+        mAccountManager = AccountManager.get(this);
 
         ViewPagerFragment savedFragment = (ViewPagerFragment) getSupportFragmentManager()
                 .findFragmentByTag(TAG_VIEW_PAGER_FRAGMENT);
@@ -63,48 +62,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
         }
     }
 
-    private void launchLogin() {
-        Intent intent = new Intent(this, AddAccountActivity.class);
-        startActivity(intent);
-    }
-
-
-    public void startRedditSignIn() {
-//        String url = String.format(REDDIT_AUTH_URL, REDDIT_CLIENT_ID, REDDIT_STATE, REDDIT_REDIRECT_URL);
-//        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-//        startActivity(intent);
-    }
-
-    public void redditApiSignIn() {
-        String scope = "identity edit flair history mysubreddits privatemessages read report save submit subscribe vote";
-        String authUrl = "https://www.reddit.com/api/v1/authorize?client_id=CLIENT_ID&response_type=TYPE&" +
-                "state=RANDOM_STRING&redirect_uri=URI&duration=DURATION&scope=SCOPE_STRING";
-        String clientId = "gX4PnW7oHz7dgQ";
-        String responceType = "code";
-        String state = "some random string";
-        String redirectUrl = "https://www.keinix.io/timesync";
-
-        AccountManager am = AccountManager.get(this);
-
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.d("FINDME", "onActivityResult called");
-
-        if (requestCode == REQUEST_CODE_ACCOUNT_LOGIN) {
-            Log.d("FINDME", "onActivityResult: request code equal!");
-            Log.d("FINDME", "resultcode: " + resultCode);
-            if (resultCode == RESULT_OK) {
-                redditToken = data.getStringExtra(EXTRA_REDDIT_TOKEN);
-            }
-        }
-    }
-
     // -----------Feed Fragment Interface Methods-----------------
-
-
     @Override
     public void voteUp(int index) {
 
@@ -137,6 +95,9 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
     @Override
     public void populateRedditFeed(FeedAdapter adapter) {
         Log.d("FINDME", "populateRedditFeed called");
+        Account accounts[] = mAccountManager.getAccountsByType(RedditConstants.ACCOUNT_TYPE);
+        String redditToken = mAccountManager.peekAuthToken(accounts[0], RedditConstants.KEY_ACCESS_TOKEN);
+
         if (redditToken != null) {
             adapter.getSwipeRefreshLayout().setRefreshing(true);
             Retrofit retrofit = new Retrofit.Builder()
