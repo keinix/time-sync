@@ -10,6 +10,17 @@ public class RedditFeed {
     @SerializedName("data")
     @Expose
     private Data data;
+    @SerializedName("error")
+    @Expose
+    private String error;
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
 
     public String getKind() {
         return kind;

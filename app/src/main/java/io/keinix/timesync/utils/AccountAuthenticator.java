@@ -6,6 +6,7 @@ import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 
 
 public class AccountAuthenticator extends AbstractAccountAuthenticator {
@@ -27,11 +28,14 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
 
     @Override
     public Bundle confirmCredentials(AccountAuthenticatorResponse response, Account account, Bundle options) throws NetworkErrorException {
+        Log.d("FINDME", "confirmCredentials WAS CALLLED THIS WILL BE USEFUL");
         return null;
     }
 
     @Override
     public Bundle getAuthToken(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options) throws NetworkErrorException {
+        Log.d("FINDME", "getAuthToken WAS CALLLED THIS WILL BE USEFUL");
+        //TODO: put code to use a refresh token to reset the authToekn
         return null;
     }
 

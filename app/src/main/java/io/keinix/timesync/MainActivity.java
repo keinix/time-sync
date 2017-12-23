@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,6 +62,10 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
         }
     }
 
+    public static void getRefreshToken(Runnable methodToRetry) {
+
+    }
+
     // -----------Feed Fragment Interface Methods-----------------
     @Override
     public void voteUp(int index) {
@@ -99,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
         for (Account account : accounts) {
             Log.d("FINDME", account.name + " " + account.type);
         }
-        String redditToken = mAccountManager.peekAuthToken(accounts[0], RedditConstants.KEY_ACCESS_TOKEN);
+        String redditToken = mAccountManager.peekAuthToken(accounts[0], RedditConstants.KEY_AUTH_TOKEN);
         Log.d("FINDME", "redditToken: " + redditToken);
 
         if (redditToken != null) {
@@ -112,21 +117,36 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
             Api api = retrofit.create(Api.class);
 
             Map<String, String> headers = new HashMap<>();
-            headers.put("Authorization", redditToken);
+            headers.put("Authorization", "bearer " + redditToken);
             headers.put("User-Agent", RedditConstants.REDDIT_USER_AGENT);
 
             Call<RedditFeed> call = api.getFeed(headers);
             call.enqueue(new Callback<RedditFeed>() {
                 @Override
                 public void onResponse(Call<RedditFeed> call, Response<RedditFeed> response) {
-                    Log.d("FINdME", response.body().toString());
-                    adapter.setRedditFeed(response.body());
-                    adapter.notifyDataSetChanged();
-                    adapter.getSwipeRefreshLayout().setRefreshing(false);
+                    Log.d("FINDME", "response "+ response.toString());
+
+                    if (response.isSuccessful()) {
+                        // adapter.setRedditFeed(response.body());
+                        // adapter.notifyDataSetChanged();
+                        Log.d("FINDME", "response was a success! we got the feed!");
+                        Toast.makeText(MainActivity.this, "WE GOT THE FEED", Toast.LENGTH_SHORT).show();
+                        adapter.getSwipeRefreshLayout().setRefreshing(false);
+                    } else {
+                        Log.d("FINDME", "responce was not successfull triggered");
+                         // mAccountManager.invalidateAuthToken(RedditConstants.ACCOUNT_TYPE,
+                                // mAccountManager.peekAuthToken(accounts[0], RedditConstants.KEY_AUTH_TOKEN));
+                            // getRefreshToken(methodToRetry);
+                        //TODO: store an attempt constant so if it keeps failing you can prompt reLogin
+                    }
                 }
                 @Override
                 public void onFailure(Call<RedditFeed> call, Throwable t) {
                     Log.d("FINDME", "onFailure called from populateRedditFeed");
+                    Log.d("FINDME", "Call " + call.toString());
+                    Log.d("FINDME", "Call request header: " + call.request().headers());
+                    Log.d("FINDME", "Call request toString: " + call.request().toString());
+                    adapter.getSwipeRefreshLayout().setRefreshing(false);
                 }
             });
         } else {
