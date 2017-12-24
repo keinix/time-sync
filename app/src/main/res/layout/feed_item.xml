@@ -5,17 +5,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/feedItem"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <android.support.v7.widget.CardView
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/card_view"
-        card_view:cardElevation="@dimen/cardview_default_elevation"
-        android:layout_gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        card_view:cardBackgroundColor="@color/colorPrimaryDark"
         card_view:cardCornerRadius="4dp"
-        card_view:cardBackgroundColor="@color/colorPrimaryDark">
+        card_view:cardElevation="@dimen/cardview_default_elevation">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/innerCardViewConstraintLayout"
@@ -39,11 +40,11 @@
                 android:id="@+id/postTitleTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
                 android:text="This is a test title"
-                android:textSize="24dp"
                 android:textColor="@android:color/white"
+                android:textSize="24dp"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toBottomOf="@+id/imageView"/>
 
@@ -51,8 +52,8 @@
                 android:id="@+id/upVoteImageButton"
                 android:layout_width="25dp"
                 android:layout_height="20dp"
-                android:layout_marginStart="8dp"
                 android:layout_marginLeft="2dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 app:srcCompat="@drawable/ic_arrow_upward_white_24dp"
                 card_view:layout_constraintStart_toStartOf="parent"
@@ -62,6 +63,7 @@
                 android:id="@+id/upVoteCountTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
                 android:layout_marginStart="2dp"
                 android:layout_marginTop="8dp"
                 android:text="21.1K"
@@ -73,6 +75,7 @@
                 android:id="@+id/commentCountTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
                 android:layout_marginStart="2dp"
                 android:layout_marginTop="8dp"
                 android:text="356"
@@ -85,6 +88,7 @@
                 android:id="@+id/shareImageButton"
                 android:layout_width="25dp"
                 android:layout_height="20dp"
+                android:layout_marginLeft="32dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="8dp"
                 app:srcCompat="@drawable/ic_share"
@@ -93,15 +97,15 @@
 
             <TextView
                 android:id="@+id/websiteDisplayTextView"
-                card_view:layout_constraintBottom_toBottomOf="@id/imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="0dp"
                 android:layout_marginLeft="8dp"
-                android:text="www.github.com"
-                android:textSize="16sp"
-                android:textColor="@color/colorAccent"
+                android:layout_marginStart="0dp"
                 android:background="@color/colorPrimaryReducedOpasity"
+                android:text="www.github.com"
+                android:textColor="@color/colorAccent"
+                android:textSize="16sp"
+                card_view:layout_constraintBottom_toBottomOf="@id/imageView"
                 card_view:layout_constraintStart_toStartOf="@+id/imageView"
                 tools:layout_editor_absoluteY="129dp"/>
 
@@ -109,6 +113,7 @@
                 android:id="@+id/downVoteImageButton"
                 android:layout_width="25dp"
                 android:layout_height="20dp"
+                android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 app:srcCompat="@drawable/downvote"
@@ -119,6 +124,7 @@
                 android:id="@+id/commentImageButton"
                 android:layout_width="25dp"
                 android:layout_height="20dp"
+                android:layout_marginLeft="32dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="8dp"
                 app:srcCompat="@drawable/ic_mode_comment_white_24dp"

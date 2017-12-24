@@ -88,7 +88,7 @@ public class FeedAdapter extends RecyclerView.Adapter {
             mIndex = position;
             Data_ post = mRedditFeed.getData().getChildren().get(position).getData();
             postTitleTextView.setText(post.getTitle());
-            upVoteCountTextView.setText(post.getUps());
+            upVoteCountTextView.setText(String.valueOf(post.getUps()));
             commentCountTextView.setText(String.valueOf(post.getNumComments()));
             websiteDisplayTextView.setText(post.getDomain());
         }

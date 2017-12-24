@@ -59,9 +59,9 @@ public class Data_ {
     @SerializedName("thumbnail")
     @Expose
     private String thumbnail;
-    @SerializedName("edited")
-    @Expose
-    private boolean edited;
+//    @SerializedName("edited")
+//    @Expose
+//    private boolean edited;
     @SerializedName("contest_mode")
     @Expose
     private boolean contestMode;
@@ -291,13 +291,13 @@ public class Data_ {
         this.thumbnail = thumbnail;
     }
 
-    public boolean isEdited() {
-        return edited;
-    }
-
-    public void setEdited(boolean edited) {
-        this.edited = edited;
-    }
+//    public boolean isEdited() {
+//        return edited;
+//    }
+//
+//    public void setEdited(boolean edited) {
+//        this.edited = edited;
+//    }
 
     public boolean isContestMode() {
         return contestMode;
@@ -544,7 +544,7 @@ public class Data_ {
                 ", over18=" + over18 +
                 ", preview=" + preview +
                 ", thumbnail='" + thumbnail + '\'' +
-                ", edited=" + edited +
+                //", edited=" + edited +
                 ", contestMode=" + contestMode +
                 ", gilded=" + gilded +
                 ", downs=" + downs +

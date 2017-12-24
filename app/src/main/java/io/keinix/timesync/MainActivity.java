@@ -127,9 +127,10 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
                     Log.d("FINDME", "response "+ response.toString());
 
                     if (response.isSuccessful()) {
-                        // adapter.setRedditFeed(response.body());
-                        // adapter.notifyDataSetChanged();
+                        adapter.setRedditFeed(response.body());
+                        adapter.notifyDataSetChanged();
                         Log.d("FINDME", "response was a success! we got the feed!");
+                        Log.d("FINDME", response.body().toString());
                         Toast.makeText(MainActivity.this, "WE GOT THE FEED", Toast.LENGTH_SHORT).show();
                         adapter.getSwipeRefreshLayout().setRefreshing(false);
                     } else {
@@ -147,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
                     Log.d("FINDME", "Call request header: " + call.request().headers());
                     Log.d("FINDME", "Call request toString: " + call.request().toString());
                     adapter.getSwipeRefreshLayout().setRefreshing(false);
+                    Log.d("FINDME", t.toString());
                 }
             });
         } else {
