@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +24,7 @@ import io.keinix.timesync.Fragments.ViewPagerFragment;
 import io.keinix.timesync.adapters.FeedAdapter;
 import io.keinix.timesync.reddit.Api;
 import io.keinix.timesync.reddit.RedditConstants;
+import io.keinix.timesync.reddit.RedditTokenInterceptor;
 import io.keinix.timesync.reddit.model.RedditFeed;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,6 +35,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity implements FeedFragment.FeedItemInterface,
         MessagesFragment.MessagesInterface {
 
+    public static final String TAG = MainActivity.class.getSimpleName();
     public static final String TAG_FEED_FRAGMENT = "TAG_FEED_FRAGMENT";
     public static final String TAG_MESSAGES_FRAGMENT = "TAG_MESSAGES_FRAGMENT";
     public static final String TAB_ACCOUNT_FRAGMENT = "TAB_ACCOUNT_FRAGMENT";
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
     public static final int REQUEST_CODE_ACCOUNT_LOGIN = 1000;
 
     public AccountManager mAccountManager;
+    private RedditTokenInterceptor mRedditTokenInterceptor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
         ButterKnife.bind(this);
         mAccountManager = AccountManager.get(this);
         Fresco.initialize(this);
+        mRedditTokenInterceptor = new RedditTokenInterceptor(mAccountManager);
 
         ViewPagerFragment savedFragment = (ViewPagerFragment) getSupportFragmentManager()
                 .findFragmentByTag(TAG_VIEW_PAGER_FRAGMENT);
@@ -65,9 +68,6 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
         }
     }
 
-    public static void getRefreshToken(Runnable methodToRetry) {
-
-    }
 
     // -----------Feed Fragment Interface Methods-----------------
     @Override
@@ -101,14 +101,9 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
 
     @Override
     public void populateRedditFeed(FeedAdapter adapter) {
-        Log.d("FINDME", "populateRedditFeed called");
         Account accounts[] = mAccountManager.getAccountsByType(RedditConstants.ACCOUNT_TYPE);
-
-        for (Account account : accounts) {
-            Log.d("FINDME", account.name + " " + account.type);
-        }
         String redditToken = mAccountManager.peekAuthToken(accounts[0], RedditConstants.KEY_AUTH_TOKEN);
-        Log.d("FINDME", "redditToken: " + redditToken);
+        Log.d(TAG, "redditToken: " + redditToken);
 
         if (redditToken != null) {
             adapter.getSwipeRefreshLayout().setRefreshing(true);
@@ -127,17 +122,17 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
             call.enqueue(new Callback<RedditFeed>() {
                 @Override
                 public void onResponse(Call<RedditFeed> call, Response<RedditFeed> response) {
-                    Log.d("FINDME", "response "+ response.toString());
+                    Log.d(TAG, "response "+ response.toString());
 
                     if (response.isSuccessful()) {
                         adapter.setRedditFeed(response.body());
                         adapter.notifyDataSetChanged();
-                        Log.d("FINDME", "response was a success! we got the feed!");
-                        Log.d("FINDME", response.body().toString());
+                        Log.d(TAG, "response was a success! we got the feed!");
+                        Log.d(TAG, response.body().toString());
                         Toast.makeText(MainActivity.this, "WE GOT THE FEED", Toast.LENGTH_SHORT).show();
                         adapter.getSwipeRefreshLayout().setRefreshing(false);
                     } else {
-                        Log.d("FINDME", "responce was not successfull triggered");
+                        Log.d(TAG, "responce was not successfull triggered");
                          // mAccountManager.invalidateAuthToken(RedditConstants.ACCOUNT_TYPE,
                                 // mAccountManager.peekAuthToken(accounts[0], RedditConstants.KEY_AUTH_TOKEN));
                             // getRefreshToken(methodToRetry);
@@ -146,12 +141,12 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
                 }
                 @Override
                 public void onFailure(Call<RedditFeed> call, Throwable t) {
-                    Log.d("FINDME", "onFailure called from populateRedditFeed");
-                    Log.d("FINDME", "Call " + call.toString());
-                    Log.d("FINDME", "Call request header: " + call.request().headers());
-                    Log.d("FINDME", "Call request toString: " + call.request().toString());
                     adapter.getSwipeRefreshLayout().setRefreshing(false);
-                    Log.d("FINDME", t.toString());
+                    Log.d(TAG, "onFailure called from populateRedditFeed");
+                    Log.d(TAG, "Call " + call.toString());
+                    Log.d(TAG, "Call request header: " + call.request().headers());
+                    Log.d(TAG, "Call request toString: " + call.request().toString());
+                    Log.d(TAG, t.toString());
                 }
             });
         } else {

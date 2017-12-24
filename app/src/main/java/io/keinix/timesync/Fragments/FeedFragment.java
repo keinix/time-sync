@@ -14,6 +14,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.timesync.R;
 import io.keinix.timesync.adapters.FeedAdapter;
+import io.keinix.timesync.reddit.model.RedditFeed;
+import okhttp3.Callback;
+import retrofit2.Call;
 
 
 public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -56,5 +59,10 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onRefresh() {
         mFeedItemInterface.populateRedditFeed(mFeedAdapter);
+
     }
+
+
+
+
 }

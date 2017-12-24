@@ -75,7 +75,7 @@ public class FeedAdapter extends RecyclerView.Adapter {
         @BindView(R.id.upVoteImageButton) ImageButton upVoteImageButton;
         @BindView(R.id.upVoteCountTextView) TextView upVoteCountTextView;
         @BindView(R.id.commentCountTextView) TextView commentCountTextView;
-        @BindView(R.id.shareImageButton) ImageButton shareImageButotn;
+        @BindView(R.id.shareImageButton) ImageButton shareImageButton;
         @BindView(R.id.websiteDisplayTextView) TextView websiteDisplayTextView;
         @BindView(R.id.downVoteImageButton) ImageButton downVoteImageButton;
         @BindView(R.id.commentImageButton) ImageButton commentImageButton;

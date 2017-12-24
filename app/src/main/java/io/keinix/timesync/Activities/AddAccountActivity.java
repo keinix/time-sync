@@ -29,6 +29,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AddAccountActivity extends AccountAuthenticatorActivity {
 
+    public static final String TAG = AddAccountActivity.class.getSimpleName();
     private Retrofit mRetrofit;
     private AccountManager mAccountManager;
 
@@ -52,19 +53,19 @@ public class AddAccountActivity extends AccountAuthenticatorActivity {
 
     private void redditConsentCallback() {
 
-        // TODO: add check for redirect Uri
         if(getIntent()!= null && Intent.ACTION_VIEW.equals(getIntent().getAction())) {
             Uri uri = getIntent().getData();
+            Log.d(TAG, "URI: " + uri.getAuthority());
             if(uri.getQueryParameter("error") != null) {
+                if (uri.getQueryParameter("error").equals("access_denied")) {
+                    Toast.makeText(this, ":( maybe next time then...", Toast.LENGTH_LONG).show();
+                }
                 String error = uri.getQueryParameter("error");
-                Log.e("findme", "An error has occurred : " + error);
+                Log.e(TAG, "An error has occurred : " + error);
             } else {
                 String state = uri.getQueryParameter("state");
-                if(state.equals(RedditConstants.REDDIT_STATE)) {
+                if (state.equals(RedditConstants.REDDIT_STATE)) {
                     String code = uri.getQueryParameter("code");
-                    Toast.makeText(this, "we did it", Toast.LENGTH_SHORT).show();
-                    Log.d("findme", "REDDIT COD: " + code);
-
                     getAccessToken(code);
                 }
             }
@@ -98,9 +99,8 @@ public class AddAccountActivity extends AccountAuthenticatorActivity {
         call.enqueue(new Callback<RedditAccessToken>() {
             @Override
             public void onResponse(Call<RedditAccessToken> call, Response<RedditAccessToken> response) {
-                Log.d("Findme", "body: " + response.body().toString());
-                Log.d("Findme", "response: " + response.toString());
-
+                Log.d(TAG, "body: " + response.body().toString());
+                Log.d(TAG, "response: " + response.toString());
 
                 if (response.body().getError() == null) {
                     AccountManager am = AccountManager.get(AddAccountActivity.this);
@@ -118,7 +118,7 @@ public class AddAccountActivity extends AccountAuthenticatorActivity {
 
             @Override
             public void onFailure(Call<RedditAccessToken> call, Throwable t) {
-                Log.e("Fineme", "onFailure: " + t.getMessage());
+                Log.e(TAG, "onFailure: " + t.getMessage());
             }
         });
 
@@ -127,6 +127,7 @@ public class AddAccountActivity extends AccountAuthenticatorActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        //TODO: when adding another API add a check here to determine the respnce type in the intent or redirect Uri
         redditConsentCallback();
     }
 
