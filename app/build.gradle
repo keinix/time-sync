@@ -41,5 +41,19 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:26.1.0'
     compile 'com.android.support:cardview-v7:26.1.0'
 
+    compile 'com.facebook.fresco:fresco:1.7.1'
+    // For animated GIF support
+    compile 'com.facebook.fresco:animated-gif:1.7.1'
+
+    // For WebP support, including animated WebP
+    compile 'com.facebook.fresco:animated-webp:1.7.1'
+    compile 'com.facebook.fresco:webpsupport:1.7.1'
+
+    // For WebP support, without animations
+    compile 'com.facebook.fresco:webpsupport:1.7.1'
+
+    // Provide the Android support library (you might already have this or a similar dependency)
+    compile 'com.android.support:support-core-utils:26.1.0'
+
 
 }

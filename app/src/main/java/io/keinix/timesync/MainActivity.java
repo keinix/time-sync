@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         mAccountManager = AccountManager.get(this);
+        Fresco.initialize(this);
 
         ViewPagerFragment savedFragment = (ViewPagerFragment) getSupportFragmentManager()
                 .findFragmentByTag(TAG_VIEW_PAGER_FRAGMENT);

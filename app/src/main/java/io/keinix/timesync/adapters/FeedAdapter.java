@@ -1,5 +1,6 @@
 package io.keinix.timesync.adapters;
 
+import android.net.Uri;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -67,7 +70,7 @@ public class FeedAdapter extends RecyclerView.Adapter {
 
     public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @BindView(R.id.imageView) ImageView imageView;
+        @BindView(R.id.imageView) SimpleDraweeView imageView;
         @BindView(R.id.postTitleTextView) TextView postTitleTextView;
         @BindView(R.id.upVoteImageButton) ImageButton upVoteImageButton;
         @BindView(R.id.upVoteCountTextView) TextView upVoteCountTextView;
@@ -87,6 +90,10 @@ public class FeedAdapter extends RecyclerView.Adapter {
         public void bindView(int position) {
             mIndex = position;
             Data_ post = mRedditFeed.getData().getChildren().get(position).getData();
+            if (post.getPreview() != null) {
+                Uri uri = Uri.parse(post.getPreview().getImages().get(0).getSource().getUrl());
+                imageView.setImageURI(uri);
+            }
             postTitleTextView.setText(post.getTitle());
             upVoteCountTextView.setText(String.valueOf(post.getUps()));
             commentCountTextView.setText(String.valueOf(post.getNumComments()));
