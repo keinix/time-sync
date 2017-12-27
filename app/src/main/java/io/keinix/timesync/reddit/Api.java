@@ -24,8 +24,7 @@ public interface Api {
         @FieldMap Map<String, String> fields
     );
 
+    // use RedditTokenInterceptor
     @GET(".")
-    Call<RedditFeed> getFeed (
-            @HeaderMap Map<String, String> headers
-    );
+    Call<RedditFeed> getFeed ();
 }

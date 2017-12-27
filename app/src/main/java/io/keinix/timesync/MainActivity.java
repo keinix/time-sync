@@ -27,6 +27,7 @@ import io.keinix.timesync.reddit.Api;
 import io.keinix.timesync.reddit.RedditConstants;
 import io.keinix.timesync.reddit.RedditTokenInterceptor;
 import io.keinix.timesync.reddit.model.RedditFeed;
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -101,28 +102,19 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
 
     @Override
     public void populateRedditFeed(FeedAdapter adapter) {
-        Account accounts[] = mAccountManager.getAccountsByType(RedditConstants.ACCOUNT_TYPE);
-        String redditToken = mAccountManager.peekAuthToken(accounts[0], RedditConstants.KEY_AUTH_TOKEN);
-        Log.d(TAG, "redditToken: " + redditToken);
 
-        if (redditToken != null) {
-            adapter.getSwipeRefreshLayout().setRefreshing(true);
+        adapter.getSwipeRefreshLayout().setRefreshing(true);
+        OkHttpClient.Builder client = new OkHttpClient.Builder();
+        client.addInterceptor(new RedditTokenInterceptor(mAccountManager));
 
             Api api = new Retrofit.Builder()
                     .baseUrl(RedditConstants.REDDIT_BASE_URL_OAUTH2)
                     .addConverterFactory(GsonConverterFactory.create())
+                    .client(client.build())
                     .build()
                     .create(Api.class);
 
-            Map<String, String> headers = new HashMap<>();
-            headers.put("Authorization", "bearer " + redditToken);
-            headers.put("User-Agent", RedditConstants.REDDIT_USER_AGENT);
-
-            api.getFeed(headers).enqueue(adapter);
-        } else {
-            adapter.getSwipeRefreshLayout().setRefreshing(false);
-            Toast.makeText(this, "Please Login with Reddit", Toast.LENGTH_SHORT).show();
-        }
+            api.getFeed().enqueue(adapter);
     }
 
     @Override
