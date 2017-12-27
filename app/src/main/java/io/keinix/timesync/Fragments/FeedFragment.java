@@ -1,5 +1,6 @@
 package io.keinix.timesync.Fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,7 +20,7 @@ import okhttp3.Callback;
 import retrofit2.Call;
 
 
-public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class FeedFragment extends Fragment {
 
     @BindView(R.id.feedRecyclerView) RecyclerView feedRecyclerView;
     @BindView(R.id.feedFragment) SwipeRefreshLayout mSwipeRefreshLayout;
@@ -35,6 +36,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         void share(int index);
         void launchCommentFragment(int index);
         void populateRedditFeed(FeedAdapter adapter);
+        Context getContext();
     }
 
     @Nullable
@@ -48,19 +50,11 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         mFeedAdapter = new FeedAdapter(mFeedItemInterface, mSwipeRefreshLayout);
         feedRecyclerView.setAdapter(mFeedAdapter);
         feedRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        setUpSwipeRefresh();
+        mSwipeRefreshLayout.setOnRefreshListener(() -> mFeedItemInterface.populateRedditFeed(mFeedAdapter));
         return view;
     }
 
-    public void setUpSwipeRefresh() {
-        mSwipeRefreshLayout.setOnRefreshListener(this);
-    }
 
-    @Override
-    public void onRefresh() {
-        mFeedItemInterface.populateRedditFeed(mFeedAdapter);
-
-    }
 
 
 

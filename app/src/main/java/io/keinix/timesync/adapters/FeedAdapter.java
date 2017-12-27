@@ -3,26 +3,37 @@ package io.keinix.timesync.adapters;
 import android.net.Uri;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.timesync.Fragments.FeedFragment.FeedItemInterface;
+import io.keinix.timesync.MainActivity;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.model.Data_;
 import io.keinix.timesync.reddit.model.RedditFeed;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-public class FeedAdapter extends RecyclerView.Adapter {
-    private   FeedItemInterface mFeedItemInterface;
+public class FeedAdapter extends RecyclerView.Adapter  implements
+        Callback<RedditFeed>, SwipeRefreshLayout.OnRefreshListener {
+
+
+    public static final String TAG = FeedAdapter.class.getSimpleName();
+    private FeedItemInterface mFeedItemInterface;
     private RedditFeed mRedditFeed;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+
 
     public FeedAdapter(FeedItemInterface feedItemInterface, SwipeRefreshLayout swipeRefreshLayout) {
         mFeedItemInterface = feedItemInterface;
@@ -52,20 +63,48 @@ public class FeedAdapter extends RecyclerView.Adapter {
 
     }
 
-    public RedditFeed getRedditFeed() {
-        return mRedditFeed;
-    }
-
-    public void setRedditFeed(RedditFeed redditFeed) {
-        mRedditFeed = redditFeed;
-    }
-
     public SwipeRefreshLayout getSwipeRefreshLayout() {
         return mSwipeRefreshLayout;
     }
 
     public void setSwipeRefreshLayout(SwipeRefreshLayout swipeRefreshLayout) {
         mSwipeRefreshLayout = swipeRefreshLayout;
+    }
+
+    @Override
+    public void onResponse(Call<RedditFeed> call, Response<RedditFeed> response) {
+        Log.d(TAG, "response "+ response.toString());
+
+        if (response.isSuccessful()) {
+            mRedditFeed = response.body();
+            notifyDataSetChanged();
+            Log.d(TAG, "response was a success! we got the feed!");
+            Log.d(TAG, response.body().toString());
+            Toast.makeText(mFeedItemInterface.getContext(), "Refresh activated", Toast.LENGTH_SHORT).show();
+            getSwipeRefreshLayout().setRefreshing(false);
+        } else {
+            Log.d(TAG, "responce was not successfull triggered");
+            // mAccountManager.invalidateAuthToken(RedditConstants.ACCOUNT_TYPE,
+            // mAccountManager.peekAuthToken(accounts[0], RedditConstants.KEY_AUTH_TOKEN));
+            // getRefreshToken(methodToRetry);
+            //TODO: store an attempt constant so if it keeps failing you can prompt reLogin
+        }
+    }
+
+
+    @Override
+    public void onFailure(Call<RedditFeed> call, Throwable t) {
+        getSwipeRefreshLayout().setRefreshing(false);
+        Log.d(TAG, "onFailure called from populateRedditFeed");
+        Log.d(TAG, "Call " + call.toString());
+        Log.d(TAG, "Call request header: " + call.request().headers());
+        Log.d(TAG, "Call request toString: " + call.request().toString());
+        Log.d(TAG, t.toString());
+    }
+
+    @Override
+    public void onRefresh() {
+
     }
 
     public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -89,6 +128,9 @@ public class FeedAdapter extends RecyclerView.Adapter {
 
         public void bindView(int position) {
             mIndex = position;
+
+            // sometimes the position changes and the new result at the position is  text post
+            // there is nothing to handle removing an image yet only change an image if there is one present
             Data_ post = mRedditFeed.getData().getChildren().get(position).getData();
             if (post.getPreview() != null) {
                 Uri uri = Uri.parse(post.getPreview().getImages().get(0).getSource().getUrl());

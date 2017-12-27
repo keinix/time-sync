@@ -2,6 +2,7 @@ package io.keinix.timesync;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -68,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
         }
     }
 
-
     // -----------Feed Fragment Interface Methods-----------------
     @Override
     public void voteUp(int index) {
@@ -107,52 +107,27 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
 
         if (redditToken != null) {
             adapter.getSwipeRefreshLayout().setRefreshing(true);
-            Retrofit retrofit = new Retrofit.Builder()
+
+            Api api = new Retrofit.Builder()
                     .baseUrl(RedditConstants.REDDIT_BASE_URL_OAUTH2)
                     .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-
-            Api api = retrofit.create(Api.class);
+                    .build()
+                    .create(Api.class);
 
             Map<String, String> headers = new HashMap<>();
             headers.put("Authorization", "bearer " + redditToken);
             headers.put("User-Agent", RedditConstants.REDDIT_USER_AGENT);
 
-            Call<RedditFeed> call = api.getFeed(headers);
-            call.enqueue(new Callback<RedditFeed>() {
-                @Override
-                public void onResponse(Call<RedditFeed> call, Response<RedditFeed> response) {
-                    Log.d(TAG, "response "+ response.toString());
-
-                    if (response.isSuccessful()) {
-                        adapter.setRedditFeed(response.body());
-                        adapter.notifyDataSetChanged();
-                        Log.d(TAG, "response was a success! we got the feed!");
-                        Log.d(TAG, response.body().toString());
-                        Toast.makeText(MainActivity.this, "WE GOT THE FEED", Toast.LENGTH_SHORT).show();
-                        adapter.getSwipeRefreshLayout().setRefreshing(false);
-                    } else {
-                        Log.d(TAG, "responce was not successfull triggered");
-                         // mAccountManager.invalidateAuthToken(RedditConstants.ACCOUNT_TYPE,
-                                // mAccountManager.peekAuthToken(accounts[0], RedditConstants.KEY_AUTH_TOKEN));
-                            // getRefreshToken(methodToRetry);
-                        //TODO: store an attempt constant so if it keeps failing you can prompt reLogin
-                    }
-                }
-                @Override
-                public void onFailure(Call<RedditFeed> call, Throwable t) {
-                    adapter.getSwipeRefreshLayout().setRefreshing(false);
-                    Log.d(TAG, "onFailure called from populateRedditFeed");
-                    Log.d(TAG, "Call " + call.toString());
-                    Log.d(TAG, "Call request header: " + call.request().headers());
-                    Log.d(TAG, "Call request toString: " + call.request().toString());
-                    Log.d(TAG, t.toString());
-                }
-            });
+            api.getFeed(headers).enqueue(adapter);
         } else {
             adapter.getSwipeRefreshLayout().setRefreshing(false);
             Toast.makeText(this, "Please Login with Reddit", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
     }
 
     // -----------Message Fragment Interface Methods-----------------
