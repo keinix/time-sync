@@ -1,6 +1,5 @@
 package io.keinix.timesync;
 
-import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.Intent;
@@ -8,13 +7,8 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.ButterKnife;
 import io.keinix.timesync.Activities.AddAccountActivity;
@@ -24,13 +18,10 @@ import io.keinix.timesync.Fragments.MessagesFragment;
 import io.keinix.timesync.Fragments.ViewPagerFragment;
 import io.keinix.timesync.adapters.FeedAdapter;
 import io.keinix.timesync.reddit.Api;
+import io.keinix.timesync.reddit.RedditAuthInterceptor;
 import io.keinix.timesync.reddit.RedditConstants;
-import io.keinix.timesync.reddit.RedditTokenInterceptor;
-import io.keinix.timesync.reddit.model.RedditFeed;
+import io.keinix.timesync.reddit.TokenAuthenticator;
 import okhttp3.OkHttpClient;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -47,16 +38,19 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
     public static final int REQUEST_CODE_ACCOUNT_LOGIN = 1000;
 
     public AccountManager mAccountManager;
-    private RedditTokenInterceptor mRedditTokenInterceptor;
+    private RedditAuthInterceptor mRedditAuthInterceptor;
+    private OkHttpClient.Builder mOkHttpClient;
 
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         mAccountManager = AccountManager.get(this);
         Fresco.initialize(this);
-        mRedditTokenInterceptor = new RedditTokenInterceptor(mAccountManager);
+        mRedditAuthInterceptor = new RedditAuthInterceptor(mAccountManager);
+        mOkHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(new RedditAuthInterceptor(mAccountManager))
+                .authenticator(new TokenAuthenticator(mAccountManager));
 
         ViewPagerFragment savedFragment = (ViewPagerFragment) getSupportFragmentManager()
                 .findFragmentByTag(TAG_VIEW_PAGER_FRAGMENT);
@@ -102,15 +96,12 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
 
     @Override
     public void populateRedditFeed(FeedAdapter adapter) {
-
         adapter.getSwipeRefreshLayout().setRefreshing(true);
-        OkHttpClient.Builder client = new OkHttpClient.Builder();
-        client.addInterceptor(new RedditTokenInterceptor(mAccountManager));
 
             Api api = new Retrofit.Builder()
                     .baseUrl(RedditConstants.REDDIT_BASE_URL_OAUTH2)
                     .addConverterFactory(GsonConverterFactory.create())
-                    .client(client.build())
+                    .client(mOkHttpClient.build())
                     .build()
                     .create(Api.class);
 

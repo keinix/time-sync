@@ -10,13 +10,13 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 
-public class RedditTokenInterceptor implements Interceptor {
+public class RedditAuthInterceptor implements Interceptor {
     //TODO: implement the account manager crypto in this class
 
-    AccountManager mAccountManager;
+    private AccountManager mAccountManager;
     private String redditToken;
 
-    public RedditTokenInterceptor(AccountManager accountManager) {
+    public RedditAuthInterceptor(AccountManager accountManager) {
         mAccountManager = accountManager;
         Account[] accounts = mAccountManager.getAccountsByType(RedditConstants.ACCOUNT_TYPE);
         redditToken = mAccountManager.peekAuthToken(accounts[0], RedditConstants.KEY_AUTH_TOKEN);
@@ -32,7 +32,5 @@ public class RedditTokenInterceptor implements Interceptor {
                 .addHeader("User-Agent", RedditConstants.REDDIT_USER_AGENT);
 
         return chain.proceed(newRequest.build());
-
-
     }
 }

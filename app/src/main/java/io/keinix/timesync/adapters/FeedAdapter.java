@@ -79,7 +79,6 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
             mRedditFeed = response.body();
             notifyDataSetChanged();
             Log.d(TAG, "response was a success! we got the feed!");
-            Log.d(TAG, response.body().toString());
             Toast.makeText(mFeedItemInterface.getContext(), "Refresh activated", Toast.LENGTH_SHORT).show();
             getSwipeRefreshLayout().setRefreshing(false);
         } else {
@@ -90,7 +89,6 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
             //TODO: store an attempt constant so if it keeps failing you can prompt reLogin
         }
     }
-
 
     @Override
     public void onFailure(Call<RedditFeed> call, Throwable t) {
