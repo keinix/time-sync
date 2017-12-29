@@ -21,13 +21,18 @@
         android:padding="10dp"
         card_view:cardBackgroundColor="@color/colorPrimaryDark"
         card_view:cardCornerRadius="4dp"
-        card_view:cardElevation="@dimen/cardview_default_elevation">
+        card_view:cardElevation="@dimen/cardview_default_elevation"
+        card_view:layout_constraintBottom_toBottomOf="parent"
+        card_view:layout_constraintEnd_toEndOf="parent"
+        card_view:layout_constraintHorizontal_bias="1.0"
+        card_view:layout_constraintStart_toStartOf="parent"
+        card_view:layout_constraintTop_toTopOf="parent">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/innerCardViewConstraintLayout"
-            android:paddingBottom="3dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingBottom="3dp">
 
 
             <com.facebook.drawee.view.SimpleDraweeView
@@ -54,55 +59,6 @@
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toBottomOf="@+id/imageView"/>
 
-            <ImageButton
-                android:id="@+id/upVoteImageButton"
-                android:layout_width="25dp"
-                android:layout_height="20dp"
-                android:layout_marginLeft="2dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:background="@null"
-                app:srcCompat="@drawable/ic_arrow_upward_white_24dp"
-                card_view:layout_constraintStart_toStartOf="parent"
-                card_view:layout_constraintTop_toBottomOf="@+id/postTitleTextView"/>
-
-            <TextView
-                android:id="@+id/upVoteCountTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="8dp"
-                android:text="21.1K"
-                android:textColor="@color/colorCountText"
-                card_view:layout_constraintStart_toEndOf="@+id/upVoteImageButton"
-                card_view:layout_constraintTop_toBottomOf="@+id/postTitleTextView"/>
-
-            <TextView
-                android:id="@+id/commentCountTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="8dp"
-                android:text="356"
-                android:textColor="@color/colorCountText"
-                card_view:layout_constraintStart_toEndOf="@+id/commentImageButton"
-                card_view:layout_constraintTop_toBottomOf="@+id/postTitleTextView"
-                card_view:layout_goneMarginLeft="8dp"/>
-
-            <ImageButton
-                android:id="@+id/shareImageButton"
-                android:layout_width="25dp"
-                android:layout_height="20dp"
-                android:layout_marginLeft="32dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="8dp"
-                app:srcCompat="@drawable/ic_share"
-                android:background="@null"
-                card_view:layout_constraintStart_toEndOf="@+id/commentCountTextView"
-                card_view:layout_constraintTop_toBottomOf="@+id/postTitleTextView"/>
-
             <TextView
                 android:id="@+id/websiteDisplayTextView"
                 android:layout_width="wrap_content"
@@ -117,6 +73,31 @@
                 card_view:layout_constraintStart_toStartOf="@+id/imageView"
                 tools:layout_editor_absoluteY="129dp"/>
 
+
+            <ImageButton
+                android:id="@+id/upVoteImageButton"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="8dp"
+                android:background="@null"
+                app:srcCompat="@drawable/ic_arrow_upward_white_24dp"
+                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintTop_toBottomOf="@+id/postTitleTextView"/>
+
+            <TextView
+                android:id="@+id/upVoteCountTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="21.1K"
+                android:textColor="@color/colorCountText"
+                card_view:layout_constraintStart_toEndOf="@+id/upVoteImageButton"
+                card_view:layout_constraintTop_toBottomOf="@+id/postTitleTextView"/>
+
             <ImageButton
                 android:id="@+id/downVoteImageButton"
                 android:layout_width="25dp"
@@ -125,20 +106,47 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:background="@null"
-                app:srcCompat="@drawable/downvote"
+                android:rotation="180"
+                app:srcCompat="@drawable/ic_arrow_upward_white_24dp"
                 card_view:layout_constraintStart_toEndOf="@+id/upVoteCountTextView"
                 card_view:layout_constraintTop_toBottomOf="@+id/postTitleTextView"/>
 
             <ImageButton
                 android:id="@+id/commentImageButton"
-                android:layout_width="25dp"
-                android:layout_height="20dp"
-                android:layout_marginLeft="32dp"
-                android:layout_marginStart="32dp"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginStart="72dp"
                 android:layout_marginTop="8dp"
                 android:background="@null"
                 app:srcCompat="@drawable/ic_mode_comment_white_24dp"
                 card_view:layout_constraintStart_toEndOf="@+id/downVoteImageButton"
+                card_view:layout_constraintTop_toBottomOf="@+id/postTitleTextView"/>
+
+            <TextView
+                android:id="@+id/commentCountTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="8dp"
+                android:text="356"
+                android:textColor="@color/colorCountText"
+                card_view:layout_constraintStart_toEndOf="@+id/commentImageButton"
+                card_view:layout_constraintTop_toBottomOf="@+id/postTitleTextView"
+                card_view:layout_goneMarginLeft="8dp"/>
+
+            <ImageButton
+                android:id="@+id/shareImageButton"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                android:background="@null"
+                app:srcCompat="@drawable/ic_share"
+                card_view:layout_constraintEnd_toEndOf="parent"
+                card_view:layout_constraintStart_toEndOf="@+id/commentCountTextView"
                 card_view:layout_constraintTop_toBottomOf="@+id/postTitleTextView"/>
 
 
