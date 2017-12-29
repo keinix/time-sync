@@ -126,18 +126,37 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
 
         public void bindView(int position) {
             mIndex = position;
-
-            // sometimes the position changes and the new result at the position is  text post
-            // there is nothing to handle removing an image yet only change an image if there is one present
             Data_ post = mRedditFeed.getData().getChildren().get(position).getData();
-            if (post.getPreview() != null) {
-                Uri uri = Uri.parse(post.getPreview().getImages().get(0).getSource().getUrl());
-                imageView.setImageURI(uri);
+            Uri gifUri = null;
+            String postInfo = String.format(post.getSubredditNamePrefixed() +
+                    "\\u2022" +
+                    post.getDomain());
+
+            if (post.getPreview().getImages().get(0).getVariants().getGif() != null) {
+                 gifUri = Uri.parse(post.getPreview()
+                        .getImages()
+                        .get(0)
+                        .getVariants()
+                        .getGif()
+                        .getSource()
+                        .getUrl());
             }
+
+            if (post.getPreview().getImages() != null) {
+                if (gifUri != null) {
+                    imageView.setImageURI(gifUri);
+                } else {
+                    Uri uri = Uri.parse(post.getPreview().getImages().get(0).getSource().getUrl());
+                    imageView.setImageURI(uri);
+                }
+            } else {
+                imageView.setVisibility(View.GONE);
+            }
+
             postTitleTextView.setText(post.getTitle());
             upVoteCountTextView.setText(String.valueOf(post.getUps()));
             commentCountTextView.setText(String.valueOf(post.getNumComments()));
-            websiteDisplayTextView.setText(post.getDomain());
+            websiteDisplayTextView.setText(postInfo);
         }
 
         @Override

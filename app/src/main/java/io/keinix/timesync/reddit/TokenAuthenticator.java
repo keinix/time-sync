@@ -42,9 +42,10 @@ public class TokenAuthenticator implements Authenticator {
                 updateAccountManager(refreshResponse);
                 previouslyAttemptedRefresh = false;
                 return getNewRequest(originalResponse);
+            } else {
+                Log.d(TAG, "Response  NOT successful");
             }
         }
-        Log.d(TAG, "Response  NOT successful");
         return null;
     }
 
@@ -65,11 +66,12 @@ public class TokenAuthenticator implements Authenticator {
 
         Map<String, String> headers = new HashMap<>();
         headers.put("Authorization", "Basic " + encodedAuthString);
-        headers.put("User-Agent", RedditConstants.REDDIT_USER_AGENT);
+
 
         Map<String, String> fields = new HashMap<>();
         fields.put("grant_type", "refresh_token");
         fields.put("refresh_token", refreshToken);
+        fields.put("User-Agent", RedditConstants.REDDIT_USER_AGENT);
 
         return api.login(headers, fields);
     }
@@ -77,8 +79,8 @@ public class TokenAuthenticator implements Authenticator {
     private void updateAccountManager(retrofit2.Response<RedditAccessToken> response) {
         mAccountManager.invalidateAuthToken(RedditConstants.ACCOUNT_TYPE, RedditConstants.KEY_AUTH_TOKEN);
         mAccountManager.setAuthToken(mRedditAccount, RedditConstants.KEY_AUTH_TOKEN, response.body().getAccess_token());
-        mAccountManager.setUserData(mRedditAccount, RedditConstants.KEY_REFRESH_TOKEN, response.body().getRefresh_token());
-        Log.d(TAG, "RefreshToken: " + response.body().getRefresh_token());
+        // mAccountManager.setUserData(mRedditAccount, RedditConstants.KEY_REFRESH_TOKEN, response.body().getRefresh_token());
+        // Log.d(TAG, "RefreshToken: " + response.body().getRefresh_token());
     }
 
     private Request getNewRequest(Response originalResponse) {
@@ -86,11 +88,18 @@ public class TokenAuthenticator implements Authenticator {
         previouslyAttemptedRefresh = true;
 
 
-        return originalResponse
+        Request newRequest =originalResponse
                 .request()
                 .newBuilder()
-                .addHeader("Authorization", "bearer " + newAuthToken)
-                .addHeader("User-Agent", RedditConstants.REDDIT_USER_AGENT)
+                .header("Authorization", "bearer " + newAuthToken)
+                .header("User-Agent", RedditConstants.REDDIT_USER_AGENT)
                 .build();
+
+        Log.d(TAG, "New Request: " + newRequest.toString());
+        Log.d(TAG, "New Request: " + newRequest.url());
+
+        Log.d(TAG, "OriginalRequest: " + originalResponse.request().toString());
+        Log.d(TAG, "OriginalRequest: " + originalResponse.request().url());
+        return newRequest;
     }
 }

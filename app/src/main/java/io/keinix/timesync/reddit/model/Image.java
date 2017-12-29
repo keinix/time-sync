@@ -19,6 +19,17 @@ public class Image {
     @SerializedName("id")
     @Expose
     private String id;
+    @SerializedName("variants")
+    @Expose
+    private Variants variants;
+
+    public Variants getVariants() {
+        return variants;
+    }
+
+    public void setVariants(Variants variants) {
+        this.variants = variants;
+    }
 
     public Source getSource() {
         return source;
@@ -50,6 +61,7 @@ public class Image {
                 "source=" + source +
                 ", resolutions=" + resolutions +
                 ", id='" + id + '\'' +
+                ", variants=" + variants +
                 '}';
     }
 }

@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
     public static final int REQUEST_CODE_ACCOUNT_LOGIN = 1000;
 
     public AccountManager mAccountManager;
-    private RedditAuthInterceptor mRedditAuthInterceptor;
     private OkHttpClient.Builder mOkHttpClient;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +45,9 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         mAccountManager = AccountManager.get(this);
-        Fresco.initialize(this);
-        mRedditAuthInterceptor = new RedditAuthInterceptor(mAccountManager);
+        if (!Fresco.hasBeenInitialized()) {
+            Fresco.initialize(this);
+        }
         mOkHttpClient = new OkHttpClient.Builder()
                 .addInterceptor(new RedditAuthInterceptor(mAccountManager))
                 .authenticator(new TokenAuthenticator(mAccountManager));

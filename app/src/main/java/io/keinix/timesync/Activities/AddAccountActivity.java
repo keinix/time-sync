@@ -105,12 +105,11 @@ public class AddAccountActivity extends AccountAuthenticatorActivity {
                 if (response.body().getError() == null) {
                     AccountManager am = AccountManager.get(AddAccountActivity.this);
                     Bundle userdata = new Bundle();
-                    userdata.putString(RedditConstants.KEY_REFRESH_TOKEN, response.body().getRefresh_token());
-                    userdata.putLong(RedditConstants.KEY_EXPIRES_IN, response.body().getExpires_in());
 
                     Account account = new Account(RedditConstants.ACCOUNT_NAME, RedditConstants.ACCOUNT_TYPE);
                     am.addAccountExplicitly(account, "123", userdata);
                     am.setAuthToken(account, RedditConstants.KEY_AUTH_TOKEN, response.body().getAccess_token());
+                    am.setUserData(account, RedditConstants.KEY_REFRESH_TOKEN, response.body().getRefresh_token());
                 } else {
                     Toast.makeText(AddAccountActivity.this, "There was an error", Toast.LENGTH_SHORT).show();
                 }
