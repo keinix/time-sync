@@ -8,6 +8,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -23,7 +26,6 @@ import retrofit2.Call;
 public class FeedFragment extends Fragment {
 
     @BindView(R.id.feedRecyclerView) RecyclerView feedRecyclerView;
-    @BindView(R.id.feedFragment) SwipeRefreshLayout mSwipeRefreshLayout;
 
     FeedItemInterface mFeedItemInterface;
     private FeedAdapter mFeedAdapter;
@@ -46,17 +48,29 @@ public class FeedFragment extends Fragment {
         ButterKnife.bind(this, view);
         mFeedItemInterface = (FeedItemInterface) getActivity();
         getActivity().setTitle("RedditFeed");
+        setHasOptionsMenu(true);
 
-        mFeedAdapter = new FeedAdapter(mFeedItemInterface, mSwipeRefreshLayout);
+
+        mFeedAdapter = new FeedAdapter(mFeedItemInterface);
         feedRecyclerView.setAdapter(mFeedAdapter);
         feedRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mSwipeRefreshLayout.setOnRefreshListener(() -> mFeedItemInterface.populateRedditFeed(mFeedAdapter));
         return view;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.feed_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
 
-
-
-
+        switch (item.getItemId()) {
+            case R.id.refreshFeedMenu:
+                mFeedItemInterface.populateRedditFeed(mFeedAdapter);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

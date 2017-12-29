@@ -26,24 +26,21 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FeedAdapter extends RecyclerView.Adapter  implements
-        Callback<RedditFeed>, SwipeRefreshLayout.OnRefreshListener {
+        Callback<RedditFeed> {
 
 
     public static final String TAG = FeedAdapter.class.getSimpleName();
     private FeedItemInterface mFeedItemInterface;
     private RedditFeed mRedditFeed;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
 
 
-    public FeedAdapter(FeedItemInterface feedItemInterface, SwipeRefreshLayout swipeRefreshLayout) {
+    public FeedAdapter(FeedItemInterface feedItemInterface) {
         mFeedItemInterface = feedItemInterface;
-        mSwipeRefreshLayout = swipeRefreshLayout;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.feed_item, parent, false);
-        mFeedItemInterface.populateRedditFeed(this );
         return new FeedViewHolder(view);
     }
 
@@ -63,13 +60,7 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
 
     }
 
-    public SwipeRefreshLayout getSwipeRefreshLayout() {
-        return mSwipeRefreshLayout;
-    }
 
-    public void setSwipeRefreshLayout(SwipeRefreshLayout swipeRefreshLayout) {
-        mSwipeRefreshLayout = swipeRefreshLayout;
-    }
 
     @Override
     public void onResponse(Call<RedditFeed> call, Response<RedditFeed> response) {
@@ -80,7 +71,6 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
             notifyDataSetChanged();
             Log.d(TAG, "response was a success! we got the feed!");
             Toast.makeText(mFeedItemInterface.getContext(), "Refresh activated", Toast.LENGTH_SHORT).show();
-            getSwipeRefreshLayout().setRefreshing(false);
         } else {
             Log.d(TAG, "responce was not successfull triggered");
             // mAccountManager.invalidateAuthToken(RedditConstants.ACCOUNT_TYPE,
@@ -92,7 +82,6 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
 
     @Override
     public void onFailure(Call<RedditFeed> call, Throwable t) {
-        getSwipeRefreshLayout().setRefreshing(false);
         Log.d(TAG, "onFailure called from populateRedditFeed");
         Log.d(TAG, "Call " + call.toString());
         Log.d(TAG, "Call request header: " + call.request().headers());
@@ -100,10 +89,6 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
         Log.d(TAG, t.toString());
     }
 
-    @Override
-    public void onRefresh() {
-
-    }
 
     public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -129,28 +114,28 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
             Data_ post = mRedditFeed.getData().getChildren().get(position).getData();
             Uri gifUri = null;
             String postInfo = String.format(post.getSubredditNamePrefixed() +
-                    "\\u2022" +
+                    " \u2022 " +
                     post.getDomain());
 
-            if (post.getPreview().getImages().get(0).getVariants().getGif() != null) {
-                 gifUri = Uri.parse(post.getPreview()
-                        .getImages()
-                        .get(0)
-                        .getVariants()
-                        .getGif()
-                        .getSource()
-                        .getUrl());
-            }
 
-            if (post.getPreview().getImages() != null) {
+            if (post.getPreview()!= null) {
+
+                if (post.getPreview().getImages().get(0).getVariants().getGif() != null) {
+                    gifUri = Uri.parse(post.getPreview()
+                            .getImages()
+                            .get(0)
+                            .getVariants()
+                            .getGif()
+                            .getSource()
+                            .getUrl());
+                }
+
                 if (gifUri != null) {
                     imageView.setImageURI(gifUri);
                 } else {
                     Uri uri = Uri.parse(post.getPreview().getImages().get(0).getSource().getUrl());
                     imageView.setImageURI(uri);
                 }
-            } else {
-                imageView.setVisibility(View.GONE);
             }
 
             postTitleTextView.setText(post.getTitle());

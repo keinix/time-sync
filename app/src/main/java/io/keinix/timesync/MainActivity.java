@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 
@@ -49,8 +52,8 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
             Fresco.initialize(this);
         }
         mOkHttpClient = new OkHttpClient.Builder()
-                .addInterceptor(new RedditAuthInterceptor(mAccountManager))
-                .authenticator(new TokenAuthenticator(mAccountManager));
+                .authenticator(new TokenAuthenticator(mAccountManager))
+                .addInterceptor(new RedditAuthInterceptor(mAccountManager));
 
         ViewPagerFragment savedFragment = (ViewPagerFragment) getSupportFragmentManager()
                 .findFragmentByTag(TAG_VIEW_PAGER_FRAGMENT);
@@ -63,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
             fragmentTransaction.commit();
         }
     }
+
 
     // -----------Feed Fragment Interface Methods-----------------
     @Override
@@ -96,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
 
     @Override
     public void populateRedditFeed(FeedAdapter adapter) {
-        adapter.getSwipeRefreshLayout().setRefreshing(true);
+        Log.d(TAG, "REFRESH TRIGGERED");
 
             Api api = new Retrofit.Builder()
                     .baseUrl(RedditConstants.REDDIT_BASE_URL_OAUTH2)
