@@ -2,15 +2,15 @@ package io.keinix.timesync.reddit;
 
 import java.util.Map;
 
+import io.keinix.timesync.reddit.model.BaseResponse;
 import io.keinix.timesync.reddit.model.RedditAccessToken;
 import io.keinix.timesync.reddit.model.RedditFeed;
+import io.keinix.timesync.reddit.model.VoteResult;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.HeaderMap;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
@@ -24,7 +24,14 @@ public interface Api {
         @FieldMap Map<String, String> fields
     );
 
-    // use RedditAuthInterceptor and TokenAuthenticator
+    // **below use RedditAuthInterceptor and TokenAuthenticator**
     @GET(".")
     Call<RedditFeed> getFeed ();
+
+    @FormUrlEncoded
+    @POST("api/vote/")
+    Call<VoteResult> vote (
+        @Field("dir") String voteType,
+        @Field("id") String id
+    );
 }

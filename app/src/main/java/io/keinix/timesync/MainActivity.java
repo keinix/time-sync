@@ -13,6 +13,8 @@ import android.view.MenuInflater;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 
+import org.json.JSONObject;
+
 import butterknife.ButterKnife;
 import io.keinix.timesync.Activities.AddAccountActivity;
 import io.keinix.timesync.Fragments.CommentsFragment;
@@ -24,7 +26,10 @@ import io.keinix.timesync.reddit.Api;
 import io.keinix.timesync.reddit.RedditAuthInterceptor;
 import io.keinix.timesync.reddit.RedditConstants;
 import io.keinix.timesync.reddit.TokenAuthenticator;
+import io.keinix.timesync.reddit.model.VoteResult;
 import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -41,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
     public static final int REQUEST_CODE_ACCOUNT_LOGIN = 1000;
 
     public AccountManager mAccountManager;
-    private OkHttpClient.Builder mOkHttpClient;
+    public Api mApi;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,9 +56,8 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
         if (!Fresco.hasBeenInitialized()) {
             Fresco.initialize(this);
         }
-        mOkHttpClient = new OkHttpClient.Builder()
-                .authenticator(new TokenAuthenticator(mAccountManager))
-                .addInterceptor(new RedditAuthInterceptor(mAccountManager, this));
+        initApi();
+
 
         ViewPagerFragment savedFragment = (ViewPagerFragment) getSupportFragmentManager()
                 .findFragmentByTag(TAG_VIEW_PAGER_FRAGMENT);
@@ -67,10 +71,23 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
         }
     }
 
+    public void initApi() {
+        OkHttpClient.Builder client = new OkHttpClient.Builder()
+                .authenticator(new TokenAuthenticator(mAccountManager))
+                .addInterceptor(new RedditAuthInterceptor(mAccountManager, this));
+
+        mApi = new Retrofit.Builder()
+                .baseUrl(RedditConstants.REDDIT_BASE_URL_OAUTH2)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client.build())
+                .build()
+                .create(Api.class);
+    }
+
     // -----------Feed Fragment Interface Methods-----------------
     @Override
-    public void voteUp(int index) {
-
+    public Call<VoteResult> voteUp(String id) {
+        return mApi.vote(RedditConstants.UP_VOTE, id);
     }
 
     @Override
@@ -100,15 +117,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
     @Override
     public void populateRedditFeed(FeedAdapter adapter) {
         Log.d(TAG, "REFRESH TRIGGERED");
-
-            Api api = new Retrofit.Builder()
-                    .baseUrl(RedditConstants.REDDIT_BASE_URL_OAUTH2)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .client(mOkHttpClient.build())
-                    .build()
-                    .create(Api.class);
-
-            api.getFeed().enqueue(adapter);
+            mApi.getFeed().enqueue(adapter);
     }
 
     @Override

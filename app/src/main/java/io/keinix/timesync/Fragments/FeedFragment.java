@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 import io.keinix.timesync.R;
 import io.keinix.timesync.adapters.FeedAdapter;
 import io.keinix.timesync.reddit.model.RedditFeed;
+import io.keinix.timesync.reddit.model.VoteResult;
 import okhttp3.Callback;
 import retrofit2.Call;
 
@@ -33,7 +34,7 @@ public class FeedFragment extends Fragment {
     public interface FeedItemInterface {
         //TODO: implement this in MainActivity then get a reference using getActivity()
         //TODO: put the methods in the onclickListeners
-        void voteUp(int index);
+        Call<VoteResult> voteUp(String id);
         void voteDown(int index);
         void share(int index);
         void launchCommentFragment(int index);

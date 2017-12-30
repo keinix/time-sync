@@ -21,14 +21,16 @@ import butterknife.ButterKnife;
 import io.keinix.timesync.Fragments.FeedFragment.FeedItemInterface;
 import io.keinix.timesync.MainActivity;
 import io.keinix.timesync.R;
+import io.keinix.timesync.reddit.model.BaseResponse;
 import io.keinix.timesync.reddit.model.Data_;
 import io.keinix.timesync.reddit.model.RedditFeed;
+import io.keinix.timesync.reddit.model.VoteResult;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FeedAdapter extends RecyclerView.Adapter  implements
-        Callback<RedditFeed> {
+        Callback<RedditFeed>  {
 
 
     public static final String TAG = FeedAdapter.class.getSimpleName();
@@ -111,6 +113,7 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
         public void bindView(int position) {
             mIndex = position;
             Data_ post = mRedditFeed.getData().getChildren().get(position).getData();
+            String id = post.getId();
             String postInfo = String.format(post.getSubredditNamePrefixed() +
                     " \u2022 " +
                     post.getDomain());
@@ -121,6 +124,8 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
             upVoteCountTextView.setText(String.valueOf(post.getUps()));
             commentCountTextView.setText(String.valueOf(post.getNumComments()));
             websiteDisplayTextView.setText(postInfo);
+
+            setupOnClick(id);
         }
 
         private void handleImage(Data_ post) {
@@ -148,6 +153,25 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
                     imageView.setImageURI(uri);
                 }
             }
+        }
+
+        private void setupOnClick(String id) {
+            upVoteImageButton.setOnClickListener(v -> mFeedItemInterface
+                    .voteUp(id)
+                    .enqueue(new Callback<VoteResult>() {
+                        @Override
+                        public void onResponse(Call<VoteResult> call, Response<VoteResult> response) {
+                            Log.d(TAG, "Up vote Response not successful: " + response.toString());
+                            if (response.isSuccessful()) {
+                                Toast.makeText(mFeedItemInterface.getContext(), "UPVOTED", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<VoteResult> call, Throwable t) {
+                            Log.d(TAG, "UpVote onFailure: " + call.toString());
+                        }
+                    }));
         }
 
         @Override
