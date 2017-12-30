@@ -24,7 +24,6 @@ public class TokenAuthenticator implements Authenticator {
     public static final String TAG = TokenAuthenticator.class.getSimpleName();
     AccountManager mAccountManager;
     private Account mRedditAccount;
-    private boolean previouslyAttemptedRefresh = false;
 
     public TokenAuthenticator(AccountManager accountManager) {
         mAccountManager = accountManager;
@@ -34,17 +33,15 @@ public class TokenAuthenticator implements Authenticator {
     @Override
     public Request authenticate(Route route, Response originalResponse) throws IOException {
         Log.d(TAG, "TokenAuthenticatorCalled");
+        if (!hasRedditAccount()) { return null; }
 
-        if (!previouslyAttemptedRefresh) {
-            retrofit2.Response<RedditAccessToken> refreshResponse = getTokenRefreshCall().execute();
-            if (refreshResponse.isSuccessful()) {
-                Log.d(TAG, "Response successful:  RedditAccessToken: " + refreshResponse.body().toString());
-                updateAccountManager(refreshResponse);
-                previouslyAttemptedRefresh = false;
-                return getNewRequest(originalResponse);
-            } else {
-                Log.d(TAG, "Response  NOT successful");
-            }
+        retrofit2.Response<RedditAccessToken> refreshResponse = getTokenRefreshCall().execute();
+        if (refreshResponse.isSuccessful()) {
+            Log.d(TAG, "Response successful:  RedditAccessToken: " + refreshResponse.body().toString());
+            updateAccountManager(refreshResponse);
+            return getNewRequest(originalResponse);
+        } else {
+            Log.d(TAG, "Response  NOT successful");
         }
         return null;
     }
@@ -52,7 +49,10 @@ public class TokenAuthenticator implements Authenticator {
 
     private retrofit2.Call<RedditAccessToken> getTokenRefreshCall()  {
         Account[] accounts = mAccountManager.getAccountsByType(RedditConstants.ACCOUNT_TYPE);
-        mRedditAccount = accounts[0];
+        if (accounts.length > 0) {
+            mRedditAccount = accounts[0];
+        }
+
         String refreshToken = mAccountManager.getUserData(mRedditAccount, RedditConstants.KEY_REFRESH_TOKEN);
 
         Api api = new Retrofit.Builder()
@@ -79,13 +79,10 @@ public class TokenAuthenticator implements Authenticator {
     private void updateAccountManager(retrofit2.Response<RedditAccessToken> response) {
         mAccountManager.invalidateAuthToken(RedditConstants.ACCOUNT_TYPE, RedditConstants.KEY_AUTH_TOKEN);
         mAccountManager.setAuthToken(mRedditAccount, RedditConstants.KEY_AUTH_TOKEN, response.body().getAccess_token());
-        // mAccountManager.setUserData(mRedditAccount, RedditConstants.KEY_REFRESH_TOKEN, response.body().getRefresh_token());
-        // Log.d(TAG, "RefreshToken: " + response.body().getRefresh_token());
     }
 
     private Request getNewRequest(Response originalResponse) {
         String newAuthToken = mAccountManager.peekAuthToken(mRedditAccount, RedditConstants.KEY_AUTH_TOKEN);
-        previouslyAttemptedRefresh = true;
 
 
         Request newRequest =originalResponse
@@ -101,5 +98,12 @@ public class TokenAuthenticator implements Authenticator {
         Log.d(TAG, "OriginalRequest: " + originalResponse.request().toString());
         Log.d(TAG, "OriginalRequest: " + originalResponse.request().url());
         return newRequest;
+    }
+
+    public boolean hasRedditAccount() {
+        Account[] accounts = mAccountManager.getAccountsByType(RedditConstants.ACCOUNT_TYPE);
+        if (accounts.length > 0) {
+            return true;
+        } else {return false; }
     }
 }

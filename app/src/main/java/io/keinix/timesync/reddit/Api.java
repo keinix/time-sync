@@ -24,7 +24,7 @@ public interface Api {
         @FieldMap Map<String, String> fields
     );
 
-    // use RedditAuthInterceptor
+    // use RedditAuthInterceptor and TokenAuthenticator
     @GET(".")
     Call<RedditFeed> getFeed ();
 }

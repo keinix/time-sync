@@ -2,9 +2,13 @@ package io.keinix.timesync.reddit;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.content.Context;
+import android.content.Intent;
 
 import java.io.IOException;
 
+import io.keinix.timesync.Activities.AddAccountActivity;
+import io.keinix.timesync.MainActivity;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -15,15 +19,21 @@ public class RedditAuthInterceptor implements Interceptor {
 
     private AccountManager mAccountManager;
     private String redditToken;
+    private MainActivity mMainActivity;
 
-    public RedditAuthInterceptor(AccountManager accountManager) {
+    public RedditAuthInterceptor(AccountManager accountManager, MainActivity mainActivity) {
         mAccountManager = accountManager;
+        mMainActivity = mainActivity;
         Account[] accounts = mAccountManager.getAccountsByType(RedditConstants.ACCOUNT_TYPE);
-        redditToken = mAccountManager.peekAuthToken(accounts[0], RedditConstants.KEY_AUTH_TOKEN);
+
+        if (accounts.length > 0) {
+            redditToken = mAccountManager.peekAuthToken(accounts[0], RedditConstants.KEY_AUTH_TOKEN);
+        } else redditToken = null;
     }
 
     @Override
     public Response intercept(Chain chain) throws IOException {
+        checkAccount();
         Request originalRequest = chain.request();
 
         Request.Builder newRequest = originalRequest
@@ -32,5 +42,12 @@ public class RedditAuthInterceptor implements Interceptor {
                 .addHeader("User-Agent", RedditConstants.REDDIT_USER_AGENT);
 
         return chain.proceed(newRequest.build());
+    }
+
+    public void checkAccount() {
+        Account[] accounts = mAccountManager.getAccountsByType(RedditConstants.ACCOUNT_TYPE);
+        if (accounts.length == 0) {
+            mMainActivity.tempLogin();
+        }
     }
 }

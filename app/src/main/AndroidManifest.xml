@@ -31,7 +31,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:host="www.keinix.io"
-                      android:scheme="https"
+                      android:scheme="io.keinix"
                       android:path="/timesync" />
             </intent-filter>
 

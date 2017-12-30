@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
         }
         mOkHttpClient = new OkHttpClient.Builder()
                 .authenticator(new TokenAuthenticator(mAccountManager))
-                .addInterceptor(new RedditAuthInterceptor(mAccountManager));
+                .addInterceptor(new RedditAuthInterceptor(mAccountManager, this));
 
         ViewPagerFragment savedFragment = (ViewPagerFragment) getSupportFragmentManager()
                 .findFragmentByTag(TAG_VIEW_PAGER_FRAGMENT);
@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
             fragmentTransaction.commit();
         }
     }
-
 
     // -----------Feed Fragment Interface Methods-----------------
     @Override

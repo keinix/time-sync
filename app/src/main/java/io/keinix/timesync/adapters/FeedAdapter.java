@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import butterknife.BindView;
@@ -57,10 +59,7 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
         } else {
             return 0;
         }
-
     }
-
-
 
     @Override
     public void onResponse(Call<RedditFeed> call, Response<RedditFeed> response) {
@@ -112,12 +111,20 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
         public void bindView(int position) {
             mIndex = position;
             Data_ post = mRedditFeed.getData().getChildren().get(position).getData();
-            Uri gifUri = null;
             String postInfo = String.format(post.getSubredditNamePrefixed() +
                     " \u2022 " +
                     post.getDomain());
 
+            handleImage(post);
 
+            postTitleTextView.setText(post.getTitle());
+            upVoteCountTextView.setText(String.valueOf(post.getUps()));
+            commentCountTextView.setText(String.valueOf(post.getNumComments()));
+            websiteDisplayTextView.setText(postInfo);
+        }
+
+        private void handleImage(Data_ post) {
+            Uri gifUri = null;
             if (post.getPreview()!= null) {
 
                 if (post.getPreview().getImages().get(0).getVariants().getGif() != null) {
@@ -131,17 +138,16 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
                 }
 
                 if (gifUri != null) {
-                    imageView.setImageURI(gifUri);
+                    DraweeController controller = Fresco.newDraweeControllerBuilder()
+                            .setUri(gifUri)
+                            .setAutoPlayAnimations(true)
+                            .build();
+                    imageView.setController(controller);
                 } else {
                     Uri uri = Uri.parse(post.getPreview().getImages().get(0).getSource().getUrl());
                     imageView.setImageURI(uri);
                 }
             }
-
-            postTitleTextView.setText(post.getTitle());
-            upVoteCountTextView.setText(String.valueOf(post.getUps()));
-            commentCountTextView.setText(String.valueOf(post.getNumComments()));
-            websiteDisplayTextView.setText(postInfo);
         }
 
         @Override
