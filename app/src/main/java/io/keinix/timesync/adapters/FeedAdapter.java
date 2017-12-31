@@ -113,7 +113,7 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
         public void bindView(int position) {
             mIndex = position;
             Data_ post = mRedditFeed.getData().getChildren().get(position).getData();
-            String id = post.getId();
+            String id = post.getName();
             String postInfo = String.format(post.getSubredditNamePrefixed() +
                     " \u2022 " +
                     post.getDomain());
@@ -161,7 +161,6 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
                     .enqueue(new Callback<VoteResult>() {
                         @Override
                         public void onResponse(Call<VoteResult> call, Response<VoteResult> response) {
-                            Log.d(TAG, "Up vote Response not successful: " + response.toString());
                             if (response.isSuccessful()) {
                                 Toast.makeText(mFeedItemInterface.getContext(), "UPVOTED", Toast.LENGTH_SHORT).show();
                             }
