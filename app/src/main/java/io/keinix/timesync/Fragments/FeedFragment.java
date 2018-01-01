@@ -34,8 +34,7 @@ public class FeedFragment extends Fragment {
     public interface FeedItemInterface {
         //TODO: implement this in MainActivity then get a reference using getActivity()
         //TODO: put the methods in the onclickListeners
-        Call<VoteResult> voteUp(String id);
-        void voteDown(int index);
+        Call<VoteResult> vote(String id, String voteType);
         void share(int index);
         void launchCommentFragment(int index);
         void populateRedditFeed(FeedAdapter adapter);

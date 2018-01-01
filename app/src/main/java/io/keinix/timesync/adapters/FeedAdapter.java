@@ -1,14 +1,12 @@
 package io.keinix.timesync.adapters;
 
 import android.net.Uri;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,9 +17,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.timesync.Fragments.FeedFragment.FeedItemInterface;
-import io.keinix.timesync.MainActivity;
 import io.keinix.timesync.R;
-import io.keinix.timesync.reddit.model.BaseResponse;
 import io.keinix.timesync.reddit.model.Data_;
 import io.keinix.timesync.reddit.model.RedditFeed;
 import io.keinix.timesync.reddit.model.VoteResult;
@@ -118,14 +114,13 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
                     " \u2022 " +
                     post.getDomain());
 
-            handleImage(post);
-
             postTitleTextView.setText(post.getTitle());
             upVoteCountTextView.setText(String.valueOf(post.getUps()));
             commentCountTextView.setText(String.valueOf(post.getNumComments()));
             websiteDisplayTextView.setText(postInfo);
 
-            setupOnClick(id);
+            handleImage(post);
+            setupVoteOnClick(id);
         }
 
         private void handleImage(Data_ post) {
@@ -155,9 +150,13 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
             }
         }
 
-        private void setupOnClick(String id) {
+        private void setupVoteOnClick(String id) {
+            String voteType = null;
+            //TODO: store votes in a hashmap with the id as a key
+            //TODO: clear the hashmap in a refresh b/c the JSON response will have the value
+
             upVoteImageButton.setOnClickListener(v -> mFeedItemInterface
-                    .voteUp(id)
+                    .vote(id, voteType)
                     .enqueue(new Callback<VoteResult>() {
                         @Override
                         public void onResponse(Call<VoteResult> call, Response<VoteResult> response) {
@@ -169,6 +168,22 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
                         @Override
                         public void onFailure(Call<VoteResult> call, Throwable t) {
                             Log.d(TAG, "UpVote onFailure: " + call.toString());
+                        }
+                    }));
+
+            downVoteImageButton.setOnClickListener(v -> mFeedItemInterface
+                    .vote(id, voteType)
+                    .enqueue(new Callback<VoteResult>() {
+                        @Override
+                        public void onResponse(Call<VoteResult> call, Response<VoteResult> response) {
+                            if (response.isSuccessful()) {
+                                Toast.makeText(mFeedItemInterface.getContext(), "DOWNVOTED", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<VoteResult> call, Throwable t) {
+                            Log.d(TAG, "DownVote onFailure: " + call.toString());
                         }
                     }));
         }

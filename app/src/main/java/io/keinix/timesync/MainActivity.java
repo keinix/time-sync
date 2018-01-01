@@ -86,14 +86,11 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
 
     // -----------Feed Fragment Interface Methods-----------------
     @Override
-    public Call<VoteResult> voteUp(String id) {
-        return mApi.vote(RedditConstants.UP_VOTE, id);
+    public Call<VoteResult> vote(String id, String voteType) {
+        return mApi.vote(voteType, id);
     }
 
-    @Override
-    public void voteDown(int index) {
 
-    }
 
     @Override
     public void share(int index) {
