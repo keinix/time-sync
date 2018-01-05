@@ -19,7 +19,7 @@ public class Data_ {
     private String subreddit;
     @SerializedName("likes")
     @Expose
-    private boolean isLiked;
+    private Boolean isLiked;
     @SerializedName("is_reddit_media_domain")
     @Expose
     private boolean isRedditMediaDomain;
@@ -179,11 +179,11 @@ public class Data_ {
         this.subreddit = subreddit;
     }
 
-    public boolean isLiked() {
+    public Boolean isLiked() {
         return isLiked;
     }
 
-    public void setLiked(boolean liked) {
+    public void setLiked(Boolean liked) {
         isLiked = liked;
     }
 
