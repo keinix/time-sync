@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
         }
         initApi();
 
-
         ViewPagerFragment savedFragment = (ViewPagerFragment) getSupportFragmentManager()
                 .findFragmentByTag(TAG_VIEW_PAGER_FRAGMENT);
         if (savedFragment == null) {

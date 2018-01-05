@@ -14,6 +14,9 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.timesync.Fragments.FeedFragment.FeedItemInterface;
@@ -28,14 +31,22 @@ import retrofit2.Response;
 public class FeedAdapter extends RecyclerView.Adapter  implements
         Callback<RedditFeed>  {
 
+    private static final String TAG = FeedAdapter.class.getSimpleName();
+    public static final int VALUE_UPVOTED = 1;
+    public static final int VALUE_DOWNVOTED = -1;
+    public static final String VOTE_TYPE_UPVOTE = "1";
+    public static final String VOTE_TYPE_DOWNVOTE = "-1";
+    public static final String VOTE_TYPE_UNVOTE = "0";
 
-    public static final String TAG = FeedAdapter.class.getSimpleName();
+
     private FeedItemInterface mFeedItemInterface;
     private RedditFeed mRedditFeed;
+    public Map<String, Integer> mLocalVoteTracker;
 
 
     public FeedAdapter(FeedItemInterface feedItemInterface) {
         mFeedItemInterface = feedItemInterface;
+        mLocalVoteTracker = new HashMap<>();
     }
 
     @Override
@@ -120,7 +131,19 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
             websiteDisplayTextView.setText(postInfo);
 
             handleImage(post);
-            setupVoteOnClick(id);
+            upVoteImageButton.setOnClickListener(v -> {
+                if (mLocalVoteTracker.get(id).equals(VALUE_UPVOTED)) {
+                    unVote(id, position);
+                } else {
+                    upVote(id, position);
+                }});
+
+            downVoteImageButton.setOnClickListener(v -> {
+                if (mLocalVoteTracker.get(id).equals(VALUE_DOWNVOTED)) {
+                    unVote(id, position);
+                } else {
+                    downVote(id, position);
+                }});
         }
 
         private void handleImage(Data_ post) {
@@ -150,29 +173,11 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
             }
         }
 
-        private void setupVoteOnClick(String id) {
-            String voteType = null;
-            //TODO: store votes in a hashmap with the id as a key
-            //TODO: clear the hashmap in a refresh b/c the JSON response will have the value
 
-            upVoteImageButton.setOnClickListener(v -> mFeedItemInterface
-                    .vote(id, voteType)
-                    .enqueue(new Callback<VoteResult>() {
-                        @Override
-                        public void onResponse(Call<VoteResult> call, Response<VoteResult> response) {
-                            if (response.isSuccessful()) {
-                                Toast.makeText(mFeedItemInterface.getContext(), "UPVOTED", Toast.LENGTH_SHORT).show();
-                            }
-                        }
+        private void downVote(String id, int position) {
 
-                        @Override
-                        public void onFailure(Call<VoteResult> call, Throwable t) {
-                            Log.d(TAG, "UpVote onFailure: " + call.toString());
-                        }
-                    }));
-
-            downVoteImageButton.setOnClickListener(v -> mFeedItemInterface
-                    .vote(id, voteType)
+            mFeedItemInterface
+                    .vote(id, VOTE_TYPE_DOWNVOTE)
                     .enqueue(new Callback<VoteResult>() {
                         @Override
                         public void onResponse(Call<VoteResult> call, Response<VoteResult> response) {
@@ -185,7 +190,41 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
                         public void onFailure(Call<VoteResult> call, Throwable t) {
                             Log.d(TAG, "DownVote onFailure: " + call.toString());
                         }
-                    }));
+                    });
+        }
+
+        private void upVote(String id, int position) {
+            mFeedItemInterface
+                    .vote(id, VOTE_TYPE_UPVOTE)
+                    .enqueue(new Callback<VoteResult>() {
+                        @Override
+                        public void onResponse(Call<VoteResult> call, Response<VoteResult> response) {
+                            if (response.isSuccessful()) {
+                                Toast.makeText(mFeedItemInterface.getContext(), "UPVOTED", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<VoteResult> call, Throwable t) {
+                            Log.d(TAG, "UpVote onFailure: " + call.toString());
+                        }
+                    });
+        }
+
+        public void unVote(String id, int position) {
+            mFeedItemInterface
+                    .vote(id, VOTE_TYPE_DOWNVOTE)
+                    .enqueue(new Callback<VoteResult>() {
+                        @Override
+                        public void onResponse(Call<VoteResult> call, Response<VoteResult> response) {
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<VoteResult> call, Throwable t) {
+
+                        }
+                    });
         }
 
         @Override
