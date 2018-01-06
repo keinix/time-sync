@@ -1,6 +1,8 @@
 package io.keinix.timesync.adapters;
 
+import android.graphics.PorterDuff;
 import android.net.Uri;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.timesync.Fragments.FeedFragment.FeedItemInterface;
 import io.keinix.timesync.R;
+import io.keinix.timesync.reddit.model.Child;
 import io.keinix.timesync.reddit.model.Data_;
 import io.keinix.timesync.reddit.model.RedditFeed;
 import io.keinix.timesync.reddit.model.VoteResult;
@@ -76,15 +79,22 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
 
         if (response.isSuccessful()) {
             mRedditFeed = response.body();
+
+            for (Child child : mRedditFeed.getData().getChildren()) {
+                if (child.getData().isLiked() != null) {
+                    if (child.getData().isLiked()) {
+                        mLocalVoteTracker.put(child.getData().getName(), VALUE_UPVOTED);
+                    } else {
+                        mLocalVoteTracker.put(child.getData().getName(), VALUE_DOWNVOTED);
+                    }
+                }
+            }
+
             notifyDataSetChanged();
             Log.d(TAG, "response was a success! we got the feed!");
             Toast.makeText(mFeedItemInterface.getContext(), "Refresh activated", Toast.LENGTH_SHORT).show();
         } else {
             Log.d(TAG, "responce was not successfull triggered");
-            // mAccountManager.invalidateAuthToken(RedditConstants.ACCOUNT_TYPE,
-            // mAccountManager.peekAuthToken(accounts[0], RedditConstants.KEY_AUTH_TOKEN));
-            // getRefreshToken(methodToRetry);
-            //TODO: store an attempt constant so if it keeps failing you can prompt reLogin
         }
     }
 
@@ -111,13 +121,22 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
         @BindView(R.id.commentImageButton) ImageButton commentImageButton;
 
         private int mIndex;
+        private int mUpVoteColor;
+        private int mDownVoteColor;
+        private int mDefaultCountTextColor;
 
         public FeedViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            mUpVoteColor = ContextCompat.getColor(mFeedItemInterface.getContext(), R.color.upVoteColor);
+            mDownVoteColor = ContextCompat.getColor(mFeedItemInterface.getContext(), R.color.downVoteColor);
+            mDefaultCountTextColor = ContextCompat.getColor(mFeedItemInterface.getContext(), R.color.colorCountText);
         }
 
         public void bindView(int position) {
+            // Drawable upArrow = ContextCompat.getDrawable(mFeedItemInterface.getContext(), R.id
+            upVoteImageButton.getDrawable().mutate();
+            downVoteImageButton.getDrawable().mutate();
             mIndex = position;
             Data_ post = mRedditFeed.getData().getChildren().get(position).getData();
             String id = post.getName();
@@ -125,12 +144,24 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
                     " \u2022 " +
                     post.getDomain());
 
-            if (post.isLiked() != null) {
-                if (post.isLiked()) {
-                mLocalVoteTracker.put(id, VALUE_UPVOTED);
+            // set Vote Arrow color according to local votes
+            if (mLocalVoteTracker.get(id) != null) {
+                if (mLocalVoteTracker.get(id).equals(VALUE_UPVOTED)) {
+                    upVoteImageButton.getDrawable().setColorFilter(mUpVoteColor, PorterDuff.Mode.MULTIPLY);
+                    upVoteCountTextView.setTextColor(mUpVoteColor);
+                    downVoteImageButton.clearColorFilter();
                 } else {
-                    mLocalVoteTracker.put(id, VALUE_DOWNVOTED);
+                    downVoteImageButton.getDrawable().setColorFilter(mDownVoteColor, PorterDuff.Mode.MULTIPLY);
+                    upVoteCountTextView.setTextColor(mDownVoteColor);
+                    upVoteImageButton.clearColorFilter();
                 }
+            } else {
+                    upVoteImageButton.getDrawable().clearColorFilter();
+                    downVoteImageButton.getDrawable().clearColorFilter();
+                    upVoteCountTextView.setTextColor(mDefaultCountTextColor);
+//                    upVoteImageButton.invalidate();
+//                    downVoteImageButton.invalidate();
+//                    upVoteCountTextView.invalidate();
             }
 
             postTitleTextView.setText(post.getTitle());
@@ -189,7 +220,6 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
             }
         }
 
-
         private void downVote(String id, int position) {
 
             mFeedItemInterface
@@ -239,6 +269,7 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
                         public void onResponse(Call<VoteResult> call, Response<VoteResult> response) {
                             Toast.makeText(mFeedItemInterface.getContext(), "UN-VOTED", Toast.LENGTH_SHORT).show();
                             mLocalVoteTracker.remove(id);
+                            notifyItemChanged(position);
                         }
 
                         @Override

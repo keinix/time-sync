@@ -107,7 +107,7 @@
                 android:layout_marginTop="8dp"
                 android:background="@null"
                 android:rotation="180"
-                app:srcCompat="@drawable/ic_arrow_upward_white_24dp"
+                app:srcCompat="@drawable/ic_arrow_downward_white_24dp"
                 card_view:layout_constraintStart_toEndOf="@+id/upVoteCountTextView"
                 card_view:layout_constraintTop_toBottomOf="@+id/postTitleTextView"/>
 
