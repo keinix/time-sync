@@ -2,6 +2,7 @@ package io.keinix.timesync.adapters;
 
 import android.graphics.PorterDuff;
 import android.net.Uri;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +32,8 @@ import io.keinix.timesync.reddit.model.VoteResult;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static java.lang.System.currentTimeMillis;
 
 public class FeedAdapter extends RecyclerView.Adapter  implements
         Callback<RedditFeed>  {
@@ -119,11 +123,13 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
         @BindView(R.id.websiteDisplayTextView) TextView websiteDisplayTextView;
         @BindView(R.id.downVoteImageButton) ImageButton downVoteImageButton;
         @BindView(R.id.commentImageButton) ImageButton commentImageButton;
+        @BindView(R.id.linkImageView) ImageView linkImageView;
 
         private int mIndex;
         private int mUpVoteColor;
         private int mDownVoteColor;
         private int mDefaultCountTextColor;
+        private int mColorWhite;
 
         public FeedViewHolder(View itemView) {
             super(itemView);
@@ -131,6 +137,7 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
             mUpVoteColor = ContextCompat.getColor(mFeedItemInterface.getContext(), R.color.upVoteColor);
             mDownVoteColor = ContextCompat.getColor(mFeedItemInterface.getContext(), R.color.downVoteColor);
             mDefaultCountTextColor = ContextCompat.getColor(mFeedItemInterface.getContext(), R.color.colorCountText);
+            mColorWhite = ContextCompat.getColor(mFeedItemInterface.getContext(), R.color.white);
         }
 
         public void bindView(int position) {
@@ -140,28 +147,15 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
             mIndex = position;
             Data_ post = mRedditFeed.getData().getChildren().get(position).getData();
             String id = post.getName();
+            long timeSincePosted = getTimeSincePosted(post.getCreatedUtc());
             String postInfo = String.format(post.getSubredditNamePrefixed() +
-                    " \u2022 " +
+                    " \u2022 " + timeSincePosted + "h" + " \u2022 " +
                     post.getDomain());
 
-            // set Vote Arrow color according to local votes
-            if (mLocalVoteTracker.get(id) != null) {
-                if (mLocalVoteTracker.get(id).equals(VALUE_UPVOTED)) {
-                    upVoteImageButton.getDrawable().setColorFilter(mUpVoteColor, PorterDuff.Mode.MULTIPLY);
-                    upVoteCountTextView.setTextColor(mUpVoteColor);
-                    downVoteImageButton.clearColorFilter();
-                } else {
-                    downVoteImageButton.getDrawable().setColorFilter(mDownVoteColor, PorterDuff.Mode.MULTIPLY);
-                    upVoteCountTextView.setTextColor(mDownVoteColor);
-                    upVoteImageButton.clearColorFilter();
+            if (post.getPostHint() != null) {
+                if (post.getPostHint().equals("link")) {
+                    linkImageView.setVisibility(View.VISIBLE);
                 }
-            } else {
-                    upVoteImageButton.getDrawable().clearColorFilter();
-                    downVoteImageButton.getDrawable().clearColorFilter();
-                    upVoteCountTextView.setTextColor(mDefaultCountTextColor);
-//                    upVoteImageButton.invalidate();
-//                    downVoteImageButton.invalidate();
-//                    upVoteCountTextView.invalidate();
             }
 
             postTitleTextView.setText(post.getTitle());
@@ -169,8 +163,14 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
             commentCountTextView.setText(String.valueOf(post.getNumComments()));
             websiteDisplayTextView.setText(postInfo);
 
+            setVoteColor(id);
             handleImage(post);
+            setVoteOnClick(position, id);
+        }
+
+        private void setVoteOnClick(int position, String id) {
             upVoteImageButton.setOnClickListener(v -> {
+                Log.d(TAG, "ID: " + id +  ": " + mLocalVoteTracker.get(id));
                 if (mLocalVoteTracker.get(id) != null) {
                     if (mLocalVoteTracker.get(id).equals(VALUE_UPVOTED)) {
                         unVote(id, position);
@@ -182,6 +182,7 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
                 }});
 
             downVoteImageButton.setOnClickListener(v -> {
+                Log.d(TAG, "ID: " + id +  ": " + mLocalVoteTracker.get(id));
                 if (mLocalVoteTracker.get(id) != null) {
                     if (mLocalVoteTracker.get(id).equals(VALUE_DOWNVOTED)) {
                         unVote(id, position);
@@ -191,6 +192,24 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
                 } else {
                     downVote(id, position);
                 }});
+        }
+
+        private void setVoteColor(String id) {
+            if (mLocalVoteTracker.get(id) != null) {
+                if (mLocalVoteTracker.get(id).equals(VALUE_UPVOTED)) {
+                    upVoteImageButton.getDrawable().setColorFilter(mUpVoteColor, PorterDuff.Mode.MULTIPLY);
+                    upVoteCountTextView.setTextColor(mUpVoteColor);
+                    downVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
+                } else {
+                    downVoteImageButton.getDrawable().setColorFilter(mDownVoteColor, PorterDuff.Mode.MULTIPLY);
+                    upVoteCountTextView.setTextColor(mDownVoteColor);
+                    upVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
+                }
+            } else {
+                upVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
+                downVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
+                upVoteCountTextView.setTextColor(mDefaultCountTextColor);
+            }
         }
 
         private void handleImage(Data_ post) {
@@ -220,6 +239,7 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
             }
         }
 
+        //TODO: clean up these API call into a single method
         private void downVote(String id, int position) {
 
             mFeedItemInterface
@@ -279,9 +299,14 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
                     });
         }
 
+        private long getTimeSincePosted(long createdUtc) {
+            long systemTime = System.currentTimeMillis() / 1000;
+            return ((systemTime - createdUtc) / 60) / 60;
+        }
         @Override
         public void onClick(View v) {
             //TODO:implemept methods from feed itemInterface
         }
+
     }
 }

@@ -7,4 +7,6 @@
     <color name="colorCountText">#b7b5b5</color>
     <color name="upVoteColor">#ffe83a</color>
     <color name="downVoteColor">#4f64af</color>
+    <color name="white">#ffffffff</color>
+    <color name="linkColor">#71767c</color>
 </resources>

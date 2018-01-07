@@ -1,10 +1,13 @@
 package io.keinix.timesync.Fragments;
 
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +17,9 @@ import io.keinix.timesync.R;
 
 public class ViewPagerFragment extends Fragment {
 
+    private int mHighlightColor;
+    private int mColorWhite;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -22,6 +28,11 @@ public class ViewPagerFragment extends Fragment {
         final FeedFragment feedFragment = new FeedFragment();
         final MessagesFragment messagesFragment = new MessagesFragment();
         final AccountFragment accountFragment = new AccountFragment();
+        mHighlightColor = ContextCompat.getColor(getActivity(), R.color.colorAccent);
+        mColorWhite = ContextCompat.getColor(getActivity(), R.color.white);
+        Drawable drawableTab0 = ContextCompat.getDrawable(getActivity(), R.drawable.ic_format_align_center_white_24dp);
+        Drawable drawableTab1 = ContextCompat.getDrawable(getActivity(), R.drawable.ic_message_white_24dp);
+        Drawable drawableTab2 = ContextCompat.getDrawable(getActivity(), R.drawable.ic_people_white_24dp);
 
         //TODO:might need to change fragmentManager b/c this si not a fragment within a fragment
         viewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
