@@ -153,9 +153,13 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
                     post.getDomain());
 
             if (post.getPostHint() != null) {
-                if (post.getPostHint().equals("link")) {
+                if (post.getPostHint().equals("link") && !post.isRedditMediaDomain()) {
                     linkImageView.setVisibility(View.VISIBLE);
+                } else {
+                    linkImageView.setVisibility(View.GONE);
                 }
+            } else {
+                linkImageView.setVisibility(View.GONE);
             }
 
             postTitleTextView.setText(post.getTitle());
