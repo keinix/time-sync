@@ -39,11 +39,13 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
         Callback<RedditFeed>  {
 
     private static final String TAG = FeedAdapter.class.getSimpleName();
-    public static final int VALUE_UPVOTED = 1;
-    public static final int VALUE_DOWNVOTED = -1;
-    public static final String VOTE_TYPE_UPVOTE = "1";
-    public static final String VOTE_TYPE_DOWNVOTE = "-1";
-    public static final String VOTE_TYPE_UNVOTE = "0";
+    private static final int VALUE_UPVOTED = 1;
+    private static final int VALUE_DOWNVOTED = -1;
+    private static final int VIEW_ITEM_TYPE_IMAGE = 100;
+    private static final int VIEW_ITEM_TYPE_TEXT = 200;
+    private static final String VOTE_TYPE_UPVOTE = "1";
+    private static final String VOTE_TYPE_DOWNVOTE = "-1";
+    private static final String VOTE_TYPE_UNVOTE = "0";
 
 
     private FeedItemInterface mFeedItemInterface;
@@ -58,8 +60,10 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.feed_item, parent, false);
-        return new FeedViewHolder(view);
+        View imageItem = LayoutInflater.from(parent.getContext()).inflate(R.layout.feed_item, parent, false);
+        View textItem = LayoutInflater.from(parent.getContext()).inflate(R.layout.text_feed_item, parent, false);
+        if (viewType == VIEW_ITEM_TYPE_TEXT) { return new FeedViewHolder(textItem); }
+        return new FeedViewHolder(imageItem);
     }
 
 
@@ -76,6 +80,17 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
             return 0;
         }
     }
+
+    @Override
+    public int getItemViewType(int position) {
+        Data_ post = mRedditFeed.getData().getChildren().get(position).getData();
+        if (post.getSelfText().length() > 2 && post.getPreview() == null) {
+            return VIEW_ITEM_TYPE_TEXT;
+        }
+        return VIEW_ITEM_TYPE_IMAGE;
+    }
+
+
 
     @Override
     public void onResponse(Call<RedditFeed> call, Response<RedditFeed> response) {
@@ -141,7 +156,6 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
         }
 
         public void bindView(int position) {
-            // Drawable upArrow = ContextCompat.getDrawable(mFeedItemInterface.getContext(), R.id
             upVoteImageButton.getDrawable().mutate();
             downVoteImageButton.getDrawable().mutate();
             mIndex = position;
@@ -228,7 +242,11 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
                             .getGif()
                             .getSource()
                             .getUrl());
+
+                } else if (post.getMedia() != null && post.isRedditMediaDomain()) {
+                    gifUri = Uri.parse(post.getMedia().getRedditVideo().getScrubberMediaUrl());
                 }
+
 
                 if (gifUri != null) {
                     DraweeController controller = Fresco.newDraweeControllerBuilder()

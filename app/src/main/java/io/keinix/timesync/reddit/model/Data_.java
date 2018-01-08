@@ -146,6 +146,17 @@ public class Data_ {
     @SerializedName("is_video")
     @Expose
     private boolean isVideo;
+    @SerializedName("selftext")
+    @Expose
+    private String selfText;
+
+    public String getSelfText() {
+        return selfText;
+    }
+
+    public void setSelfText(String selfText) {
+        this.selfText = selfText;
+    }
 
     public String getDomain() {
         return domain;

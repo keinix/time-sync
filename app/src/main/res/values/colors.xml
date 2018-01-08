@@ -9,4 +9,5 @@
     <color name="downVoteColor">#4f64af</color>
     <color name="white">#ffffffff</color>
     <color name="linkColor">#71767c</color>
+    <color name="selfTextBackground">#0f0f0f</color>
 </resources>
