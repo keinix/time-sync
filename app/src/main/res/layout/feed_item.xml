@@ -78,11 +78,11 @@
                 android:id="@+id/upVoteImageButton"
                 android:layout_width="25dp"
                 android:layout_height="20dp"
-                android:layout_marginLeft="15dp"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="8dp"
                 android:background="@null"
                 app:srcCompat="@drawable/ic_arrow_upward_white_24dp"
+                card_view:layout_constraintBottom_toBottomOf="parent"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toBottomOf="@+id/postTitleTextView"/>
 
@@ -90,11 +90,11 @@
                 android:id="@+id/upVoteCountTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:text="21.1K"
                 android:textColor="@color/colorCountText"
+                card_view:layout_constraintBottom_toBottomOf="parent"
                 card_view:layout_constraintStart_toEndOf="@+id/upVoteImageButton"
                 card_view:layout_constraintTop_toBottomOf="@+id/postTitleTextView"/>
 
@@ -102,12 +102,12 @@
                 android:id="@+id/downVoteImageButton"
                 android:layout_width="25dp"
                 android:layout_height="20dp"
-                android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:background="@null"
                 android:rotation="180"
                 app:srcCompat="@drawable/ic_arrow_downward_white_24dp"
+                card_view:layout_constraintBottom_toBottomOf="parent"
                 card_view:layout_constraintStart_toEndOf="@+id/upVoteCountTextView"
                 card_view:layout_constraintTop_toBottomOf="@+id/postTitleTextView"/>
 

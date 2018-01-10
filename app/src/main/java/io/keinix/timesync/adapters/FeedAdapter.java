@@ -2,9 +2,11 @@ package io.keinix.timesync.adapters;
 
 import android.graphics.PorterDuff;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +25,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Optional;
 import io.keinix.timesync.Fragments.FeedFragment.FeedItemInterface;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.model.Child;
@@ -129,7 +132,8 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
 
     public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @BindView(R.id.imageView) SimpleDraweeView imageView;
+        @Nullable @BindView(R.id.imageView) SimpleDraweeView imageView;
+        @Nullable @BindView(R.id.selfTextTextView) TextView selfTextView;
         @BindView(R.id.postTitleTextView) TextView postTitleTextView;
         @BindView(R.id.upVoteImageButton) ImageButton upVoteImageButton;
         @BindView(R.id.upVoteCountTextView) TextView upVoteCountTextView;
@@ -181,8 +185,12 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
             commentCountTextView.setText(String.valueOf(post.getNumComments()));
             websiteDisplayTextView.setText(postInfo);
 
+            if (post.getSelfText().length() > 2 && post.getPreview() == null) {
+                selfTextView.setText(post.getSelfText());
+            } else {
+                handleImage(post);
+            }
             setVoteColor(id);
-            handleImage(post);
             setVoteOnClick(position, id);
         }
 
