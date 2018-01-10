@@ -161,6 +161,18 @@
                 fresco:srcCompat="@drawable/ic_link_white_48dp"
                 />
 
+            <ImageView
+                android:id="@+id/selfTextIconImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimaryReducedOpasity"
+                android:tint="@color/colorAccent"
+                android:visibility="gone"
+                card_view:layout_constraintBottom_toTopOf="@+id/websiteDisplayTextView"
+                card_view:layout_constraintStart_toStartOf="@+id/imageView"
+                fresco:srcCompat="@drawable/ic_description_white_48dp"
+                />
+
 
         </android.support.constraint.ConstraintLayout>
 

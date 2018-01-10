@@ -134,6 +134,7 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
 
         @Nullable @BindView(R.id.imageView) SimpleDraweeView imageView;
         @Nullable @BindView(R.id.selfTextTextView) TextView selfTextView;
+        @Nullable @BindView(R.id.selfTextIconImageView) ImageView selfTextIconImageView;
         @BindView(R.id.postTitleTextView) TextView postTitleTextView;
         @BindView(R.id.upVoteImageButton) ImageButton upVoteImageButton;
         @BindView(R.id.upVoteCountTextView) TextView upVoteCountTextView;
@@ -178,6 +179,16 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
                 }
             } else {
                 linkImageView.setVisibility(View.GONE);
+            }
+
+            if (post.isSelf() != null) {
+                if (post.isSelf() && post.getPreview() != null) {
+                    selfTextIconImageView.setVisibility(View.VISIBLE);
+                } else {
+                    selfTextIconImageView.setVisibility(View.GONE);
+                }
+            } else {
+                selfTextIconImageView.setVisibility(View.GONE);
             }
 
             postTitleTextView.setText(post.getTitle());

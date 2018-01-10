@@ -139,7 +139,7 @@ public class Data_ {
     private int numComments;
     @SerializedName("is_self")
     @Expose
-    private boolean isSelf;
+    private Boolean isSelf;
     @SerializedName("visited")
     @Expose
     private boolean visited;
@@ -510,11 +510,11 @@ public class Data_ {
         this.numComments = numComments;
     }
 
-    public boolean isSelf() {
+    public Boolean isSelf() {
         return isSelf;
     }
 
-    public void setSelf(boolean self) {
+    public void setSelf(Boolean self) {
         isSelf = self;
     }
 
