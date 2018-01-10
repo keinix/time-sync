@@ -3,10 +3,8 @@ package io.keinix.timesync.adapters;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +23,6 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.Optional;
 import io.keinix.timesync.Fragments.FeedFragment.FeedItemInterface;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.model.Child;
@@ -35,8 +32,6 @@ import io.keinix.timesync.reddit.model.VoteResult;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static java.lang.System.currentTimeMillis;
 
 public class FeedAdapter extends RecyclerView.Adapter  implements
         Callback<RedditFeed>  {
@@ -171,6 +166,23 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
                     " \u2022 " + timeSincePosted + "h" + " \u2022 " +
                     post.getDomain());
 
+            postTitleTextView.setText(post.getTitle());
+            upVoteCountTextView.setText(String.valueOf(post.getUps()));
+            commentCountTextView.setText(String.valueOf(post.getNumComments()));
+            websiteDisplayTextView.setText(postInfo);
+
+            if (post.getSelfText().length() > 2 && post.getPreview() == null) {
+                selfTextView.setText(post.getSelfText());
+            } else {
+                setPostImage(post);
+            }
+
+            setViewIcon(post);
+            setVoteColor(id);
+            setVoteOnClick(position, id, post);
+        }
+
+        private void setViewIcon(Data_ post) {
             if (post.getPostHint() != null) {
                 if (post.getPostHint().equals("link") && !post.isRedditMediaDomain()) {
                     linkImageView.setVisibility(View.VISIBLE);
@@ -190,44 +202,31 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
             } else {
                 selfTextIconImageView.setVisibility(View.GONE);
             }
-
-            postTitleTextView.setText(post.getTitle());
-            upVoteCountTextView.setText(String.valueOf(post.getUps()));
-            commentCountTextView.setText(String.valueOf(post.getNumComments()));
-            websiteDisplayTextView.setText(postInfo);
-
-            if (post.getSelfText().length() > 2 && post.getPreview() == null) {
-                selfTextView.setText(post.getSelfText());
-            } else {
-                handleImage(post);
-            }
-            setVoteColor(id);
-            setVoteOnClick(position, id);
         }
 
-        private void setVoteOnClick(int position, String id) {
+        private void setVoteOnClick(int position, String id, Data_ post) {
             upVoteImageButton.setOnClickListener(v -> {
                 Log.d(TAG, "ID: " + id +  ": " + mLocalVoteTracker.get(id));
                 if (mLocalVoteTracker.get(id) != null) {
                     if (mLocalVoteTracker.get(id).equals(VALUE_UPVOTED)) {
-                        unVote(id, position);
+                        unVote(id, position, post);
                     } else {
-                        upVote(id, position);
+                        upVote(id, position, post);
                     }
                 } else {
-                    upVote(id, position);
+                    upVote(id, position, post);
                 }});
 
             downVoteImageButton.setOnClickListener(v -> {
                 Log.d(TAG, "ID: " + id +  ": " + mLocalVoteTracker.get(id));
                 if (mLocalVoteTracker.get(id) != null) {
                     if (mLocalVoteTracker.get(id).equals(VALUE_DOWNVOTED)) {
-                        unVote(id, position);
+                        unVote(id, position, post);
                     } else {
-                        downVote(id, position);
+                        downVote(id, position, post);
                     }
                 } else {
-                    downVote(id, position);
+                    downVote(id, position, post);
                 }});
         }
 
@@ -249,7 +248,7 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
             }
         }
 
-        private void handleImage(Data_ post) {
+        private void setPostImage(Data_ post) {
             Uri gifUri = null;
             if (post.getPreview()!= null) {
 
@@ -281,7 +280,7 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
         }
 
         //TODO: clean up these API call into a single method
-        private void downVote(String id, int position) {
+        private void downVote(String id, int position, Data_ post) {
 
             mFeedItemInterface
                     .vote(id, VOTE_TYPE_DOWNVOTE)
@@ -290,6 +289,15 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
                         public void onResponse(Call<VoteResult> call, Response<VoteResult> response) {
                             if (response.isSuccessful()) {
                                 Toast.makeText(mFeedItemInterface.getContext(), "DOWNVOTED", Toast.LENGTH_SHORT).show();
+                                if (mLocalVoteTracker.get(id) != null) {
+                                    if (mLocalVoteTracker.get(id) == VALUE_UPVOTED) {
+                                        post.setUps(post.getUps() - 2);
+                                    } else {
+                                        post.setUps(post.getUps() - 1);
+                                    }
+                                } else {
+                                    post.setUps(post.getUps() - 1);
+                                }
                                 mLocalVoteTracker.put(id, VALUE_DOWNVOTED);
                                 notifyItemChanged(position);
                             }
@@ -302,7 +310,7 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
                     });
         }
 
-        private void upVote(String id, int position) {
+        private void upVote(String id, int position, Data_ post) {
             mFeedItemInterface
                     .vote(id, VOTE_TYPE_UPVOTE)
                     .enqueue(new Callback<VoteResult>() {
@@ -310,8 +318,18 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
                         public void onResponse(Call<VoteResult> call, Response<VoteResult> response) {
                             if (response.isSuccessful()) {
                                 Toast.makeText(mFeedItemInterface.getContext(), "UPVOTED", Toast.LENGTH_SHORT).show();
+                                if (mLocalVoteTracker.get(id) != null) {
+                                    if (mLocalVoteTracker.get(id) == VALUE_DOWNVOTED) {
+                                        post.setUps(post.getUps() + 2);
+                                    } else {
+                                        post.setUps(post.getUps() + 1);
+                                    }
+                                } else {
+                                    post.setUps(post.getUps() + 1);
+                                }
                                 mLocalVoteTracker.put(id, VALUE_UPVOTED);
                                 notifyItemChanged(position);
+
                             }
                         }
 
@@ -322,13 +340,18 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
                     });
         }
 
-        public void unVote(String id, int position) {
+        public void unVote(String id, int position, Data_ post) {
             mFeedItemInterface
                     .vote(id, VOTE_TYPE_UNVOTE)
                     .enqueue(new Callback<VoteResult>() {
                         @Override
                         public void onResponse(Call<VoteResult> call, Response<VoteResult> response) {
                             Toast.makeText(mFeedItemInterface.getContext(), "UN-VOTED", Toast.LENGTH_SHORT).show();
+                            if (mLocalVoteTracker.get(id) == VALUE_UPVOTED) {
+                                post.setUps(post.getUps() - 1);
+                            } else {
+                                post.setUps(post.getUps() + 1);
+                            }
                             mLocalVoteTracker.remove(id);
                             notifyItemChanged(position);
                         }
