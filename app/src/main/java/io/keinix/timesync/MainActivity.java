@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
 
     public AccountManager mAccountManager;
     public Api mApi;
+    private boolean backPressedOnce;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +83,19 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
                 .client(client.build())
                 .build()
                 .create(Api.class);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (backPressedOnce) {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, "Press back again to exit.", Toast.LENGTH_SHORT).show();
+            backPressedOnce = true;
+        }
     }
 
     // -----------Feed Fragment Interface Methods-----------------

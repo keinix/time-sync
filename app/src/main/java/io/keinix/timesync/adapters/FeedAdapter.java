@@ -18,6 +18,8 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,7 +55,7 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
 
     public FeedAdapter(FeedItemInterface feedItemInterface) {
         mFeedItemInterface = feedItemInterface;
-        mLocalVoteTracker = new HashMap<>();
+        mLocalVoteTracker = Collections.synchronizedMap(new HashMap<>());
     }
 
     @Override
@@ -125,7 +127,7 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
     }
 
 
-    public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class FeedViewHolder extends RecyclerView.ViewHolder {
 
         @Nullable @BindView(R.id.imageView) SimpleDraweeView imageView;
         @Nullable @BindView(R.id.selfTextTextView) TextView selfTextView;
@@ -329,7 +331,6 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
                                 }
                                 mLocalVoteTracker.put(id, VALUE_UPVOTED);
                                 notifyItemChanged(position);
-
                             }
                         }
 
@@ -366,10 +367,6 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
         private long getTimeSincePosted(long createdUtc) {
             long systemTime = System.currentTimeMillis() / 1000;
             return ((systemTime - createdUtc) / 60) / 60;
-        }
-        @Override
-        public void onClick(View v) {
-            //TODO:implemept methods from feed itemInterface
         }
 
     }
