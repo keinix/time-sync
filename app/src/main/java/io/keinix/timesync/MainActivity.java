@@ -8,13 +8,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
-
-import org.json.JSONObject;
 
 import butterknife.ButterKnife;
 import io.keinix.timesync.Activities.AddAccountActivity;
@@ -30,7 +26,6 @@ import io.keinix.timesync.reddit.TokenAuthenticator;
 import io.keinix.timesync.reddit.model.VoteResult;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 

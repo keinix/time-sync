@@ -5,7 +5,7 @@
                 xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <android.support.v7.widget.RecyclerView
+    <im.ene.toro.widget.Container
         android:id="@+id/feedRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -13,7 +13,7 @@
         android:layout_alignParentTop="true"
         android:background="@color/colorPrimary"
         android:layout_alignParentStart="true">
-    </android.support.v7.widget.RecyclerView>
+    </im.ene.toro.widget.Container>
 
 
 
