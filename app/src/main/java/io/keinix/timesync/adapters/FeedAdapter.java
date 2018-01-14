@@ -2,6 +2,7 @@ package io.keinix.timesync.adapters;
 
 import android.graphics.PorterDuff;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -17,14 +18,19 @@ import android.widget.Toast;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import im.ene.toro.ToroPlayer;
+import im.ene.toro.ToroUtil;
+import im.ene.toro.exoplayer.SimpleExoPlayerViewHelper;
+import im.ene.toro.media.PlaybackInfo;
+import im.ene.toro.widget.Container;
 import io.keinix.timesync.Fragments.FeedFragment.FeedItemInterface;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.model.Child;
@@ -43,12 +49,13 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
     private static final int VALUE_DOWNVOTED = -1;
     private static final int VIEW_ITEM_TYPE_IMAGE = 100;
     private static final int VIEW_ITEM_TYPE_TEXT = 200;
+    private static final int  VIEW_ITEM_TYPE_VIDEO =  300;
     private static final String VOTE_TYPE_UPVOTE = "1";
     private static final String VOTE_TYPE_DOWNVOTE = "-1";
     private static final String VOTE_TYPE_UNVOTE = "0";
 
 
-    private FeedItemInterface mFeedItemInterface;
+    public FeedItemInterface mFeedItemInterface;
     private RedditFeed mRedditFeed;
     public Map<String, Integer> mLocalVoteTracker;
 
@@ -56,20 +63,38 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
     public FeedAdapter(FeedItemInterface feedItemInterface) {
         mFeedItemInterface = feedItemInterface;
         mLocalVoteTracker = Collections.synchronizedMap(new HashMap<>());
+
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View imageItem = LayoutInflater.from(parent.getContext()).inflate(R.layout.feed_item, parent, false);
         View textItem = LayoutInflater.from(parent.getContext()).inflate(R.layout.text_feed_item, parent, false);
-        if (viewType == VIEW_ITEM_TYPE_TEXT) { return new FeedViewHolder(textItem); }
-        return new FeedViewHolder(imageItem);
+        View videoItem = LayoutInflater.from(parent.getContext()).inflate(R.layout.video_feed_item, parent, false);
+        switch (viewType) {
+            case VIEW_ITEM_TYPE_IMAGE:
+                return new ImageFeedViewHolder(imageItem, this, mFeedItemInterface);
+            case VIEW_ITEM_TYPE_TEXT:
+                return new TextFeedViewHolder(textItem, this, mFeedItemInterface);
+            case VIEW_ITEM_TYPE_VIDEO:
+                return new ImageFeedViewHolder(imageItem, this, mFeedItemInterface);
+            default:
+                return new ImageFeedViewHolder(imageItem, this, mFeedItemInterface);
+        }
     }
-
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            ((FeedViewHolder) holder).bindView(position);
+        switch (getItemViewType(position)) {
+            case VIEW_ITEM_TYPE_TEXT:
+                ((TextFeedViewHolder) holder).bindView(position);
+                break;
+            case VIEW_ITEM_TYPE_VIDEO:
+                ((VideoFeedViewHolder) holder).bindView(position);
+                break;
+            case VIEW_ITEM_TYPE_IMAGE:
+                ((ImageFeedViewHolder) holder).bindView(position);
+        }
     }
 
     @Override
@@ -126,12 +151,20 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
         Log.d(TAG, t.toString());
     }
 
+    public RedditFeed getRedditFeed() {
+        return mRedditFeed;
+    }
 
-    public class FeedViewHolder extends RecyclerView.ViewHolder {
+    public void setRedditFeed(RedditFeed redditFeed) {
+        mRedditFeed = redditFeed;
+    }
+
+    public class FeedViewHolder extends RecyclerView.ViewHolder implements ToroPlayer {
 
         @Nullable @BindView(R.id.imageView) SimpleDraweeView imageView;
         @Nullable @BindView(R.id.selfTextTextView) TextView selfTextView;
         @Nullable @BindView(R.id.selfTextIconImageView) ImageView selfTextIconImageView;
+        @Nullable @BindView(R.id.exoPlayer) SimpleExoPlayerView mExoPlayer;
         @BindView(R.id.postTitleTextView) TextView postTitleTextView;
         @BindView(R.id.upVoteImageButton) ImageButton upVoteImageButton;
         @BindView(R.id.upVoteCountTextView) TextView upVoteCountTextView;
@@ -141,6 +174,9 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
         @BindView(R.id.downVoteImageButton) ImageButton downVoteImageButton;
         @BindView(R.id.commentImageButton) ImageButton commentImageButton;
         @BindView(R.id.linkImageView) ImageView linkImageView;
+
+        @Nullable SimpleExoPlayerViewHelper mExoPlayerViewHelper;
+        @Nullable private Uri mVideoUri;
 
         private int mIndex;
         private int mUpVoteColor;
@@ -175,6 +211,8 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
 
             if (post.getSelfText().length() > 2 && post.getPreview() == null) {
                 selfTextView.setText(post.getSelfText());
+            } else if (post.getDomain().equals("v.redd.it")) {
+                mVideoUri = Uri.parse(post.getMedia().getRedditVideo().getScrubberMediaUrl());
             } else {
                 setPostImage(post);
             }
@@ -369,5 +407,65 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
             return ((systemTime - createdUtc) / 60) / 60;
         }
 
+        // Methods for ToroPlayer Video
+
+        @NonNull
+        @Override
+        public View getPlayerView() {
+            return mExoPlayer;
+        }
+
+        @NonNull
+        @Override
+        public PlaybackInfo getCurrentPlaybackInfo() {
+            return mExoPlayerViewHelper != null ?
+                    mExoPlayerViewHelper.getLatestPlaybackInfo() : new PlaybackInfo();
+        }
+
+        @Override
+        public void initialize(@NonNull Container container, @Nullable PlaybackInfo playbackInfo) {
+            if (mExoPlayerViewHelper == null) {
+                mExoPlayerViewHelper = new SimpleExoPlayerViewHelper(container, this, mVideoUri);
+            }
+            mExoPlayerViewHelper.initialize(playbackInfo);
+        }
+
+        @Override
+        public void play() {
+            if (mExoPlayerViewHelper != null) mExoPlayerViewHelper.play();
+        }
+
+        @Override
+        public void pause() {
+            if (mExoPlayerViewHelper != null) mExoPlayerViewHelper.pause();
+        }
+
+        @Override
+        public boolean isPlaying() {
+            return mExoPlayerViewHelper != null && mExoPlayerViewHelper.isPlaying();
+        }
+
+        @Override
+        public void release() {
+            if (mExoPlayerViewHelper != null) {
+                mExoPlayerViewHelper.release();
+                mExoPlayerViewHelper = null;
+            }
+        }
+
+        @Override
+        public boolean wantsToPlay() {
+            return ToroUtil.visibleAreaOffset(this, itemView.getParent()) >= .85;
+        }
+
+        @Override
+        public int getPlayerOrder() {
+            return getAdapterPosition();
+        }
+
+        @Override
+        public void onSettled(Container container) {
+
+        }
     }
 }

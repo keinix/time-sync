@@ -3,6 +3,9 @@ package io.keinix.timesync.Activities;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import io.keinix.timesync.R;
+
+
 public class CommentsActivity extends AppCompatActivity {
 
     @Override

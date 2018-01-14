@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import im.ene.toro.widget.Container;
 import io.keinix.timesync.R;
 import io.keinix.timesync.adapters.FeedAdapter;
 import io.keinix.timesync.reddit.model.RedditFeed;
@@ -26,7 +27,7 @@ import retrofit2.Call;
 
 public class FeedFragment extends Fragment {
 
-    @BindView(R.id.feedRecyclerView) RecyclerView feedRecyclerView;
+    @BindView(R.id.feedRecyclerView) Container feedRecyclerView;
 
     FeedItemInterface mFeedItemInterface;
     private FeedAdapter mFeedAdapter;
