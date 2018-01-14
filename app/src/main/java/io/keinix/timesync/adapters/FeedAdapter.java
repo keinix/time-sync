@@ -55,7 +55,7 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
     private static final String VOTE_TYPE_UNVOTE = "0";
 
 
-    private FeedItemInterface mFeedItemInterface;
+    public FeedItemInterface mFeedItemInterface;
     private RedditFeed mRedditFeed;
     public Map<String, Integer> mLocalVoteTracker;
 
@@ -63,6 +63,7 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
     public FeedAdapter(FeedItemInterface feedItemInterface) {
         mFeedItemInterface = feedItemInterface;
         mLocalVoteTracker = Collections.synchronizedMap(new HashMap<>());
+
     }
 
     @Override
@@ -72,20 +73,28 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
         View videoItem = LayoutInflater.from(parent.getContext()).inflate(R.layout.video_feed_item, parent, false);
         switch (viewType) {
             case VIEW_ITEM_TYPE_IMAGE:
-                return new FeedViewHolder(imageItem);
+                return new ImageFeedViewHolder(imageItem, this, mFeedItemInterface);
             case VIEW_ITEM_TYPE_TEXT:
-                return new FeedViewHolder(textItem);
+                return new TextFeedViewHolder(textItem, this, mFeedItemInterface);
             case VIEW_ITEM_TYPE_VIDEO:
-                return new FeedViewHolder(videoItem);
+                return new ImageFeedViewHolder(imageItem, this, mFeedItemInterface);
             default:
-                return new FeedViewHolder(imageItem);
+                return new ImageFeedViewHolder(imageItem, this, mFeedItemInterface);
         }
     }
 
-
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            ((FeedViewHolder) holder).bindView(position);
+        switch (getItemViewType(position)) {
+            case VIEW_ITEM_TYPE_TEXT:
+                ((TextFeedViewHolder) holder).bindView(position);
+                break;
+            case VIEW_ITEM_TYPE_VIDEO:
+                ((VideoFeedViewHolder) holder).bindView(position);
+                break;
+            case VIEW_ITEM_TYPE_IMAGE:
+                ((ImageFeedViewHolder) holder).bindView(position);
+        }
     }
 
     @Override
@@ -102,8 +111,6 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
         Data_ post = mRedditFeed.getData().getChildren().get(position).getData();
         if (post.getSelfText().length() > 2 && post.getPreview() == null) {
             return VIEW_ITEM_TYPE_TEXT;
-        } else if (post.getDomain().equals("v.redd.it")) {
-            return VIEW_ITEM_TYPE_VIDEO;
         }
         return VIEW_ITEM_TYPE_IMAGE;
     }
@@ -144,6 +151,13 @@ public class FeedAdapter extends RecyclerView.Adapter  implements
         Log.d(TAG, t.toString());
     }
 
+    public RedditFeed getRedditFeed() {
+        return mRedditFeed;
+    }
+
+    public void setRedditFeed(RedditFeed redditFeed) {
+        mRedditFeed = redditFeed;
+    }
 
     public class FeedViewHolder extends RecyclerView.ViewHolder implements ToroPlayer {
 
