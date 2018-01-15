@@ -26,7 +26,6 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
         setViewIcon(post);
     }
 
-
     private void setPostImage(Data_ post) {
         Uri gifUri = null;
         if (post.getPreview()!= null) {
@@ -40,8 +39,9 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
                         .getSource()
                         .getUrl());
 
-            } else if (post.getMedia() != null && post.isRedditMediaDomain()) {
-                gifUri = Uri.parse(post.getMedia().getRedditVideo().getScrubberMediaUrl());
+            } else if (post.getDomain().equals("i.imgur.com)") &&
+                    post.getUrl().endsWith("gifv") && gifUri == null) {
+                gifUri = Uri.parse(post.getUrl());
             }
 
             if (gifUri != null) {
