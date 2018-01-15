@@ -83,6 +83,8 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
         Data_ post = mRedditFeed.getData().getChildren().get(position).getData();
         if (post.getSelfText().length() > 2 && post.getPreview() == null) {
             return VIEW_ITEM_TYPE_TEXT;
+        } else if (post.getDomain().equals("v.redd.it")) {
+            return VIEW_ITEM_TYPE_VIDEO;
         }
         return VIEW_ITEM_TYPE_IMAGE;
     }

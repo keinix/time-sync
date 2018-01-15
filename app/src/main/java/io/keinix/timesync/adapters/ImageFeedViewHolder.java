@@ -1,16 +1,12 @@
 package io.keinix.timesync.adapters;
 
 import android.net.Uri;
-import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
-import com.facebook.drawee.view.SimpleDraweeView;
 
-import butterknife.BindView;
 import io.keinix.timesync.Fragments.FeedFragment;
-import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.model.Data_;
 
 
@@ -63,7 +59,7 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
 
     private void setViewIcon(Data_ post) {
         if (post.getPostHint() != null) {
-            if (post.getPostHint().equals("link") && !post.isRedditMediaDomain()) {
+            if ((post.getPostHint().equals("link") || post.getPostHint().equals("rich:video")) && !post.isRedditMediaDomain()) {
                 linkImageView.setVisibility(View.VISIBLE);
             } else {
                 linkImageView.setVisibility(View.GONE);
