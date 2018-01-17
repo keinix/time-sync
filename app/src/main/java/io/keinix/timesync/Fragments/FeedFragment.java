@@ -64,11 +64,10 @@ public class FeedFragment extends Fragment {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                Log.d(TAG, "onScrolled Activated.");
-                int itemCount = linearLayoutManager.getItemCount();
                 int lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
 
-                if (!mLoading && lastVisibleItem >= itemCount - 5) {
+                if (!mLoading && linearLayoutManager.getItemCount() <= (lastVisibleItem + 5) && mFeedAdapter.initLoadComplete) {
+                    Log.d(TAG, "onScrolled Activated.");
                     mLoading = true;
                     mFeedAdapter.appendRedditFeed();
                 }

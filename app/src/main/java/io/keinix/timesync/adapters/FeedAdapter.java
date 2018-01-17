@@ -150,6 +150,7 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
             @Override
             public void onFailure(Call<RedditFeed> call, Throwable t) {
                 Log.d(TAG, "onFailure called from appendRedditFeed");
+                mFeedFragment.setLoaded();
             }
         });
     }

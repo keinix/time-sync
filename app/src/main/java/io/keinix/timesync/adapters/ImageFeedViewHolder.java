@@ -1,6 +1,7 @@
 package io.keinix.timesync.adapters;
 
 import android.net.Uri;
+import android.util.Log;
 import android.view.View;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -38,11 +39,15 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
                         .getGif()
                         .getSource()
                         .getUrl());
+                Log.d(TAG, "GIF URL: "+ gifUri);
 
-            } else if (post.getDomain().equals("i.imgur.com)") &&
-                    post.getUrl().endsWith("gifv") && gifUri == null) {
-                gifUri = Uri.parse(post.getUrl());
             }
+
+//            if (post.getDomain().equals("i.imgur.com") &&
+//                    post.getUrl().endsWith("gifv")) {
+//                Log.d(TAG, "imgur gif statement triggering true");
+//                gifUri = Uri.parse(post.getUrl());
+//            }
 
             if (gifUri != null) {
                 DraweeController controller = Fresco.newDraweeControllerBuilder()

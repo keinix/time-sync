@@ -31,7 +31,7 @@ public interface Api {
 
     @GET(".")
     Call<RedditFeed> appendFeed (
-            @Header("after") String after
+            @Query("after") String after
     );
 
     @FormUrlEncoded
