@@ -23,6 +23,7 @@ import io.keinix.timesync.reddit.Api;
 import io.keinix.timesync.reddit.RedditAuthInterceptor;
 import io.keinix.timesync.reddit.RedditConstants;
 import io.keinix.timesync.reddit.TokenAuthenticator;
+import io.keinix.timesync.reddit.model.RedditFeed;
 import io.keinix.timesync.reddit.model.VoteResult;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -124,6 +125,11 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
     public void populateRedditFeed(FeedAdapter adapter) {
         Log.d(TAG, "REFRESH TRIGGERED");
             mApi.getFeed().enqueue(adapter);
+    }
+
+    @Override
+    public Call<RedditFeed> appendFeed(String after) {
+         return mApi.appendFeed(after);
     }
 
     @Override

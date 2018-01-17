@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,6 +32,8 @@ public class FeedFragment extends Fragment {
 
     FeedItemInterface mFeedItemInterface;
     private FeedAdapter mFeedAdapter;
+    private boolean mLoading;
+    public static final String TAG = FeedFragment.class.getSimpleName();
 
     public interface FeedItemInterface {
         //TODO: implement this in MainActivity then get a reference using getActivity()
@@ -39,6 +42,7 @@ public class FeedFragment extends Fragment {
         void share(int index);
         void launchCommentFragment(int index);
         void populateRedditFeed(FeedAdapter adapter);
+        Call<RedditFeed> appendFeed(String after);
         Context getContext();
     }
 
@@ -52,10 +56,29 @@ public class FeedFragment extends Fragment {
         setHasOptionsMenu(true);
 
 
-        mFeedAdapter = new FeedAdapter(mFeedItemInterface);
+        mFeedAdapter = new FeedAdapter(mFeedItemInterface, this);
         feedRecyclerView.setAdapter(mFeedAdapter);
-        feedRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        feedRecyclerView.setLayoutManager(linearLayoutManager);
+        feedRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                Log.d(TAG, "onScrolled Activated.");
+                int itemCount = linearLayoutManager.getItemCount();
+                int lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
+
+                if (!mLoading && lastVisibleItem >= itemCount - 5) {
+                    mLoading = true;
+                    mFeedAdapter.appendRedditFeed();
+                }
+            }
+        });
         return view;
+    }
+
+    public void setLoaded() {
+        mLoading = false;
     }
 
     @Override

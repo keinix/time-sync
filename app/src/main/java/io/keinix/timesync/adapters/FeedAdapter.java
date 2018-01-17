@@ -9,8 +9,10 @@ import android.widget.Toast;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import io.keinix.timesync.Fragments.FeedFragment;
 import io.keinix.timesync.Fragments.FeedFragment.FeedItemInterface;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.model.Child;
@@ -31,12 +33,17 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
 
     public FeedItemInterface mFeedItemInterface;
     private RedditFeed mRedditFeed;
+    private FeedFragment mFeedFragment;
+    private String mAfter;
     public Map<String, Integer> mLocalVoteTracker;
+    public boolean initLoadComplete;
 
 
-    public FeedAdapter(FeedItemInterface feedItemInterface) {
+    public FeedAdapter(FeedItemInterface feedItemInterface, FeedFragment feedFragment) {
         mFeedItemInterface = feedItemInterface;
+        mFeedFragment = feedFragment;
         mLocalVoteTracker = Collections.synchronizedMap(new HashMap<>());
+        mAfter = "";
 
     }
 
@@ -81,7 +88,7 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
     @Override
     public int getItemViewType(int position) {
         Data_ post = mRedditFeed.getData().getChildren().get(position).getData();
-        if (post.getSelfText().length() > 2 && post.getPreview() == null) {
+        if (post.isSelf() && post.getPreview() == null) {
             return VIEW_ITEM_TYPE_TEXT;
         } else if (post.getDomain().equals("v.redd.it")) {
             return VIEW_ITEM_TYPE_VIDEO;
@@ -95,24 +102,58 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
 
         if (response.isSuccessful()) {
             mRedditFeed = response.body();
-
-            for (Child child : mRedditFeed.getData().getChildren()) {
-                if (child.getData().isLiked() != null) {
-                    if (child.getData().isLiked()) {
-                        mLocalVoteTracker.put(child.getData().getName(), VALUE_UPVOTED);
-                    } else {
-                        mLocalVoteTracker.put(child.getData().getName(), VALUE_DOWNVOTED);
-                    }
-                }
-            }
-
+            mAfter = response.body().getData().getAfter();
+            populateLocalVoteTracker(mRedditFeed.getData().getChildren());
             notifyDataSetChanged();
+            initLoadComplete = true;
+
             Log.d(TAG, "response was a success! we got the feed!");
             Toast.makeText(mFeedItemInterface.getContext(), "Refresh activated", Toast.LENGTH_SHORT).show();
         } else {
             Log.d(TAG, "responce was not successfull triggered");
         }
     }
+
+    private void populateLocalVoteTracker(List<Child> children) {
+        for (Child child : children) {
+            if (child.getData().isLiked() != null) {
+                if (child.getData().isLiked()) {
+                    mLocalVoteTracker.put(child.getData().getName(), VALUE_UPVOTED);
+                } else {
+                    mLocalVoteTracker.put(child.getData().getName(), VALUE_DOWNVOTED);
+                }
+            }
+        }
+    }
+
+    public void appendRedditFeed() {
+        mFeedItemInterface.appendFeed(mAfter).enqueue(new Callback<RedditFeed>() {
+            @Override
+            public void onResponse(Call<RedditFeed> call, Response<RedditFeed> response) {
+
+                if (response.isSuccessful()) {
+                    int previousFeedLength = getItemCount();
+                    mAfter = response.body().getData().getAfter();
+
+                    mRedditFeed.getData()
+                            .getChildren()
+                            .addAll(response.body().getData().getChildren());
+
+                    populateLocalVoteTracker(response.body().getData().getChildren());
+                    notifyItemRangeInserted(previousFeedLength, response.body().getData().getChildren().size());
+                    mFeedFragment.setLoaded();
+                } else {
+                    Log.d(TAG, "appendRedditFeed: response NOT Successful: " + response.toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RedditFeed> call, Throwable t) {
+                Log.d(TAG, "onFailure called from appendRedditFeed");
+            }
+        });
+    }
+
 
     @Override
     public void onFailure(Call<RedditFeed> call, Throwable t) {

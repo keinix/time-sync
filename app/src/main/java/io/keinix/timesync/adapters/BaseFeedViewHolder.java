@@ -77,10 +77,14 @@ public class BaseFeedViewHolder extends RecyclerView.ViewHolder {
             mIndex = position;
             Data_ post = mAdapter.getRedditFeed().getData().getChildren().get(position).getData();
             String id = post.getName();
+            String domain = post.getDomain();
+            if (domain.startsWith("self")) {
+                domain = "self";
+            }
             long timeSincePosted = getTimeSincePosted(post.getCreatedUtc());
             String postInfo = String.format(post.getSubredditNamePrefixed() +
                     " \u2022 " + timeSincePosted + "h" + " \u2022 " +
-                    post.getDomain());
+                    domain);
 
             postTitleTextView.setText(post.getTitle());
             upVoteCountTextView.setText(String.valueOf(post.getUps()));

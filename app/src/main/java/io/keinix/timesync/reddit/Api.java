@@ -11,6 +11,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.HeaderMap;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
@@ -27,6 +28,11 @@ public interface Api {
     // **below use RedditAuthInterceptor and TokenAuthenticator**
     @GET(".")
     Call<RedditFeed> getFeed ();
+
+    @GET(".")
+    Call<RedditFeed> appendFeed (
+            @Header("after") String after
+    );
 
     @FormUrlEncoded
     @POST("api/vote/")
