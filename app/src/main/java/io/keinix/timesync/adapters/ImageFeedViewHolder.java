@@ -1,5 +1,6 @@
 package io.keinix.timesync.adapters;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 import android.view.View;
@@ -8,6 +9,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 
 import io.keinix.timesync.Fragments.FeedFragment;
+import io.keinix.timesync.reddit.RedditConstants;
 import io.keinix.timesync.reddit.model.Data_;
 
 
@@ -19,12 +21,21 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
     }
 
 
+
     @Override
     public void bindView(int position) {
         super.bindView(position);
         Data_ post =  mAdapter.getRedditFeed().getData().getChildren().get(position).getData();
         setPostImage(post);
         setViewIcon(post);
+        imageView.setOnClickListener(view -> {
+            if (post.getPostHint().equals("link") && !post.isRedditMediaDomain()) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(post.getUrl()));
+                mFeedItemInterface.getContext().startActivity(intent);
+            } else {
+
+            }
+        });
     }
 
     private void setPostImage(Data_ post) {
@@ -83,4 +94,5 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
             selfTextIconImageView.setVisibility(View.GONE);
         }
     }
+
 }
