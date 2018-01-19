@@ -1,19 +1,29 @@
 package io.keinix.timesync.adapters;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 
 import io.keinix.timesync.Fragments.FeedFragment;
+import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.RedditConstants;
 import io.keinix.timesync.reddit.model.Data_;
 
 
 public class ImageFeedViewHolder extends BaseFeedViewHolder {
+
 
 
     public ImageFeedViewHolder(View itemView, FeedAdapter adapter, FeedFragment.FeedItemInterface feedItemInterface) {
@@ -33,9 +43,17 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(post.getUrl()));
                 mFeedItemInterface.getContext().startActivity(intent);
             } else {
-
+                Log.d(TAG, "onClick Called");
+                showPopUp();
             }
         });
+    }
+
+    private void showPopUp() {
+        View popUpView = LayoutInflater.from(mFeedItemInterface.getContext()).inflate(R.layout.pop_up_feed_image, null);
+        PopupWindow popupWindow = new PopupWindow(popUpView,
+                WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        popupWindow.showAsDropDown(popUpView, 0, 0);
     }
 
     private void setPostImage(Data_ post) {

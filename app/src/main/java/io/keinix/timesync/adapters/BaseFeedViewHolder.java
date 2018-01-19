@@ -38,6 +38,7 @@ public class BaseFeedViewHolder extends RecyclerView.ViewHolder {
         @Nullable @BindView(R.id.imageView) SimpleDraweeView imageView;
         @Nullable @BindView(R.id.selfTextIconImageView) ImageView selfTextIconImageView;
         @Nullable @BindView(R.id.exoPlayer) SimpleExoPlayerView mExoPlayer;
+        @Nullable @BindView(R.id.popUpDraweeView) SimpleDraweeView popUpDraweeView;
         @BindView(R.id.postTitleTextView) TextView postTitleTextView;
         @BindView(R.id.upVoteImageButton) ImageButton upVoteImageButton;
         @BindView(R.id.upVoteCountTextView) TextView upVoteCountTextView;
@@ -53,7 +54,7 @@ public class BaseFeedViewHolder extends RecyclerView.ViewHolder {
         protected FeedFragment.FeedItemInterface mFeedItemInterface;
         protected FeedAdapter mAdapter;
 
-        private int mIndex;
+        public int mIndex;
         private int mUpVoteColor;
         private int mDownVoteColor;
         private int mDefaultCountTextColor;

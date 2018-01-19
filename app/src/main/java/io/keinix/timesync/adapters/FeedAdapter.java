@@ -33,7 +33,7 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
 
     public FeedItemInterface mFeedItemInterface;
     private RedditFeed mRedditFeed;
-    private FeedFragment mFeedFragment;
+    public FeedFragment mFeedFragment;
     private String mAfter;
     public Map<String, Integer> mLocalVoteTracker;
     public boolean initLoadComplete;
