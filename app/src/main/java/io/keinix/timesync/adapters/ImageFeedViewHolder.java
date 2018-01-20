@@ -1,62 +1,58 @@
 package io.keinix.timesync.adapters;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import io.keinix.timesync.Fragments.FeedFragment;
 import io.keinix.timesync.R;
-import io.keinix.timesync.reddit.RedditConstants;
 import io.keinix.timesync.reddit.model.Data_;
+import me.relex.photodraweeview.PhotoDraweeView;
 
 
 public class ImageFeedViewHolder extends BaseFeedViewHolder {
-
-
 
     public ImageFeedViewHolder(View itemView, FeedAdapter adapter, FeedFragment.FeedItemInterface feedItemInterface) {
         super(itemView, adapter, feedItemInterface);
     }
 
-
-
     @Override
     public void bindView(int position) {
         super.bindView(position);
         Data_ post =  mAdapter.getRedditFeed().getData().getChildren().get(position).getData();
-        setPostImage(post);
+        setPostImage(post, imageView);
         setViewIcon(post);
         imageView.setOnClickListener(view -> {
-            if (post.getPostHint().equals("link") && !post.isRedditMediaDomain()) {
+            if (post.getPostHint().equals("link") &&
+                    !post.isRedditMediaDomain() &&
+                    post.getDomain().equals("i.imgur.com")) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(post.getUrl()));
                 mFeedItemInterface.getContext().startActivity(intent);
             } else {
                 Log.d(TAG, "onClick Called");
-                showPopUp();
+                showPopUp(post);
             }
         });
     }
 
-    private void showPopUp() {
+    private void showPopUp(Data_ post) {
         View popUpView = LayoutInflater.from(mFeedItemInterface.getContext()).inflate(R.layout.pop_up_feed_image, null);
         PopupWindow popupWindow = new PopupWindow(popUpView,
                 WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        PhotoDraweeView popUpDraweeView = popUpView.findViewById(R.id.popUpDraweeView);
+        setPostImage(post, popUpDraweeView);
         popupWindow.showAsDropDown(popUpView, 0, 0);
     }
 
-    private void setPostImage(Data_ post) {
+    private void setPostImage(Data_ post, SimpleDraweeView imageView) {
         Uri gifUri = null;
         if (post.getPreview()!= null) {
 
@@ -72,11 +68,34 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
 
             }
 
-//            if (post.getDomain().equals("i.imgur.com") &&
-//                    post.getUrl().endsWith("gifv")) {
-//                Log.d(TAG, "imgur gif statement triggering true");
-//                gifUri = Uri.parse(post.getUrl());
-//            }
+            if (gifUri != null) {
+                DraweeController controller = Fresco.newDraweeControllerBuilder()
+                        .setUri(gifUri)
+                        .setAutoPlayAnimations(true)
+                        .build();
+                imageView.setController(controller);
+            } else {
+                Uri uri = Uri.parse(post.getPreview().getImages().get(0).getSource().getUrl());
+                imageView.setImageURI(uri);
+            }
+        }
+    }
+
+    private void setPostImage(Data_ post, PhotoDraweeView imageView) {
+        Uri gifUri = null;
+        if (post.getPreview()!= null) {
+
+            if (post.getPreview().getImages().get(0).getVariants().getGif() != null) {
+                gifUri = Uri.parse(post.getPreview()
+                        .getImages()
+                        .get(0)
+                        .getVariants()
+                        .getGif()
+                        .getSource()
+                        .getUrl());
+                Log.d(TAG, "GIF URL: "+ gifUri);
+
+            }
 
             if (gifUri != null) {
                 DraweeController controller = Fresco.newDraweeControllerBuilder()
@@ -112,5 +131,4 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
             selfTextIconImageView.setVisibility(View.GONE);
         }
     }
-
 }
