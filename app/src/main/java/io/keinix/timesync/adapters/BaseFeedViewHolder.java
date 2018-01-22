@@ -123,6 +123,33 @@ public class BaseFeedViewHolder extends RecyclerView.ViewHolder {
                 }});
         }
 
+    private void setVoteOnClick(int position, String id, Data_ post,
+                                ImageView upVoteImageButton, ImageView downVoteImageButton) {
+        upVoteImageButton.setOnClickListener(v -> {
+            Log.d(TAG, "ID: " + id +  ": " + mAdapter.mLocalVoteTracker.get(id));
+            if (mAdapter.mLocalVoteTracker.get(id) != null) {
+                if (mAdapter.mLocalVoteTracker.get(id).equals(VALUE_UPVOTED)) {
+                    unVote(id, position, post);
+                } else {
+                    upVote(id, position, post);
+                }
+            } else {
+                upVote(id, position, post);
+            }});
+
+        downVoteImageButton.setOnClickListener(v -> {
+            Log.d(TAG, "ID: " + id +  ": " + mAdapter.mLocalVoteTracker.get(id));
+            if (mAdapter.mLocalVoteTracker.get(id) != null) {
+                if (mAdapter.mLocalVoteTracker.get(id).equals(VALUE_DOWNVOTED)) {
+                    unVote(id, position, post);
+                } else {
+                    downVote(id, position, post);
+                }
+            } else {
+                downVote(id, position, post);
+            }});
+    }
+
         private void setVoteColor(String id) {
             if (mAdapter.mLocalVoteTracker.get(id) != null) {
                 if (mAdapter.mLocalVoteTracker.get(id).equals(VALUE_UPVOTED)) {
@@ -140,6 +167,25 @@ public class BaseFeedViewHolder extends RecyclerView.ViewHolder {
                 upVoteCountTextView.setTextColor(mDefaultCountTextColor);
             }
         }
+
+    private void setVoteColor(String id, ImageView upVoteImageButton, ImageView downVoteImageButton,
+                              TextView upVoteCountTextView) {
+        if (mAdapter.mLocalVoteTracker.get(id) != null) {
+            if (mAdapter.mLocalVoteTracker.get(id).equals(VALUE_UPVOTED)) {
+                upVoteImageButton.getDrawable().setColorFilter(mUpVoteColor, PorterDuff.Mode.MULTIPLY);
+                upVoteCountTextView.setTextColor(mUpVoteColor);
+                downVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
+            } else {
+                downVoteImageButton.getDrawable().setColorFilter(mDownVoteColor, PorterDuff.Mode.MULTIPLY);
+                upVoteCountTextView.setTextColor(mDownVoteColor);
+                upVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
+            }
+        } else {
+            upVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
+            downVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
+            upVoteCountTextView.setTextColor(mDefaultCountTextColor);
+        }
+    }
 
         //TODO: clean up these API call into a single method
         private void downVote(String id, int position, Data_ post) {
