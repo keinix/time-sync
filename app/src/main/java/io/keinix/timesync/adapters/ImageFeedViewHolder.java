@@ -15,7 +15,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import io.keinix.timesync.Fragments.FeedFragment;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.model.Data_;
-import me.relex.photodraweeview.PhotoDraweeView;
+import io.keinix.timesync.utils.OnSwipeTouchListener;
 
 
 public class ImageFeedViewHolder extends BaseFeedViewHolder {
@@ -51,6 +51,20 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
         setPostImage(post, popUpDraweeView);
         popupWindow.setOutsideTouchable(true);
         popupWindow.setFocusable(true);
+        popUpView.setOnTouchListener(new OnSwipeTouchListener(mFeedItemInterface.getContext()) {
+            @Override
+            public void onSwipeTop() { popupWindow.dismiss(); }
+
+            @Override
+            public void onSwipeBottom() { popupWindow.dismiss(); }
+
+            @Override
+            public void onSwipeRight() { popupWindow.dismiss(); }
+
+            @Override
+            public void onSwipeLeft() { popupWindow.dismiss(); }
+        });
+
         popupWindow.showAsDropDown(popUpView, 0, 0);
     }
 
