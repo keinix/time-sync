@@ -35,7 +35,7 @@ public class BaseFeedViewHolder extends RecyclerView.ViewHolder {
         private static final int VALUE_DOWNVOTED = -1;
 
         @Nullable @BindView(R.id.selfTextTextView) TextView selfTextView;
-        @Nullable @BindView(R.id.imageView) SimpleDraweeView imageView;
+        @Nullable @BindView(R.id.imageView) SimpleDraweeView postImageView;
         @Nullable @BindView(R.id.selfTextIconImageView) ImageView selfTextIconImageView;
         @Nullable @BindView(R.id.exoPlayer) SimpleExoPlayerView mExoPlayer;
         @BindView(R.id.postTitleTextView) TextView postTitleTextView;
