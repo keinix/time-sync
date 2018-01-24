@@ -123,7 +123,7 @@ public class BaseFeedViewHolder extends RecyclerView.ViewHolder {
                 }});
         }
 
-    private void setVoteOnClick(int position, String id, Data_ post,
+    public void setVoteOnClick(int position, String id, Data_ post,
                                 ImageView upVoteImageButton, ImageView downVoteImageButton) {
         upVoteImageButton.setOnClickListener(v -> {
             Log.d(TAG, "ID: " + id +  ": " + mAdapter.mLocalVoteTracker.get(id));
@@ -149,7 +149,7 @@ public class BaseFeedViewHolder extends RecyclerView.ViewHolder {
                 downVote(id, position, post);
             }});
     }
-
+        //TODO: upVote click effect popUP and feed item
         private void setVoteColor(String id) {
             if (mAdapter.mLocalVoteTracker.get(id) != null) {
                 if (mAdapter.mLocalVoteTracker.get(id).equals(VALUE_UPVOTED)) {
@@ -168,7 +168,7 @@ public class BaseFeedViewHolder extends RecyclerView.ViewHolder {
             }
         }
 
-    private void setVoteColor(String id, ImageView upVoteImageButton, ImageView downVoteImageButton,
+    public void setVoteColor(String id, ImageView upVoteImageButton, ImageView downVoteImageButton,
                               TextView upVoteCountTextView) {
         if (mAdapter.mLocalVoteTracker.get(id) != null) {
             if (mAdapter.mLocalVoteTracker.get(id).equals(VALUE_UPVOTED)) {

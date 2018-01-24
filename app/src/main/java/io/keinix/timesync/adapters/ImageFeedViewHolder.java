@@ -6,7 +6,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
@@ -44,11 +46,10 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
     }
 
     private void showPopUp(Data_ post) {
-        View popUpView = LayoutInflater.from(mFeedItemInterface.getContext()).inflate(R.layout.pop_up_feed_image, null);
+        View popUpView = setUpPopUpView(post);
         PopupWindow popupWindow = new PopupWindow(popUpView,
                 WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-        SimpleDraweeView popUpDraweeView = popUpView.findViewById(R.id.popUpDraweeView);
-        setPostImage(post, popUpDraweeView);
+
         popupWindow.setOutsideTouchable(true);
         popupWindow.setFocusable(true);
         popUpView.setOnTouchListener(new OnSwipeTouchListener(mFeedItemInterface.getContext()) {
@@ -66,6 +67,23 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
         });
 
         popupWindow.showAsDropDown(popUpView, 0, 0);
+    }
+
+    private View setUpPopUpView(Data_ post) {
+        View popUpView = LayoutInflater.from(mFeedItemInterface.getContext()).inflate(R.layout.pop_up_feed_image, null);
+        SimpleDraweeView popUpDraweeView = popUpView.findViewById(R.id.popUpDraweeView);
+        ImageButton popUpUpVoteImageButton = popUpView.findViewById(R.id.popUpUpVoteImageButton);
+        ImageButton popUpDownVoteImageButton = popUpView.findViewById(R.id.popUpDownVoteImageButton);
+        ImageButton popUpCommentImageButton = popUpView.findViewById(R.id.popUpCommentImageButton);
+        ImageButton popUpShareImageButton = popUpView.findViewById(R.id.popUpShareImageButton);
+        TextView popUpCommentCountTextView = popUpView.findViewById(R.id.popUpCommentCountTextView);
+        TextView popUpVoteCountTextView = popUpView.findViewById(R.id.popUpVoteCountTextView);
+
+        setVoteColor(post.getName(), popUpDownVoteImageButton, popUpDownVoteImageButton, popUpVoteCountTextView);
+        setVoteOnClick(mIndex, post.getName(), post, popUpUpVoteImageButton, popUpDownVoteImageButton);
+        setPostImage(post, popUpDraweeView);
+
+        return popUpView;
     }
 
 
