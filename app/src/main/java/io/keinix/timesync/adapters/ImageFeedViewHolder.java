@@ -17,6 +17,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import io.keinix.timesync.Activities.CommentsActivity;
 import io.keinix.timesync.Fragments.FeedFragment;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.model.Data_;
@@ -32,6 +33,8 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
     ImageButton mPopUpShareImageButton;
     TextView mPopUpCommentCountTextView;
     TextView mPopUpVoteCountTextView;
+
+    private boolean isGif;
 
     public ImageFeedViewHolder(View itemView, FeedAdapter adapter, FeedFragment.FeedItemInterface feedItemInterface) {
         super(itemView, adapter, feedItemInterface);
@@ -54,7 +57,15 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
                 showPopUp(post);
             }
         });
+
+        commentImageButton.setOnClickListener(v -> {
+            Intent intent = new Intent(mFeedItemInterface.getContext(), CommentsActivity.class);
+            if (isGif) {
+
+            }
+        });
     }
+
 
 
     private void showPopUp(Data_ post) {
@@ -91,8 +102,8 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
          mPopUpCommentCountTextView = popUpView.findViewById(R.id.popUpCommentCountTextView);
          mPopUpVoteCountTextView = popUpView.findViewById(R.id.popUpVoteCountTextView);
 
-        setVoteOnClick(mIndex, post.getName(), post, mPopUpUpVoteImageButton, mPopUpDownVoteImageButton, mPopUpVoteCountTextView);
         setPoPUpVoteColor(post.getName());
+        setVoteOnClick(mIndex, post.getName(), post, mPopUpUpVoteImageButton, mPopUpDownVoteImageButton, mPopUpVoteCountTextView);
         setPostImage(post, mPopUpDraweeView);
 
         return popUpView;
@@ -110,12 +121,11 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
                 mPopUpDownVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
             }
         } else {
-            mPopUpDownVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
+            mPopUpUpVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
             mPopUpDownVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
             mPopUpVoteCountTextView.setTextColor(mDefaultCountTextColor);
         }
     }
-
 
     private void setPostImage(Data_ post, SimpleDraweeView imageView) {
         Uri gifUri = null;
@@ -133,6 +143,7 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
             }
 
             if (gifUri != null) {
+                isGif = true;
                 DraweeController controller = Fresco.newDraweeControllerBuilder()
                         .setUri(gifUri)
                         .setAutoPlayAnimations(true)

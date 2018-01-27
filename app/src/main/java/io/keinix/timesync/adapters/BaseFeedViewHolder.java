@@ -1,5 +1,6 @@
 package io.keinix.timesync.adapters;
 
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -17,6 +18,7 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import im.ene.toro.exoplayer.SimpleExoPlayerViewHelper;
+import io.keinix.timesync.Activities.CommentsActivity;
 import io.keinix.timesync.Fragments.FeedFragment;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.model.Data_;
@@ -33,6 +35,7 @@ public class BaseFeedViewHolder extends RecyclerView.ViewHolder {
         public static final String VOTE_TYPE_UNVOTE = "0";
         public static final int VALUE_UPVOTED = 1;
         public static final int VALUE_DOWNVOTED = -1;
+        public static final String VALUE_VIEW_GIF = "VALUE_VIEW_GIF";
 
         @Nullable @BindView(R.id.selfTextTextView) TextView selfTextView;
         @Nullable @BindView(R.id.imageView) SimpleDraweeView postImageView;
@@ -93,11 +96,11 @@ public class BaseFeedViewHolder extends RecyclerView.ViewHolder {
 
             setVoteColor(id);
             setVoteOnClick(position, id, post);
+
         }
 
 
-
-        private void setVoteOnClick(int position, String id, Data_ post) {
+    private void setVoteOnClick(int position, String id, Data_ post) {
             upVoteImageButton.setOnClickListener(v -> {
                 Log.d(TAG, "ID: " + id +  ": " + mAdapter.mLocalVoteTracker.get(id));
                 if (mAdapter.mLocalVoteTracker.get(id) != null) {
@@ -167,6 +170,7 @@ public class BaseFeedViewHolder extends RecyclerView.ViewHolder {
                 upVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
             }});
     }
+
         //TODO: upVote click effect popUP and feed item
         private void setVoteColor(String id) {
             if (mAdapter.mLocalVoteTracker.get(id) != null) {

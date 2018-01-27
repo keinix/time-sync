@@ -19,14 +19,12 @@ public class CommentsFragment extends Fragment {
 
     public static final String KEY_INDEX = "KEY_INDEX";
 
-    public int mIndex;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_comments, container, false);
-        mIndex = getArguments().getInt(KEY_INDEX);
         ButterKnife.bind(this, view);
 
         return view;
