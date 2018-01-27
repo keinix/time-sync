@@ -28,11 +28,11 @@ import retrofit2.Response;
 public class BaseFeedViewHolder extends RecyclerView.ViewHolder {
 
         public static final String TAG = BaseFeedViewHolder.class.getSimpleName();
-        private static final String VOTE_TYPE_UPVOTE = "1";
-        private static final String VOTE_TYPE_DOWNVOTE = "-1";
-        private static final String VOTE_TYPE_UNVOTE = "0";
-        private static final int VALUE_UPVOTED = 1;
-        private static final int VALUE_DOWNVOTED = -1;
+        public static final String VOTE_TYPE_UPVOTE = "1";
+        public static final String VOTE_TYPE_DOWNVOTE = "-1";
+        public static final String VOTE_TYPE_UNVOTE = "0";
+        public static final int VALUE_UPVOTED = 1;
+        public static final int VALUE_DOWNVOTED = -1;
 
         @Nullable @BindView(R.id.selfTextTextView) TextView selfTextView;
         @Nullable @BindView(R.id.imageView) SimpleDraweeView postImageView;
@@ -53,11 +53,11 @@ public class BaseFeedViewHolder extends RecyclerView.ViewHolder {
         protected FeedFragment.FeedItemInterface mFeedItemInterface;
         protected FeedAdapter mAdapter;
 
-        public int mIndex;
-        private int mUpVoteColor;
-        private int mDownVoteColor;
-        private int mDefaultCountTextColor;
-        private int mColorWhite;
+        protected int mIndex;
+        protected int mUpVoteColor;
+        protected int mDownVoteColor;
+        protected int mDefaultCountTextColor;
+        protected int mColorWhite;
 
         public BaseFeedViewHolder(View itemView, FeedAdapter adapter, FeedFragment.FeedItemInterface feedItemInterface) {
             super(itemView);
@@ -124,17 +124,26 @@ public class BaseFeedViewHolder extends RecyclerView.ViewHolder {
         }
 
     public void setVoteOnClick(int position, String id, Data_ post,
-                                ImageView upVoteImageButton, ImageView downVoteImageButton) {
+                                ImageView upVoteImageButton, ImageView downVoteImageButton, TextView upVoteCountTextView) {
         upVoteImageButton.setOnClickListener(v -> {
             Log.d(TAG, "ID: " + id +  ": " + mAdapter.mLocalVoteTracker.get(id));
             if (mAdapter.mLocalVoteTracker.get(id) != null) {
                 if (mAdapter.mLocalVoteTracker.get(id).equals(VALUE_UPVOTED)) {
                     unVote(id, position, post);
+                    upVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
+                    downVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
+                    upVoteCountTextView.setTextColor(mDefaultCountTextColor);
                 } else {
                     upVote(id, position, post);
+                    upVoteImageButton.getDrawable().setColorFilter(mUpVoteColor, PorterDuff.Mode.MULTIPLY);
+                    upVoteCountTextView.setTextColor(mUpVoteColor);
+                    downVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
                 }
             } else {
                 upVote(id, position, post);
+                upVoteImageButton.getDrawable().setColorFilter(mUpVoteColor, PorterDuff.Mode.MULTIPLY);
+                upVoteCountTextView.setTextColor(mUpVoteColor);
+                downVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
             }});
 
         downVoteImageButton.setOnClickListener(v -> {
@@ -142,11 +151,20 @@ public class BaseFeedViewHolder extends RecyclerView.ViewHolder {
             if (mAdapter.mLocalVoteTracker.get(id) != null) {
                 if (mAdapter.mLocalVoteTracker.get(id).equals(VALUE_DOWNVOTED)) {
                     unVote(id, position, post);
+                    upVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
+                    downVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
+                    upVoteCountTextView.setTextColor(mDefaultCountTextColor);
                 } else {
                     downVote(id, position, post);
+                    downVoteImageButton.getDrawable().setColorFilter(mDownVoteColor, PorterDuff.Mode.MULTIPLY);
+                    upVoteCountTextView.setTextColor(mDownVoteColor);
+                    upVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
                 }
             } else {
                 downVote(id, position, post);
+                downVoteImageButton.getDrawable().setColorFilter(mDownVoteColor, PorterDuff.Mode.MULTIPLY);
+                upVoteCountTextView.setTextColor(mDownVoteColor);
+                upVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
             }});
     }
         //TODO: upVote click effect popUP and feed item
@@ -167,25 +185,6 @@ public class BaseFeedViewHolder extends RecyclerView.ViewHolder {
                 upVoteCountTextView.setTextColor(mDefaultCountTextColor);
             }
         }
-
-    public void setVoteColor(String id, ImageView upVoteImageButton, ImageView downVoteImageButton,
-                              TextView upVoteCountTextView) {
-        if (mAdapter.mLocalVoteTracker.get(id) != null) {
-            if (mAdapter.mLocalVoteTracker.get(id).equals(VALUE_UPVOTED)) {
-                upVoteImageButton.getDrawable().setColorFilter(mUpVoteColor, PorterDuff.Mode.MULTIPLY);
-                upVoteCountTextView.setTextColor(mUpVoteColor);
-                downVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
-            } else {
-                downVoteImageButton.getDrawable().setColorFilter(mDownVoteColor, PorterDuff.Mode.MULTIPLY);
-                upVoteCountTextView.setTextColor(mDownVoteColor);
-                upVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
-            }
-        } else {
-            upVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
-            downVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
-            upVoteCountTextView.setTextColor(mDefaultCountTextColor);
-        }
-    }
 
         //TODO: clean up these API call into a single method
         private void downVote(String id, int position, Data_ post) {

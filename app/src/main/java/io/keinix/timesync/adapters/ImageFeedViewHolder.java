@@ -1,12 +1,15 @@
 package io.keinix.timesync.adapters;
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.net.Uri;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -21,6 +24,14 @@ import io.keinix.timesync.utils.OnSwipeTouchListener;
 
 
 public class ImageFeedViewHolder extends BaseFeedViewHolder {
+
+    SimpleDraweeView mPopUpDraweeView;
+    ImageButton mPopUpUpVoteImageButton;
+    ImageButton mPopUpDownVoteImageButton;
+    ImageButton mPopUpCommentImageButton;
+    ImageButton mPopUpShareImageButton;
+    TextView mPopUpCommentCountTextView;
+    TextView mPopUpVoteCountTextView;
 
     public ImageFeedViewHolder(View itemView, FeedAdapter adapter, FeedFragment.FeedItemInterface feedItemInterface) {
         super(itemView, adapter, feedItemInterface);
@@ -44,6 +55,7 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
             }
         });
     }
+
 
     private void showPopUp(Data_ post) {
         View popUpView = setUpPopUpView(post);
@@ -71,19 +83,37 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
 
     private View setUpPopUpView(Data_ post) {
         View popUpView = LayoutInflater.from(mFeedItemInterface.getContext()).inflate(R.layout.pop_up_feed_image, null);
-        SimpleDraweeView popUpDraweeView = popUpView.findViewById(R.id.popUpDraweeView);
-        ImageButton popUpUpVoteImageButton = popUpView.findViewById(R.id.popUpUpVoteImageButton);
-        ImageButton popUpDownVoteImageButton = popUpView.findViewById(R.id.popUpDownVoteImageButton);
-        ImageButton popUpCommentImageButton = popUpView.findViewById(R.id.popUpCommentImageButton);
-        ImageButton popUpShareImageButton = popUpView.findViewById(R.id.popUpShareImageButton);
-        TextView popUpCommentCountTextView = popUpView.findViewById(R.id.popUpCommentCountTextView);
-        TextView popUpVoteCountTextView = popUpView.findViewById(R.id.popUpVoteCountTextView);
+         mPopUpDraweeView = popUpView.findViewById(R.id.popUpDraweeView);
+         mPopUpUpVoteImageButton = popUpView.findViewById(R.id.popUpUpVoteImageButton);
+         mPopUpDownVoteImageButton = popUpView.findViewById(R.id.popUpDownVoteImageButton);
+         mPopUpCommentImageButton = popUpView.findViewById(R.id.popUpCommentImageButton);
+         mPopUpShareImageButton = popUpView.findViewById(R.id.popUpShareImageButton);
+         mPopUpCommentCountTextView = popUpView.findViewById(R.id.popUpCommentCountTextView);
+         mPopUpVoteCountTextView = popUpView.findViewById(R.id.popUpVoteCountTextView);
 
-        setVoteColor(post.getName(), popUpDownVoteImageButton, popUpDownVoteImageButton, popUpVoteCountTextView);
-        setVoteOnClick(mIndex, post.getName(), post, popUpUpVoteImageButton, popUpDownVoteImageButton);
-        setPostImage(post, popUpDraweeView);
+        setVoteOnClick(mIndex, post.getName(), post, mPopUpUpVoteImageButton, mPopUpDownVoteImageButton, mPopUpVoteCountTextView);
+        setPoPUpVoteColor(post.getName());
+        setPostImage(post, mPopUpDraweeView);
 
         return popUpView;
+    }
+
+    private void setPoPUpVoteColor(String id) {
+        if (mAdapter.mLocalVoteTracker.get(id) != null) {
+            if (mAdapter.mLocalVoteTracker.get(id).equals(VALUE_UPVOTED)) {
+                mPopUpUpVoteImageButton.getDrawable().setColorFilter(mUpVoteColor, PorterDuff.Mode.MULTIPLY);
+                mPopUpVoteCountTextView.setTextColor(mUpVoteColor);
+                mPopUpDownVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
+            } else {
+                mPopUpDownVoteImageButton.getDrawable().setColorFilter(mDownVoteColor, PorterDuff.Mode.MULTIPLY);
+                mPopUpVoteCountTextView.setTextColor(mDownVoteColor);
+                mPopUpDownVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
+            }
+        } else {
+            mPopUpDownVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
+            mPopUpDownVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
+            mPopUpVoteCountTextView.setTextColor(mDefaultCountTextColor);
+        }
     }
 
 
@@ -100,7 +130,6 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
                         .getSource()
                         .getUrl());
                 Log.d(TAG, "GIF URL: "+ gifUri);
-
             }
 
             if (gifUri != null) {
