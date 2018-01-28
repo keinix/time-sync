@@ -16,7 +16,7 @@ import io.keinix.timesync.R;
 
 public class CommentsFragment extends Fragment {
 
-    @BindView(R.id.textView) TextView mTextView;
+    @BindView(R.id.commentsSubRedditName) TextView mTextView;
 
     public static final String KEY_INDEX = "KEY_INDEX";
 
