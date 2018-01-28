@@ -3,13 +3,11 @@ package io.keinix.timesync.adapters;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.net.Uri;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -61,8 +59,11 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
         commentImageButton.setOnClickListener(v -> {
             Intent intent = new Intent(mFeedItemInterface.getContext(), CommentsActivity.class);
             if (isGif) {
-
+                intent.putExtra(CommentsActivity.KEY_COMMENTS_VIEW_TYPE, CommentsActivity.VALUE_GIF_COMMENTS_VIEW);
+            } else {
+                intent.putExtra(CommentsActivity.KEY_COMMENTS_VIEW_TYPE, CommentsActivity.VALUE_IMAGE_COMMENTS_VIEW);
             }
+            mFeedItemInterface.getContext().startActivity(intent);
         });
     }
 

@@ -12,7 +12,11 @@ import io.keinix.timesync.R;
 public class CommentsActivity extends AppCompatActivity {
 
     public static final String TAG_COMMENTS_FRAGMENT = "TAG_COMMENTS_FRAGMENT";
-
+    public static final String KEY_COMMENTS_VIEW_TYPE = "KEY_COMMENTS_VIEW_TYPE";
+    public static final String VALUE_IMAGE_COMMENTS_VIEW = "VALUE_IMAGE_COMMENTS_VIEW";
+    public static final String VALUE_GIF_COMMENTS_VIEW = "VALUE_GIF_COMMENTS_VIEW";
+    public static final String VALUE_VIDEO_COMMENTS_VIEW = "VALUE_VIDEO_COMMENTS_VIEW";
+    public static final String VALUE_TEXT_COMMENTS_VIEW = "VALUE_TEXT_COMMENTS_VIEW";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

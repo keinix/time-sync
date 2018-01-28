@@ -1,20 +1,19 @@
 package io.keinix.timesync.adapters;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
-
-import java.util.HashMap;
 
 import im.ene.toro.ToroPlayer;
 import im.ene.toro.ToroUtil;
 import im.ene.toro.exoplayer.SimpleExoPlayerViewHelper;
 import im.ene.toro.media.PlaybackInfo;
 import im.ene.toro.widget.Container;
+import io.keinix.timesync.Activities.CommentsActivity;
 import io.keinix.timesync.Fragments.FeedFragment;
 import io.keinix.timesync.reddit.model.Data_;
-import io.keinix.timesync.reddit.model.RedditFeed;
 
 public class VideoFeedViewHolder extends BaseFeedViewHolder implements ToroPlayer{
 
@@ -39,6 +38,12 @@ public class VideoFeedViewHolder extends BaseFeedViewHolder implements ToroPlaye
                 .getMedia()
                 .getRedditVideo()
                 .getScrubberMediaUrl());
+
+        commentImageButton.setOnClickListener(v -> {
+            Intent intent = new Intent(mFeedItemInterface.getContext(), CommentsActivity.class);
+            intent.putExtra(CommentsActivity.KEY_COMMENTS_VIEW_TYPE, CommentsActivity.VALUE_VIDEO_COMMENTS_VIEW);
+            mFeedItemInterface.getContext().startActivity(intent);
+        });
     }
 
     private void setViewIcon(Data_ post) {

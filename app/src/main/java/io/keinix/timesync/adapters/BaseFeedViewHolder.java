@@ -1,6 +1,5 @@
 package io.keinix.timesync.adapters;
 
-import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -18,7 +17,6 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import im.ene.toro.exoplayer.SimpleExoPlayerViewHelper;
-import io.keinix.timesync.Activities.CommentsActivity;
 import io.keinix.timesync.Fragments.FeedFragment;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.model.Data_;
