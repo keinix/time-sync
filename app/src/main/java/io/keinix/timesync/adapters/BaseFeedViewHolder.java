@@ -271,7 +271,7 @@ public class BaseFeedViewHolder extends RecyclerView.ViewHolder {
                     });
         }
 
-        private long getTimeSincePosted(long createdUtc) {
+        protected long getTimeSincePosted(long createdUtc) {
             long systemTime = System.currentTimeMillis() / 1000;
             return ((systemTime - createdUtc) / 60) / 60;
         }

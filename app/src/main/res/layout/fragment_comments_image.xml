@@ -12,18 +12,18 @@
     android:orientation="vertical">
 
     <android.support.constraint.ConstraintLayout
-        android:background="@android:color/black"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="411dp"
+        android:background="@android:color/black">
 
         <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/simpleDraweeView"
-            android:background="@android:color/black"
+            android:id="@+id/postDraweeView"
             android:layout_width="300dp"
             android:layout_height="305dp"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
+            android:background="@android:color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -33,44 +33,44 @@
 
         <TextView
             android:id="@+id/commentsPostTitle"
-            android:textColor="@android:color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:textSize="19sp"
+            android:layout_marginTop="8dp"
             android:text="Check out this super interesting post title"
+            android:textColor="@android:color/white"
+            android:textSize="19sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/simpleDraweeView"
-            android:layout_marginLeft="8dp"/>
+            app:layout_constraintTop_toBottomOf="@+id/postDraweeView"/>
 
         <TextView
             android:id="@+id/commentsSubRedditName"
-            android:textColor="@android:color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="22sp"
+            android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="r/InterestingAsFuck"
+            android:textColor="@android:color/white"
+            android:textSize="22sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginLeft="8dp"/>
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
             android:id="@+id/commentsPostInfo"
-            android:textColor="@android:color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="u/keinix  \u2022  8hr \u2022 grc.com"
+            android:textColor="@android:color/white"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/commentsPostTitle"
-            android:layout_marginLeft="8dp"/>
+            app:layout_constraintTop_toBottomOf="@+id/commentsPostTitle"/>
 
     </android.support.constraint.ConstraintLayout>
 
-    <android.support.v7.app.AlertController.RecycleListView
+    <android.support.v7.widget.RecyclerView
         android:background="@color/colorPrimary"
         android:id="@+id/commentsRecyclerView"
         android:layout_width="match_parent"

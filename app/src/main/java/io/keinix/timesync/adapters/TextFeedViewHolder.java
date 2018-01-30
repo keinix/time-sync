@@ -27,7 +27,7 @@ public class TextFeedViewHolder extends BaseFeedViewHolder {
 
         commentImageButton.setOnClickListener(v -> {
             Intent intent = new Intent(mFeedItemInterface.getContext(), CommentsActivity.class);
-            intent.putExtra(CommentsActivity.KEY_COMMENTS_VIEW_TYPE, CommentsActivity.VALUE_TEXT_COMMENTS_VIEW);
+            intent.putExtra(CommentsActivity.KEY_COMMENTS_LAYOUT_TYPE, CommentsActivity.VALUE_TEXT_COMMENTS_LAYOUT);
             mFeedItemInterface.getContext().startActivity(intent);
 
         });

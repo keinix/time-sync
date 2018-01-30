@@ -33,6 +33,7 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
     TextView mPopUpVoteCountTextView;
 
     private boolean isGif;
+    private Uri mGifUri;
 
     public ImageFeedViewHolder(View itemView, FeedAdapter adapter, FeedFragment.FeedItemInterface feedItemInterface) {
         super(itemView, adapter, feedItemInterface);
@@ -58,14 +59,36 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
         commentImageButton.setOnClickListener(v -> {
             Intent intent = new Intent(mFeedItemInterface.getContext(), CommentsActivity.class);
             if (isGif) {
-                intent.putExtra(CommentsActivity.KEY_COMMENTS_VIEW_TYPE, CommentsActivity.VALUE_GIF_COMMENTS_VIEW);
+                intent.putExtra(CommentsActivity.KEY_COMMENTS_LAYOUT_TYPE, CommentsActivity.VALUE_GIF_COMMENTS_LAYOUT);
             } else {
-                intent.putExtra(CommentsActivity.KEY_COMMENTS_VIEW_TYPE, CommentsActivity.VALUE_IMAGE_COMMENTS_VIEW);
+                intent.putExtra(CommentsActivity.KEY_COMMENTS_LAYOUT_TYPE, CommentsActivity.VALUE_IMAGE_COMMENTS_LAYOUT);
             }
+
+            packIntent(post, intent);
             mFeedItemInterface.getContext().startActivity(intent);
         });
     }
 
+    private void packIntent(Data_ post, Intent intent) {
+        long timeSincePosted = getTimeSincePosted(post.getCreatedUtc());
+        String domain = post.getDomain();
+        if (domain.startsWith("self")) {
+            domain = "self";
+        }
+        String postDetails = "u/" +post.getAuthor() + " \u2022 "
+                + timeSincePosted + "h" + " \u2022 " +
+                domain;
+        if (isGif) {
+            intent.putExtra(CommentsActivity.KEY_IMAGE_URL, mGifUri.toString());
+        } else {
+            intent.putExtra(CommentsActivity.KEY_IMAGE_URL, post.getPreview().getImages().get(0).getSource().getUrl());
+        }
+
+        intent.putExtra(CommentsActivity.KEY_POST_SUBREDDIT, post.getSubredditNamePrefixed());
+        intent.putExtra(CommentsActivity.KEY_POST_TITLE, post.getTitle());
+        intent.putExtra(CommentsActivity.KEY_POST_ID, post.getName());
+        intent.putExtra(CommentsActivity.KEY_POST_DETAILS, postDetails);
+    }
 
 
     private void showPopUp(Data_ post) {
@@ -128,24 +151,24 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
     }
 
     private void setPostImage(Data_ post, SimpleDraweeView imageView) {
-        Uri gifUri = null;
+        mGifUri = null;
         if (post.getPreview()!= null) {
 
             if (post.getPreview().getImages().get(0).getVariants().getGif() != null) {
-                gifUri = Uri.parse(post.getPreview()
+                mGifUri = Uri.parse(post.getPreview()
                         .getImages()
                         .get(0)
                         .getVariants()
                         .getGif()
                         .getSource()
                         .getUrl());
-                Log.d(TAG, "GIF URL: "+ gifUri);
+                Log.d(TAG, "GIF URL: "+ mGifUri);
             }
 
-            if (gifUri != null) {
+            if (mGifUri != null) {
                 isGif = true;
                 DraweeController controller = Fresco.newDraweeControllerBuilder()
-                        .setUri(gifUri)
+                        .setUri(mGifUri)
                         .setAutoPlayAnimations(true)
                         .build();
                 imageView.setController(controller);
