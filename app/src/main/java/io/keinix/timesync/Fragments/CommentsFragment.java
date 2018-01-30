@@ -94,43 +94,43 @@ public class CommentsFragment extends Fragment {
         mPostDraweeView.setImageURI(imageUri);
     }
 
-    void updateViewSize(@Nullable ImageInfo imageInfo) {
-        if (imageInfo != null) {
-            mPostDraweeView.getLayoutParams().width = imageInfo.getWidth();
-            mPostDraweeView.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
-            mPostDraweeView.setAspectRatio((float) imageInfo.getWidth() / imageInfo.getHeight());
-        }
-    }
-    public void prepareImage() {
-
-        ControllerListener listener = new BaseControllerListener() {
-
-            @Override
-            public void onIntermediateImageSet(String id, @Nullable ImageInfo imageInfo) {
-                updateViewSize(imageInfo);
-            }
-
-            @Override
-            public void onFinalImageSet(String id, @Nullable Object imageInfo, @Nullable Animatable animatable) {
-                super.onFinalImageSet(id, imageInfo, animatable);
-            }
-
-            @Override
-            public void onIntermediateImageSet(String id, @Nullable ImageInfo imageInfo) {
-                updateViewSize(imageInfo);
-            }
-
-            @Override
-            public void onFinalImageSet(String id, @Nullable ImageInfo imageInfo, @Nullable Animatable animatable) {
-                updateViewSize(imageInfo);
-            }
-        };
-
-        DraweeController controller = draweeControllerBuilder
-                .setUri(uri)
-                .setControllerListener(listener)
-                .build();
-        mPost.setController(controller);
-    }
+//    void updateViewSize(@Nullable ImageInfo imageInfo) {
+//        if (imageInfo != null) {
+//            mPostDraweeView.getLayoutParams().width = imageInfo.getWidth();
+//            mPostDraweeView.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+//            mPostDraweeView.setAspectRatio((float) imageInfo.getWidth() / imageInfo.getHeight());
+//        }
+//    }
+//    public void prepareImage() {
+//
+//        ControllerListener listener = new BaseControllerListener() {
+//
+//            @Override
+//            public void onIntermediateImageSet(String id, @Nullable ImageInfo imageInfo) {
+//                updateViewSize(imageInfo);
+//            }
+//
+//            @Override
+//            public void onFinalImageSet(String id, @Nullable Object imageInfo, @Nullable Animatable animatable) {
+//                super.onFinalImageSet(id, imageInfo, animatable);
+//            }
+//
+//            @Override
+//            public void onIntermediateImageSet(String id, @Nullable ImageInfo imageInfo) {
+//                updateViewSize(imageInfo);
+//            }
+//
+//            @Override
+//            public void onFinalImageSet(String id, @Nullable ImageInfo imageInfo, @Nullable Animatable animatable) {
+//                updateViewSize(imageInfo);
+//            }
+//        };
+//
+//        DraweeController controller = draweeControllerBuilder
+//                .setUri(uri)
+//                .setControllerListener(listener)
+//                .build();
+//        mPost.setController(controller);
+//    }
 
 }
