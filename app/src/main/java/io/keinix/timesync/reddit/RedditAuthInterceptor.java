@@ -19,11 +19,11 @@ public class RedditAuthInterceptor implements Interceptor {
 
     private AccountManager mAccountManager;
     private String redditToken;
-    private MainActivity mMainActivity;
+    private Context mContext;
 
-    public RedditAuthInterceptor(AccountManager accountManager, MainActivity mainActivity) {
+    public RedditAuthInterceptor(AccountManager accountManager, Context context) {
         mAccountManager = accountManager;
-        mMainActivity = mainActivity;
+        mContext = context;
         Account[] accounts = mAccountManager.getAccountsByType(RedditConstants.ACCOUNT_TYPE);
 
         if (accounts.length > 0) {
@@ -47,7 +47,8 @@ public class RedditAuthInterceptor implements Interceptor {
     public void checkAccount() {
         Account[] accounts = mAccountManager.getAccountsByType(RedditConstants.ACCOUNT_TYPE);
         if (accounts.length == 0) {
-            mMainActivity.tempLogin();
+            Intent intent = new Intent(mContext, AddAccountActivity.class);
+            mContext.startActivity(intent);
         }
     }
 }

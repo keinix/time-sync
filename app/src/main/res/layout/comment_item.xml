@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@android:color/black"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/commentDetailsTextView"
+        android:textColor="@color/colorAccent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/commentTextTextView"
+        android:textColor="@color/colorCountText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="2dp"
+        android:text="TextView"
+        app:layout_constraintStart_toStartOf="parent"
+        android:paddingBottom="3dp"
+        app:layout_constraintTop_toBottomOf="@+id/commentDetailsTextView"/>
+
+    <android.support.design.widget.CheckableImageButton
+        android:id="@+id/commentReplyImageButton"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="48dp"
+        android:background="@null"
+        android:src="@drawable/ic_reply_white_36dp"
+        app:layout_constraintEnd_toStartOf="@+id/commentUpVoteImageButton"
+        app:layout_constraintTop_toBottomOf="@+id/commentTextTextView"/>
+
+    <android.support.design.widget.CheckableImageButton
+        android:id="@+id/commentUpVoteImageButton"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="8dp"
+        android:background="@null"
+        android:src="@drawable/ic_arrow_upward_white_24dp"
+        app:layout_constraintEnd_toStartOf="@+id/commentUpCount"
+        app:layout_constraintTop_toBottomOf="@+id/commentTextTextView"/>
+
+    <TextView
+        android:id="@+id/commentUpCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:textColor="@android:color/white"
+        android:text="23"
+        app:layout_constraintEnd_toStartOf="@+id/commentDownVoteImageButton"
+        app:layout_constraintTop_toBottomOf="@+id/commentTextTextView"/>
+
+    <android.support.design.widget.CheckableImageButton
+        android:id="@+id/commentDownVoteImageButton"
+        android:rotation="180"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="32dp"
+        android:background="@null"
+        android:src="@drawable/ic_arrow_upward_white_24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/commentTextTextView"/>
+
+    <android.support.design.widget.CheckableImageButton
+        android:id="@+id/commentMenuImageButton"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="64dp"
+        android:background="@null"
+        android:src="@android:drawable/ic_menu_preferences"
+        app:layout_constraintEnd_toStartOf="@+id/commentReplyImageButton"
+        app:layout_constraintTop_toBottomOf="@+id/commentTextTextView"/>
+
+
+</android.support.constraint.ConstraintLayout>

@@ -14,6 +14,7 @@ import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.image.ImageInfo;
 
+// this class if from https://stackoverflow.com/questions/33955510/facebook-fresco-using-wrap-content
 
 public class WrapContentDraweeView extends SimpleDraweeView {
 

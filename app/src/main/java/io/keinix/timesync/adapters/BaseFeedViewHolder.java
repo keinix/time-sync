@@ -97,7 +97,6 @@ public class BaseFeedViewHolder extends RecyclerView.ViewHolder {
 
         }
 
-
     private void setVoteOnClick(int position, String id, Data_ post) {
             upVoteImageButton.setOnClickListener(v -> {
                 Log.d(TAG, "ID: " + id +  ": " + mAdapter.mLocalVoteTracker.get(id));

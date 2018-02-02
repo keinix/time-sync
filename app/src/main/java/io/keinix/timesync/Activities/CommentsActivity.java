@@ -1,5 +1,6 @@
 package io.keinix.timesync.Activities;
 
+import android.accounts.AccountManager;
 import android.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +8,13 @@ import android.os.Bundle;
 
 import io.keinix.timesync.Fragments.CommentsFragment;
 import io.keinix.timesync.R;
+import io.keinix.timesync.reddit.Api;
+import io.keinix.timesync.reddit.RedditAuthInterceptor;
+import io.keinix.timesync.reddit.RedditConstants;
+import io.keinix.timesync.reddit.TokenAuthenticator;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class CommentsActivity extends AppCompatActivity {
@@ -24,10 +32,16 @@ public class CommentsActivity extends AppCompatActivity {
     public static final String VALUE_GIF_COMMENTS_LAYOUT = "VALUE_GIF_COMMENTS_LAYOUT";
     public static final String VALUE_VIDEO_COMMENTS_LAYOUT = "VALUE_VIDEO_COMMENTS_LAYOUT";
     public static final String VALUE_TEXT_COMMENTS_LAYOUT = "VALUE_TEXT_COMMENTS_LAYOUT";
+
+    private Api mApi;
+    private AccountManager mAccountManager;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comments);
+        mAccountManager = AccountManager.get(this);
 
         CommentsFragment savedFragment = (CommentsFragment) getSupportFragmentManager().findFragmentByTag(TAG_COMMENTS_FRAGMENT);
 
@@ -37,5 +51,18 @@ public class CommentsActivity extends AppCompatActivity {
             fragmentTransaction.add(R.id.commentsPlaceHolder, commentsFragment, TAG_COMMENTS_FRAGMENT);
             fragmentTransaction.commit();
         }
+    }
+
+    public void initApi() {
+        OkHttpClient.Builder client = new OkHttpClient.Builder()
+                .authenticator(new TokenAuthenticator(mAccountManager))
+                .addInterceptor(new RedditAuthInterceptor(mAccountManager, this));
+
+        mApi = new Retrofit.Builder()
+                .baseUrl(RedditConstants.REDDIT_BASE_URL_OAUTH2)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client.build())
+                .build()
+                .create(Api.class);
     }
 }

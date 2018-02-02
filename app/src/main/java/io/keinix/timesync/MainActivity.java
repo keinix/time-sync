@@ -41,7 +41,6 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
     public static final String TAG_VIEW_PAGER_FRAGMENT = "TAG_VIEW_PAGER_FRAGMENT";
     public static final String TAG_COMMENTS_FRAGMENT = "TAG_COMMENTS_FRAGMENT";
     public static final String EXTRA_REDDIT_TOKEN = "EXTRA_REDDIT_TOKEN";
-    public static final int REQUEST_CODE_ACCOUNT_LOGIN = 1000;
 
     public AccountManager mAccountManager;
     public Api mApi;
@@ -143,6 +142,6 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
     @Override
     public void tempLogin() {
         Intent intent = new Intent(this, AddAccountActivity.class);
-        startActivityForResult(intent, REQUEST_CODE_ACCOUNT_LOGIN);
+        startActivity(intent);
     }
 }
