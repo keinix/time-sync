@@ -2,9 +2,12 @@ package io.keinix.timesync.Activities;
 
 import android.accounts.AccountManager;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import org.json.JSONObject;
 
 import io.keinix.timesync.Fragments.CommentsFragment;
 import io.keinix.timesync.R;
@@ -13,11 +16,12 @@ import io.keinix.timesync.reddit.RedditAuthInterceptor;
 import io.keinix.timesync.reddit.RedditConstants;
 import io.keinix.timesync.reddit.TokenAuthenticator;
 import okhttp3.OkHttpClient;
+import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class CommentsActivity extends AppCompatActivity {
+public class CommentsActivity extends AppCompatActivity implements CommentsFragment.CommentsInterface{
 
     public static final String TAG_COMMENTS_FRAGMENT = "TAG_COMMENTS_FRAGMENT";
     public static final String KEY_COMMENTS_LAYOUT_TYPE = "KEY_COMMENTS_LAYOUT_TYPE";
@@ -35,6 +39,11 @@ public class CommentsActivity extends AppCompatActivity {
 
     private Api mApi;
     private AccountManager mAccountManager;
+    private String mPostLayoutType;
+    private String mPostTitle;
+    private String mPostDetails;
+    private String mPostID;
+    private String mPostSubreddit;
 
 
     @Override
@@ -42,6 +51,8 @@ public class CommentsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comments);
         mAccountManager = AccountManager.get(this);
+        initApi();
+        unPackIntent();
 
         CommentsFragment savedFragment = (CommentsFragment) getSupportFragmentManager().findFragmentByTag(TAG_COMMENTS_FRAGMENT);
 
@@ -64,5 +75,18 @@ public class CommentsActivity extends AppCompatActivity {
                 .client(client.build())
                 .build()
                 .create(Api.class);
+    }
+
+    private void unPackIntent() {
+        Intent intent = getIntent();
+        mPostTitle = intent.getStringExtra(CommentsActivity.KEY_POST_TITLE);
+        mPostDetails = intent.getStringExtra(CommentsActivity.KEY_POST_DETAILS);
+        mPostID = intent.getStringExtra(CommentsActivity.KEY_POST_ID);
+        mPostSubreddit = intent.getStringExtra(CommentsActivity.KEY_POST_SUBREDDIT);
+    }
+
+    @Override
+    public Call<JSONObject> getComments() {
+        return mApi.getComments(mPostSubreddit, );
     }
 }

@@ -1,5 +1,7 @@
 package io.keinix.timesync.reddit;
 
+import org.json.JSONObject;
+
 import java.util.Map;
 
 import io.keinix.timesync.reddit.model.BaseResponse;
@@ -14,6 +16,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.HeaderMap;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface Api {
@@ -39,5 +42,11 @@ public interface Api {
     Call<VoteResult> vote (
         @Field("dir") String voteType,
         @Field("id") String id
+    );
+
+    @GET("{subreddit}/comments/{article}/")
+    Call<JSONObject> getComments(
+        @Path("subreddit") String subreddit,
+        @Path("article") String article
     );
 }

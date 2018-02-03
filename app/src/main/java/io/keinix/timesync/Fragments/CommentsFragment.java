@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,13 +20,21 @@ import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.image.ImageInfo;
 
+import org.json.JSONObject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.timesync.Activities.CommentsActivity;
 import io.keinix.timesync.R;
+import io.keinix.timesync.adapters.CommentsAdapter;
+import retrofit2.Call;
 
 
 public class CommentsFragment extends Fragment {
+
+    public interface CommentsInterface {
+        Call<JSONObject> getComments();
+    }
 
     @Nullable @BindView(R.id.postDraweeView) SimpleDraweeView mPostDraweeView;
     @BindView(R.id.commentsPostInfo) TextView mCommentsPostDetails;
@@ -35,6 +44,7 @@ public class CommentsFragment extends Fragment {
 
     public static final String KEY_INDEX = "KEY_INDEX";
 
+    private CommentsInterface mCommentsInterface;
     private String mPostLayoutType;
     private String mPostTitle;
     private String mPostDetails;
@@ -46,8 +56,10 @@ public class CommentsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_comments_image, container, false);
         ButterKnife.bind(this, view);
-        mPostLayoutType = getActivity().getIntent().getStringExtra(CommentsActivity.KEY_COMMENTS_LAYOUT_TYPE);
         unPackIntent();
+        setRecyclerView();
+        mCommentsInterface = (CommentsInterface) getActivity();
+        mPostLayoutType = getActivity().getIntent().getStringExtra(CommentsActivity.KEY_COMMENTS_LAYOUT_TYPE);
 
         switch (mPostLayoutType) {
             case CommentsActivity.VALUE_IMAGE_COMMENTS_LAYOUT:
@@ -68,7 +80,7 @@ public class CommentsFragment extends Fragment {
 
     private void unPackIntent() {
         Intent intent = getActivity().getIntent();
-        mPostTitle = intent.getStringExtra(CommentsActivity.KEY_POST_TITLE);
+        mPostTitle = getActivity().getIntent().getStringExtra(CommentsActivity.KEY_POST_TITLE);
         mPostDetails = intent.getStringExtra(CommentsActivity.KEY_POST_DETAILS);
         mPostID = intent.getStringExtra(CommentsActivity.KEY_POST_ID);
         mPostSubreddit = intent.getStringExtra(CommentsActivity.KEY_POST_SUBREDDIT);
@@ -78,6 +90,11 @@ public class CommentsFragment extends Fragment {
         mCommentsPostDetails.setText(mPostDetails);
         mCommentsPostTitle.setText(mPostTitle);
         mCommentsSubreddit.setText(mPostSubreddit);
+    }
+
+    private void setRecyclerView() {
+        mCommentsRecyclerView.setAdapter(new CommentsAdapter(mCommentsInterface));
+        mCommentsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     private void setGifImage() {
@@ -94,43 +111,6 @@ public class CommentsFragment extends Fragment {
         mPostDraweeView.setImageURI(imageUri);
     }
 
-//    void updateViewSize(@Nullable ImageInfo imageInfo) {
-//        if (imageInfo != null) {
-//            mPostDraweeView.getLayoutParams().width = imageInfo.getWidth();
-//            mPostDraweeView.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
-//            mPostDraweeView.setAspectRatio((float) imageInfo.getWidth() / imageInfo.getHeight());
-//        }
-//    }
-//    public void prepareImage() {
-//
-//        ControllerListener listener = new BaseControllerListener() {
-//
-//            @Override
-//            public void onIntermediateImageSet(String id, @Nullable ImageInfo imageInfo) {
-//                updateViewSize(imageInfo);
-//            }
-//
-//            @Override
-//            public void onFinalImageSet(String id, @Nullable Object imageInfo, @Nullable Animatable animatable) {
-//                super.onFinalImageSet(id, imageInfo, animatable);
-//            }
-//
-//            @Override
-//            public void onIntermediateImageSet(String id, @Nullable ImageInfo imageInfo) {
-//                updateViewSize(imageInfo);
-//            }
-//
-//            @Override
-//            public void onFinalImageSet(String id, @Nullable ImageInfo imageInfo, @Nullable Animatable animatable) {
-//                updateViewSize(imageInfo);
-//            }
-//        };
-//
-//        DraweeController controller = draweeControllerBuilder
-//                .setUri(uri)
-//                .setControllerListener(listener)
-//                .build();
-//        mPost.setController(controller);
-//    }
+
 
 }
