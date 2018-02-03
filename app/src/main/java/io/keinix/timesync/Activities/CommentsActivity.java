@@ -31,6 +31,7 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
     public static final String KEY_POST_TITLE = "KEY_POST_TITLE";
     public static final String KEY_POST_SUBREDDIT = "KEY_POST_SUBREDDIT";
     public static final String KEY_POST_ID = "KEY_POST_ID";
+    public static final String KEY_POST_ARTICLE = "KEY_POST_ARTICLE";
 
     public static final String VALUE_IMAGE_COMMENTS_LAYOUT = "VALUE_IMAGE_COMMENTS_LAYOUT";
     public static final String VALUE_GIF_COMMENTS_LAYOUT = "VALUE_GIF_COMMENTS_LAYOUT";
@@ -44,6 +45,7 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
     private String mPostDetails;
     private String mPostID;
     private String mPostSubreddit;
+    private String mPostArticle;
 
 
     @Override
@@ -79,14 +81,15 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
 
     private void unPackIntent() {
         Intent intent = getIntent();
-        mPostTitle = intent.getStringExtra(CommentsActivity.KEY_POST_TITLE);
-        mPostDetails = intent.getStringExtra(CommentsActivity.KEY_POST_DETAILS);
-        mPostID = intent.getStringExtra(CommentsActivity.KEY_POST_ID);
-        mPostSubreddit = intent.getStringExtra(CommentsActivity.KEY_POST_SUBREDDIT);
+        mPostTitle = intent.getStringExtra(KEY_POST_TITLE);
+        mPostDetails = intent.getStringExtra(KEY_POST_DETAILS);
+        mPostID = intent.getStringExtra(KEY_POST_ID);
+        mPostSubreddit = intent.getStringExtra(KEY_POST_SUBREDDIT);
+        mPostArticle = intent.getStringExtra(KEY_POST_ARTICLE);
     }
 
     @Override
     public Call<JSONObject> getComments() {
-        return mApi.getComments(mPostSubreddit, );
+        return mApi.getComments(mPostSubreddit, mPostArticle);
     }
 }

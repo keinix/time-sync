@@ -20,7 +20,7 @@ public class CommentsAdapter extends RecyclerView.Adapter {
 
     public CommentsAdapter(CommentsFragment.CommentsInterface commentsInterface) {
         mCommentsInterface = commentsInterface;
-        populateComments();
+        // populateComments();
     }
 
     @Override
@@ -53,7 +53,7 @@ public class CommentsAdapter extends RecyclerView.Adapter {
         });
     }
 
-    private class CommentsViewHolder {
+    public class CommentsViewHolder {
 
         @BindView(R.id.commentDetailsTextView) TextView detailsTextView;
         @BindView(R.id.commentTextTextView) TextView TextTextView;
