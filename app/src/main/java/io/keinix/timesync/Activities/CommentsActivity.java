@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import io.keinix.timesync.Fragments.CommentsFragment;
 import io.keinix.timesync.R;
@@ -30,11 +31,13 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
     public static final String KEY_POST_SUBREDDIT = "KEY_POST_SUBREDDIT";
     public static final String KEY_POST_ID = "KEY_POST_ID";
     public static final String KEY_POST_ARTICLE = "KEY_POST_ARTICLE";
+    public static final String KEY_POST_SUBREDDIT_NO_PREFIX ="KEY_POST_SUBREDDIT_NO_PREFIX";
 
     public static final String VALUE_IMAGE_COMMENTS_LAYOUT = "VALUE_IMAGE_COMMENTS_LAYOUT";
     public static final String VALUE_GIF_COMMENTS_LAYOUT = "VALUE_GIF_COMMENTS_LAYOUT";
     public static final String VALUE_VIDEO_COMMENTS_LAYOUT = "VALUE_VIDEO_COMMENTS_LAYOUT";
     public static final String VALUE_TEXT_COMMENTS_LAYOUT = "VALUE_TEXT_COMMENTS_LAYOUT";
+    private static final String TAG = CommentsActivity.class.getSimpleName();
 
     private Api mApi;
     private AccountManager mAccountManager;
@@ -44,6 +47,7 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
     private String mPostID;
     private String mPostSubreddit;
     private String mPostArticle;
+    private String mPostSubredditNoPrefix;
 
 
     @Override
@@ -51,8 +55,8 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comments);
         mAccountManager = AccountManager.get(this);
-        initApi();
         unPackIntent();
+        initApi();
 
         CommentsFragment savedFragment = (CommentsFragment) getSupportFragmentManager().findFragmentByTag(TAG_COMMENTS_FRAGMENT);
 
@@ -84,10 +88,11 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
         mPostID = intent.getStringExtra(KEY_POST_ID);
         mPostSubreddit = intent.getStringExtra(KEY_POST_SUBREDDIT);
         mPostArticle = intent.getStringExtra(KEY_POST_ARTICLE);
+        mPostSubredditNoPrefix = intent.getStringExtra(KEY_POST_SUBREDDIT_NO_PREFIX);
     }
 
     @Override
     public Call<CommentBase> getComments() {
-        return mApi.getComments(mPostSubreddit, mPostArticle);
+        return mApi.getComments(mPostSubredditNoPrefix, mPostArticle, mPostArticle);
     }
 }

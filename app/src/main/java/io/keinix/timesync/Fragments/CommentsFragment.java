@@ -25,6 +25,7 @@ import io.keinix.timesync.reddit.model.comment.CommentBase;
 import retrofit2.Call;
 
 
+
 public class CommentsFragment extends Fragment {
 
     public interface CommentsInterface {
@@ -45,6 +46,7 @@ public class CommentsFragment extends Fragment {
     private String mPostDetails;
     private String mPostID;
     private String mPostSubreddit;
+    private String mPostArticle;
 
     @Nullable
     @Override
@@ -52,9 +54,9 @@ public class CommentsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_comments_image, container, false);
         ButterKnife.bind(this, view);
         unPackIntent();
-        setRecyclerView();
         mCommentsInterface = (CommentsInterface) getActivity();
         mPostLayoutType = getActivity().getIntent().getStringExtra(CommentsActivity.KEY_COMMENTS_LAYOUT_TYPE);
+        setRecyclerView();
 
         switch (mPostLayoutType) {
             case CommentsActivity.VALUE_IMAGE_COMMENTS_LAYOUT:
@@ -79,6 +81,7 @@ public class CommentsFragment extends Fragment {
         mPostDetails = intent.getStringExtra(CommentsActivity.KEY_POST_DETAILS);
         mPostID = intent.getStringExtra(CommentsActivity.KEY_POST_ID);
         mPostSubreddit = intent.getStringExtra(CommentsActivity.KEY_POST_SUBREDDIT);
+        mPostArticle = intent.getStringExtra(CommentsActivity.KEY_POST_ARTICLE);
     }
 
     private void bindCommentsView() {

@@ -85,6 +85,7 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
         }
 
         intent.putExtra(CommentsActivity.KEY_POST_SUBREDDIT, post.getSubredditNamePrefixed());
+        intent.putExtra(CommentsActivity.KEY_POST_SUBREDDIT_NO_PREFIX, post.getSubreddit());
         intent.putExtra(CommentsActivity.KEY_POST_TITLE, post.getTitle());
         intent.putExtra(CommentsActivity.KEY_POST_ID, post.getName());
         intent.putExtra(CommentsActivity.KEY_POST_DETAILS, postDetails);

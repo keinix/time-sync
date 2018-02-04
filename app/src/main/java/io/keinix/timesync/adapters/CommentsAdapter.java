@@ -1,6 +1,7 @@
 package io.keinix.timesync.adapters;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -15,11 +16,14 @@ import retrofit2.Response;
 
 public class CommentsAdapter extends RecyclerView.Adapter {
 
+    private static final String TAG = CommentsAdapter.class.getSimpleName();
+
     private CommentsFragment.CommentsInterface mCommentsInterface;
 
     public CommentsAdapter(CommentsFragment.CommentsInterface commentsInterface) {
         mCommentsInterface = commentsInterface;
         populateComments();
+        Log.d(TAG, "CommentAdapter created");
     }
 
     @Override
@@ -42,12 +46,15 @@ public class CommentsAdapter extends RecyclerView.Adapter {
            mCommentsInterface.getComments().enqueue(new Callback<CommentBase>() {
                @Override
                public void onResponse(Call<CommentBase> call, Response<CommentBase> response) {
-
+                    Log.d(TAG, "Call: " + call);
+                    Log.d(TAG, "response: " + response);
+                    Log.d(TAG, "body: " + response.body());
                }
 
                @Override
                public void onFailure(Call<CommentBase> call, Throwable t) {
-
+                    Log.d(TAG, "OnFailure called for getComments");
+                    Log.d(TAG, "Call: " + call.request());
                }
            });
     }
