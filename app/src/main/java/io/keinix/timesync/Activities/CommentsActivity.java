@@ -1,13 +1,10 @@
 package io.keinix.timesync.Activities;
 
 import android.accounts.AccountManager;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
-import org.json.JSONObject;
 
 import io.keinix.timesync.Fragments.CommentsFragment;
 import io.keinix.timesync.R;
@@ -15,6 +12,7 @@ import io.keinix.timesync.reddit.Api;
 import io.keinix.timesync.reddit.RedditAuthInterceptor;
 import io.keinix.timesync.reddit.RedditConstants;
 import io.keinix.timesync.reddit.TokenAuthenticator;
+import io.keinix.timesync.reddit.model.comment.CommentBase;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -89,7 +87,7 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
     }
 
     @Override
-    public Call<JSONObject> getComments() {
+    public Call<CommentBase> getComments() {
         return mApi.getComments(mPostSubreddit, mPostArticle);
     }
 }

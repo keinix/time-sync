@@ -5,11 +5,10 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import org.json.JSONObject;
-
 import butterknife.BindView;
 import io.keinix.timesync.Fragments.CommentsFragment;
 import io.keinix.timesync.R;
+import io.keinix.timesync.reddit.model.comment.CommentBase;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -20,7 +19,7 @@ public class CommentsAdapter extends RecyclerView.Adapter {
 
     public CommentsAdapter(CommentsFragment.CommentsInterface commentsInterface) {
         mCommentsInterface = commentsInterface;
-        // populateComments();
+        populateComments();
     }
 
     @Override
@@ -40,17 +39,17 @@ public class CommentsAdapter extends RecyclerView.Adapter {
 
     private void populateComments() {
 
-        mCommentsInterface.getComments().enqueue(new Callback<JSONObject>() {
-            @Override
-            public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+           mCommentsInterface.getComments().enqueue(new Callback<CommentBase>() {
+               @Override
+               public void onResponse(Call<CommentBase> call, Response<CommentBase> response) {
 
-            }
+               }
 
-            @Override
-            public void onFailure(Call<JSONObject> call, Throwable t) {
+               @Override
+               public void onFailure(Call<CommentBase> call, Throwable t) {
 
-            }
-        });
+               }
+           });
     }
 
     public class CommentsViewHolder {

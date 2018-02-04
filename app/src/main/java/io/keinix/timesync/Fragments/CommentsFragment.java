@@ -1,7 +1,6 @@
 package io.keinix.timesync.Fragments;
 
 import android.content.Intent;
-import android.graphics.drawable.Animatable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,26 +13,22 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.controller.BaseControllerListener;
-import com.facebook.drawee.controller.ControllerListener;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.image.ImageInfo;
-
-import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.timesync.Activities.CommentsActivity;
 import io.keinix.timesync.R;
 import io.keinix.timesync.adapters.CommentsAdapter;
+import io.keinix.timesync.reddit.model.comment.CommentBase;
 import retrofit2.Call;
 
 
 public class CommentsFragment extends Fragment {
 
     public interface CommentsInterface {
-        Call<JSONObject> getComments();
+        Call<CommentBase> getComments();
     }
 
     @Nullable @BindView(R.id.postDraweeView) SimpleDraweeView mPostDraweeView;
