@@ -6,6 +6,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.util.List;
+
 import butterknife.BindView;
 import io.keinix.timesync.Fragments.CommentsFragment;
 import io.keinix.timesync.R;
@@ -43,18 +45,19 @@ public class CommentsAdapter extends RecyclerView.Adapter {
 
     private void populateComments() {
 
-           mCommentsInterface.getComments().enqueue(new Callback<CommentBase>() {
+           mCommentsInterface.getComments().enqueue(new Callback<List<CommentBase>>() {
                @Override
-               public void onResponse(Call<CommentBase> call, Response<CommentBase> response) {
+               public void onResponse(Call<List<CommentBase>> call, Response<List<CommentBase>> response) {
                     Log.d(TAG, "Call: " + call);
                     Log.d(TAG, "response: " + response);
                     Log.d(TAG, "body: " + response.body());
                }
 
                @Override
-               public void onFailure(Call<CommentBase> call, Throwable t) {
+               public void onFailure(Call<List<CommentBase>> call, Throwable t) {
                     Log.d(TAG, "OnFailure called for getComments");
                     Log.d(TAG, "Call: " + call.request());
+                    Log.d(TAG, t.toString());
                }
            });
     }

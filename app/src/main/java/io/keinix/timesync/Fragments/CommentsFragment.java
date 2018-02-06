@@ -16,6 +16,8 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.timesync.Activities.CommentsActivity;
@@ -29,7 +31,7 @@ import retrofit2.Call;
 public class CommentsFragment extends Fragment {
 
     public interface CommentsInterface {
-        Call<CommentBase> getComments();
+        Call<List<CommentBase>> getComments();
     }
 
     @Nullable @BindView(R.id.postDraweeView) SimpleDraweeView mPostDraweeView;

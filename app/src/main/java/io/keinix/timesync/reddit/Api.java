@@ -1,5 +1,6 @@
 package io.keinix.timesync.reddit;
 
+import java.util.List;
 import java.util.Map;
 
 import io.keinix.timesync.reddit.model.RedditAccessToken;
@@ -45,14 +46,13 @@ public interface Api {
 
     @GET("r/{subreddit}/comments/{article}/")
     @Headers({
-            "context: 8",
             "showedits: false",
             "showmore: true",
             "sort: top",
             "threaded: false",
             "truncate: 50"
     })
-    Call<CommentBase> getComments(
+    Call<List<CommentBase>> getComments(
         @Path("subreddit") String subreddit,
         @Path("article") String article,
         @Header("article") String postArticle

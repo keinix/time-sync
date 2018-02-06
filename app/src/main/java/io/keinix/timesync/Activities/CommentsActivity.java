@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.util.List;
+
 import io.keinix.timesync.Fragments.CommentsFragment;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.Api;
@@ -92,7 +94,7 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
     }
 
     @Override
-    public Call<CommentBase> getComments() {
+    public Call<List<CommentBase>> getComments() {
         return mApi.getComments(mPostSubredditNoPrefix, mPostArticle, mPostArticle);
     }
 }
