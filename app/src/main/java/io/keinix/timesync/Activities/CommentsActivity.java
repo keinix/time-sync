@@ -107,17 +107,36 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
         Gson gson = new Gson();
         List<Comment> comments = new ArrayList<>();
 
-        JsonElement commentRepliesJson = json.getAsJsonObject("data")
+        JsonElement commentRepliesJson = getRepliesJsonElement(json);
+        JsonElement commentJson = getCommentJsonElement(json);
+
+        do {
+            if (commentRepliesJson.isJsonPrimitive()) {
+                comments.add(gson.fromJson(commentJson, Comment.class));
+            } else {
+                comments.add(gson.fromJson(commentJson, Comment.class));
+                commentJson = commentRepliesJson;
+                commentRepliesJson = getRepliesJsonElement(commentJson.getAsJsonObject());
+            }
+
+        } while (!commentRepliesJson.isJsonPrimitive());
+
+        return comments;
+    }
+
+    public JsonElement getCommentJsonElement(JsonObject json) {
+        return json.getAsJsonObject("data")
+                .getAsJsonArray("children")
+                .get(0).getAsJsonObject()
+                .getAsJsonObject("data");
+    }
+
+    public JsonElement getRepliesJsonElement(JsonObject json) {
+        return json.getAsJsonObject("data")
                 .getAsJsonArray("children")
                 .get(0).getAsJsonObject()
                 .getAsJsonObject("data")
                 .get("replies");
-
-            if (!commentRepliesJson.isJsonPrimitive()) {
-
-            }
-
-
     }
 
     @Override
