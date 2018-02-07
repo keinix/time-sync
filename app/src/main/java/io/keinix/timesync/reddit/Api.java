@@ -1,5 +1,7 @@
 package io.keinix.timesync.reddit;
 
+import com.google.gson.JsonArray;
+
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +54,7 @@ public interface Api {
             "threaded: false",
             "truncate: 50"
     })
-    Call<List<CommentBase>> getComments(
+    Call<JsonArray> getComments(
         @Path("subreddit") String subreddit,
         @Path("article") String article,
         @Header("article") String postArticle

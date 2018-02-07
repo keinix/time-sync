@@ -6,9 +6,9 @@ import com.google.gson.annotations.SerializedName;
 public class Comment {
     //TODO: populate this model
 
-    @SerializedName("replies")
-    @Expose
-    private Replies mReplies;
+//    @SerializedName("replies")
+//    @Expose
+//    private Replies mReplies;
     @SerializedName("link_id")
     @Expose
     private String linkId;
@@ -43,13 +43,15 @@ public class Comment {
     @Expose
     private long createdUtc;
 
-    public Replies getReplies() {
-        return mReplies;
-    }
 
-    public void setReplies(Replies replies) {
-        mReplies = replies;
-    }
+
+//    public Object getReplies() {
+//        return mReplies;
+//    }
+//
+//    public void setReplies(Replies replies) {
+//        mReplies = replies;
+//    }
 
     public String getLinkId() {
         return linkId;
@@ -142,7 +144,7 @@ public class Comment {
     @Override
     public String toString() {
         return "Comment{" +
-                "mReplies=" + mReplies +
+                // "mReplies=" + mReplies +
                 ", linkId='" + linkId + '\'' +
                 ", id='" + id + '\'' +
                 ", gilded=" + gilded +

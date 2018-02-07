@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import java.util.List;
 
@@ -31,7 +33,7 @@ import retrofit2.Call;
 public class CommentsFragment extends Fragment {
 
     public interface CommentsInterface {
-        Call<List<CommentBase>> getComments();
+        Call<JsonArray> getComments();
     }
 
     @Nullable @BindView(R.id.postDraweeView) SimpleDraweeView mPostDraweeView;

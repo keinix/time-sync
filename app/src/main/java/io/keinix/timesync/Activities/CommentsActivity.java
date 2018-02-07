@@ -7,6 +7,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import io.keinix.timesync.Fragments.CommentsFragment;
@@ -15,6 +24,7 @@ import io.keinix.timesync.reddit.Api;
 import io.keinix.timesync.reddit.RedditAuthInterceptor;
 import io.keinix.timesync.reddit.RedditConstants;
 import io.keinix.timesync.reddit.TokenAuthenticator;
+import io.keinix.timesync.reddit.model.comment.Comment;
 import io.keinix.timesync.reddit.model.comment.CommentBase;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -93,8 +103,25 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
         mPostSubredditNoPrefix = intent.getStringExtra(KEY_POST_SUBREDDIT_NO_PREFIX);
     }
 
+    public List<Comment> parseComments(JsonObject json) {
+        Gson gson = new Gson();
+        List<Comment> comments = new ArrayList<>();
+
+        JsonElement commentRepliesJson = json.getAsJsonObject("data")
+                .getAsJsonArray("children")
+                .get(0).getAsJsonObject()
+                .getAsJsonObject("data")
+                .get("replies");
+
+            if (!commentRepliesJson.isJsonPrimitive()) {
+
+            }
+
+
+    }
+
     @Override
-    public Call<List<CommentBase>> getComments() {
+    public Call<JsonArray> getComments() {
         return mApi.getComments(mPostSubredditNoPrefix, mPostArticle, mPostArticle);
     }
 }

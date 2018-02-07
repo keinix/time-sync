@@ -6,12 +6,16 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+
 import java.util.List;
 
 import butterknife.BindView;
 import io.keinix.timesync.Fragments.CommentsFragment;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.model.comment.CommentBase;
+import io.keinix.timesync.reddit.model.comment.Replies;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -45,16 +49,19 @@ public class CommentsAdapter extends RecyclerView.Adapter {
 
     private void populateComments() {
 
-           mCommentsInterface.getComments().enqueue(new Callback<List<CommentBase>>() {
+           mCommentsInterface.getComments().enqueue(new Callback<JsonArray>() {
                @Override
-               public void onResponse(Call<List<CommentBase>> call, Response<List<CommentBase>> response) {
+               public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
                     Log.d(TAG, "Call: " + call);
                     Log.d(TAG, "response: " + response);
-                    Log.d(TAG, "body: " + response.body());
+
+                    if (response.isSuccessful()) {
+
+                    }
                }
 
                @Override
-               public void onFailure(Call<List<CommentBase>> call, Throwable t) {
+               public void onFailure(Call<JsonArray> call, Throwable t) {
                     Log.d(TAG, "OnFailure called for getComments");
                     Log.d(TAG, "Call: " + call.request());
                     Log.d(TAG, t.toString());
