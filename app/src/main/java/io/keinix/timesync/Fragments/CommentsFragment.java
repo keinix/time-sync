@@ -25,6 +25,7 @@ import butterknife.ButterKnife;
 import io.keinix.timesync.Activities.CommentsActivity;
 import io.keinix.timesync.R;
 import io.keinix.timesync.adapters.CommentsAdapter;
+import io.keinix.timesync.reddit.model.comment.Comment;
 import io.keinix.timesync.reddit.model.comment.CommentBase;
 import retrofit2.Call;
 
@@ -34,6 +35,7 @@ public class CommentsFragment extends Fragment {
 
     public interface CommentsInterface {
         Call<JsonArray> getComments();
+        List<Comment> parseComments(JsonObject json);
     }
 
     @Nullable @BindView(R.id.postDraweeView) SimpleDraweeView mPostDraweeView;

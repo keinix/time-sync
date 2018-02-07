@@ -103,23 +103,27 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
         mPostSubredditNoPrefix = intent.getStringExtra(KEY_POST_SUBREDDIT_NO_PREFIX);
     }
 
+
+
+    @Override
     public List<Comment> parseComments(JsonObject json) {
         Gson gson = new Gson();
         List<Comment> comments = new ArrayList<>();
 
-        JsonElement commentRepliesJson = getRepliesJsonElement(json);
-        JsonElement commentJson = getCommentJsonElement(json);
+        JsonElement commentJson = json.get("data");
+        JsonElement commentRepliesJson = commentJson.getAsJsonObject().get("replies");
+        boolean hasAnotherReply = true;
 
         do {
             if (commentRepliesJson.isJsonPrimitive()) {
                 comments.add(gson.fromJson(commentJson, Comment.class));
+                hasAnotherReply = false;
             } else {
                 comments.add(gson.fromJson(commentJson, Comment.class));
                 commentJson = commentRepliesJson;
                 commentRepliesJson = getRepliesJsonElement(commentJson.getAsJsonObject());
             }
-
-        } while (!commentRepliesJson.isJsonPrimitive());
+        } while (hasAnotherReply);
 
         return comments;
     }
