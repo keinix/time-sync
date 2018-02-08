@@ -5,16 +5,13 @@ import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +22,6 @@ import io.keinix.timesync.reddit.RedditAuthInterceptor;
 import io.keinix.timesync.reddit.RedditConstants;
 import io.keinix.timesync.reddit.TokenAuthenticator;
 import io.keinix.timesync.reddit.model.comment.Comment;
-import io.keinix.timesync.reddit.model.comment.CommentBase;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -109,22 +105,20 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
     public List<Comment> parseComments(JsonObject json) {
         Gson gson = new Gson();
         List<Comment> comments = new ArrayList<>();
-
-        JsonElement commentJson = json.get("data");
-        JsonElement commentRepliesJson = commentJson.getAsJsonObject().get("replies");
-        boolean hasAnotherReply = true;
+        ArrayDeque<JsonObject> commentStack = new ArrayDeque<>();
+        commentStack.add(json);
 
         do {
-            if (commentRepliesJson.isJsonPrimitive()) {
-                comments.add(gson.fromJson(commentJson, Comment.class));
-                hasAnotherReply = false;
-            } else {
-                comments.add(gson.fromJson(commentJson, Comment.class));
-                commentJson = commentRepliesJson;
-                commentRepliesJson = getRepliesJsonElement(commentJson.getAsJsonObject());
-            }
-        } while (hasAnotherReply);
+            JsonObject currentComment = commentStack.pop();
+            JsonObject currentReplies = currentComment.getAsJsonObject("data").getAsJsonObject("replies");
 
+            if (currentReplies.isJsonPrimitive()) {
+                comments.add(gson.fromJson(currentComment, Comment.class));
+            } else {
+                comments.add(gson.fromJson(currentComment, Comment.class));
+                commentStack.addAll(getReplyChildren(currentComment));
+            }
+        } while (!commentStack.isEmpty());
         return comments;
     }
 
@@ -135,12 +129,18 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
                 .getAsJsonObject("data");
     }
 
-    public JsonElement getRepliesJsonElement(JsonObject json) {
-        return json.getAsJsonObject("data")
-                .getAsJsonArray("children")
-                .get(0).getAsJsonObject()
-                .getAsJsonObject("data")
-                .get("replies");
+    public List<JsonObject> getReplyChildren(JsonObject json) {
+        JsonArray repliesArray = json.getAsJsonObject("data").getAsJsonArray("children");
+        List<JsonObject> replyChildren = new ArrayList<>();
+
+        for (JsonElement reply : repliesArray) {
+            replyChildren
+                    .add(reply.getAsJsonObject()
+                    .getAsJsonObject("data")
+                    .get("replies")
+                    .getAsJsonObject());
+        }
+        return replyChildren;
     }
 
     @Override
