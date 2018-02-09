@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -106,27 +107,20 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
         Gson gson = new Gson();
         List<Comment> comments = new ArrayList<>();
         ArrayDeque<JsonObject> commentStack = new ArrayDeque<>();
-        commentStack.add(json);
+        commentStack.add(json.getAsJsonObject("data"));
 
         do {
             JsonObject currentComment = commentStack.pop();
-            JsonObject currentReplies = currentComment.getAsJsonObject("data").getAsJsonObject("replies");
+            JsonElement currentReplies = currentComment.get("replies");
 
             if (currentReplies.isJsonPrimitive()) {
                 comments.add(gson.fromJson(currentComment, Comment.class));
             } else {
                 comments.add(gson.fromJson(currentComment, Comment.class));
-                commentStack.addAll(getReplyChildren(currentComment));
+                commentStack.addAll(getReplyChildren(currentReplies.getAsJsonObject()));
             }
         } while (!commentStack.isEmpty());
         return comments;
-    }
-
-    public JsonElement getCommentJsonElement(JsonObject json) {
-        return json.getAsJsonObject("data")
-                .getAsJsonArray("children")
-                .get(0).getAsJsonObject()
-                .getAsJsonObject("data");
     }
 
     public List<JsonObject> getReplyChildren(JsonObject json) {
@@ -134,17 +128,13 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
         List<JsonObject> replyChildren = new ArrayList<>();
 
         for (JsonElement reply : repliesArray) {
-            replyChildren
-                    .add(reply.getAsJsonObject()
-                    .getAsJsonObject("data")
-                    .get("replies")
-                    .getAsJsonObject());
+            replyChildren.add(reply.getAsJsonObject().getAsJsonObject("data"));
         }
         return replyChildren;
     }
 
     @Override
-    public Call<JsonArray> getComments() {
+    public Call<JsonElement> getComments() {
         return mApi.getComments(mPostSubredditNoPrefix, mPostArticle, mPostArticle);
     }
 }

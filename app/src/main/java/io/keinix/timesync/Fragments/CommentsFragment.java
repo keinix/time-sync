@@ -16,6 +16,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.List;
@@ -34,7 +35,7 @@ import retrofit2.Call;
 public class CommentsFragment extends Fragment {
 
     public interface CommentsInterface {
-        Call<JsonArray> getComments();
+        Call<JsonElement> getComments();
         List<Comment> parseComments(JsonObject json);
     }
 

@@ -51,22 +51,22 @@ public class CommentsAdapter extends RecyclerView.Adapter {
 
     private void populateComments() {
 
-           mCommentsInterface.getComments().enqueue(new Callback<JsonArray>() {
+           mCommentsInterface.getComments().enqueue(new Callback<JsonElement>() {
                @Override
-               public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
+               public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                     Log.d(TAG, "Call: " + call);
                     Log.d(TAG, "response: " + response);
 
                     if (response.isSuccessful()) {
                         Log.d(TAG, "Responce: " + response.body().toString());
-                        JsonArray baseCommentArray = response.body();
-                        createCommentTree(baseCommentArray);
+                        JsonElement baseCommentElement = response.body();
+                        createCommentTree(baseCommentElement);
                         Log.d(TAG, "Comment Tree Length: " + mCommentTree.size());
                     }
                }
 
                @Override
-               public void onFailure(Call<JsonArray> call, Throwable t) {
+               public void onFailure(Call<JsonElement> call, Throwable t) {
                     Log.d(TAG, "OnFailure called for getComments");
                     Log.d(TAG, "Call: " + call.request());
                     Log.d(TAG, t.toString());
@@ -74,12 +74,15 @@ public class CommentsAdapter extends RecyclerView.Adapter {
            });
     }
 
-    public void createCommentTree(JsonArray jsonArray) {
-        JsonArray commentArray = jsonArray
-                .get(1)
-                .getAsJsonObject()
-                .getAsJsonObject("data")
-                .getAsJsonArray("children");
+    public void createCommentTree(JsonElement baseCommentElement) {
+        int commentArrayIndex = baseCommentElement.getAsJsonArray().size() == 1 ? 0 : 1;
+
+        JsonArray commentArray = baseCommentElement
+                    .getAsJsonArray()
+                    .get(commentArrayIndex)
+                    .getAsJsonObject()
+                    .getAsJsonObject("data")
+                    .getAsJsonArray("children");
 
         for (JsonElement comment : commentArray) {
            mCommentTree.addAll(mCommentsInterface.parseComments(comment.getAsJsonObject()));
