@@ -1,18 +1,22 @@
 package io.keinix.timesync.adapters;
 
+import android.support.constraint.ConstraintLayout;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.keinix.timesync.Fragments.CommentsFragment;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.model.comment.Comment;
@@ -36,17 +40,18 @@ public class CommentsAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return null;
+        View commentItemView  =LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_item, parent, false);
+        return new CommentsViewHolder(commentItemView);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
+        ((CommentsViewHolder) holder).bindView(position);
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mCommentTree.size();
     }
 
     private void populateComments() {
@@ -60,7 +65,9 @@ public class CommentsAdapter extends RecyclerView.Adapter {
                     if (response.isSuccessful()) {
                         Log.d(TAG, "Responce: " + response.body().toString());
                         JsonElement baseCommentElement = response.body();
-                        createCommentTree(baseCommentElement);
+                        mCommentTree = mCommentsInterface.createCommentTree(baseCommentElement);
+                        Log.d(TAG, mCommentTree.get(0).toString());
+                        notifyDataSetChanged();
                         Log.d(TAG, "Comment Tree Length: " + mCommentTree.size());
                     }
                }
@@ -74,35 +81,51 @@ public class CommentsAdapter extends RecyclerView.Adapter {
            });
     }
 
-    public void createCommentTree(JsonElement baseCommentElement) {
-        int commentArrayIndex = baseCommentElement.getAsJsonArray().size() == 1 ? 0 : 1;
-
-        JsonArray commentArray = baseCommentElement
-                    .getAsJsonArray()
-                    .get(commentArrayIndex)
-                    .getAsJsonObject()
-                    .getAsJsonObject("data")
-                    .getAsJsonArray("children");
-
-        for (JsonElement comment : commentArray) {
-           mCommentTree.addAll(mCommentsInterface.parseComments(comment.getAsJsonObject()));
-        }
-    }
-
-
-    public class CommentsViewHolder {
+    public class CommentsViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.commentDetailsTextView) TextView detailsTextView;
-        @BindView(R.id.commentTextTextView) TextView TextTextView;
-        @BindView(R.id.commentReplyImageButton) ImageButton ReplyImageButton;
+        @BindView(R.id.commentTextTextView) TextView textTextView;
+        @BindView(R.id.commentReplyImageButton) ImageButton replyImageButton;
         @BindView(R.id.commentUpVoteImageButton) ImageButton upVoteImageButton;
         @BindView(R.id.commentUpCount) TextView upCountTextView;
         @BindView(R.id.commentDownVoteImageButton) ImageButton downVoteImageButton;
+        @BindView(R.id.commentCardView) CardView baseConstraintLayout;
+        private int mPostion;
 
+        public CommentsViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
 
 
         public void bindView(int position) {
+            mPostion = position;
+            Comment comment = mCommentTree.get(position);
+            detailsTextView.setText("u/" + comment.getAuthor());
+            textTextView.setText(comment.getBody());
+            upCountTextView.setText(String.valueOf(comment.getScore()));
+            setCommentTreeMargins(baseConstraintLayout, comment);
+        }
+
+        public void setCommentTreeMargins(CardView item, Comment comment) {
+            CardView.LayoutParams layoutParams = new CardView.LayoutParams(
+                    CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.WRAP_CONTENT);
+            int topMargin = 10;
+            if (mPostion >= 1) {
+                topMargin = comment.getDepth() == 0 ? 10 : 0;
+            }
+            layoutParams.setMargins(Math.max(comment.getDepth() * 20, 4), topMargin, 4, 0);
+            item.setLayoutParams(layoutParams);
 
         }
+
+//        public int setReplyColor(Comment comment) {
+//
+//            switch (comment.getDepth()) {
+//                case 1:
+//
+//            }
+//            return null;
+//        }
     }
 }

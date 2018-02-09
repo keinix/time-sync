@@ -42,10 +42,19 @@ public class Comment {
     @SerializedName("created_utc")
     @Expose
     private long createdUtc;
+    @SerializedName("depth")
+    @Expose
+    private int depth;
 
+    public int getDepth() {
+        return depth;
+    }
 
+    public void setDepth(int depth) {
+        this.depth = depth;
+    }
 
-//    public Object getReplies() {
+    //    public Object getReplies() {
 //        return mReplies;
 //    }
 //
@@ -144,8 +153,7 @@ public class Comment {
     @Override
     public String toString() {
         return "Comment{" +
-                // "mReplies=" + mReplies +
-                ", linkId='" + linkId + '\'' +
+                "linkId='" + linkId + '\'' +
                 ", id='" + id + '\'' +
                 ", gilded=" + gilded +
                 ", author='" + author + '\'' +
@@ -156,6 +164,7 @@ public class Comment {
                 ", isCollasped=" + isCollasped +
                 ", isSubmitter=" + isSubmitter +
                 ", createdUtc=" + createdUtc +
+                ", depth=" + depth +
                 '}';
     }
 }

@@ -36,7 +36,7 @@ public class CommentsFragment extends Fragment {
 
     public interface CommentsInterface {
         Call<JsonElement> getComments();
-        List<Comment> parseComments(JsonObject json);
+        List<Comment> createCommentTree(JsonElement baseCommentElement);
     }
 
     @Nullable @BindView(R.id.postDraweeView) SimpleDraweeView mPostDraweeView;

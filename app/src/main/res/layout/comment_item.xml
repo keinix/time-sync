@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/commentCardView"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="4dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
 <android.support.constraint.ConstraintLayout
+    android:id="@+id/baseConstraintLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:background="@android:color/black"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/commentDetailsTextView"
@@ -36,7 +45,7 @@
         android:layout_height="24dp"
         android:layout_marginEnd="48dp"
         android:background="@null"
-        android:src="@drawable/ic_reply_white_36dp"
+        android:src="@drawable/ic_reply_white_24dp"
         app:layout_constraintEnd_toStartOf="@+id/commentUpVoteImageButton"
         app:layout_constraintTop_toBottomOf="@+id/commentTextTextView"/>
 
@@ -77,9 +86,11 @@
         android:layout_height="24dp"
         android:layout_marginEnd="64dp"
         android:background="@null"
-        android:src="@android:drawable/ic_menu_preferences"
+        android:src="@drawable/ic_menu_white_24dp"
         app:layout_constraintEnd_toStartOf="@+id/commentReplyImageButton"
         app:layout_constraintTop_toBottomOf="@+id/commentTextTextView"/>
 
 
 </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>

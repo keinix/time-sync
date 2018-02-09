@@ -14,6 +14,7 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 
 import io.keinix.timesync.Fragments.CommentsFragment;
@@ -100,13 +101,31 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
         mPostSubredditNoPrefix = intent.getStringExtra(KEY_POST_SUBREDDIT_NO_PREFIX);
     }
 
-
-
     @Override
+    public List<Comment> createCommentTree(JsonElement baseCommentElement) {
+        int commentArrayIndex = baseCommentElement.getAsJsonArray().size() == 1 ? 0 : 1;
+        List<Comment> tempCommentTree = new ArrayList<>();
+        Log.d(TAG, "Json Length: " + baseCommentElement.getAsJsonArray().size());
+
+        //TODO: not being parsed correctly when size == 1
+        JsonArray commentArray = baseCommentElement
+                .getAsJsonArray()
+                .get(commentArrayIndex)
+                .getAsJsonObject()
+                .getAsJsonObject("data")
+                .getAsJsonArray("children");
+
+        for (JsonElement comment : commentArray) {
+            tempCommentTree.addAll(parseComments(comment.getAsJsonObject()));
+        }
+        return tempCommentTree;
+    }
+
+
     public List<Comment> parseComments(JsonObject json) {
         Gson gson = new Gson();
         List<Comment> comments = new ArrayList<>();
-        ArrayDeque<JsonObject> commentStack = new ArrayDeque<>();
+        Deque<JsonObject> commentStack = new ArrayDeque<>();
         commentStack.add(json.getAsJsonObject("data"));
 
         do {
