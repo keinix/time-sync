@@ -43,6 +43,7 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
     public static final String KEY_POST_ID = "KEY_POST_ID";
     public static final String KEY_POST_ARTICLE = "KEY_POST_ARTICLE";
     public static final String KEY_POST_SUBREDDIT_NO_PREFIX ="KEY_POST_SUBREDDIT_NO_PREFIX";
+    public static final String KEY_SELF_TEXT = "KEY_SELF_TEXT";
 
     public static final String VALUE_IMAGE_COMMENTS_LAYOUT = "VALUE_IMAGE_COMMENTS_LAYOUT";
     public static final String VALUE_GIF_COMMENTS_LAYOUT = "VALUE_GIF_COMMENTS_LAYOUT";
@@ -138,11 +139,13 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
             JsonObject currentComment = commentStack.pop();
             JsonElement currentReplies = currentComment.get("replies");
 
-            if (currentReplies.isJsonPrimitive()) {
-                comments.add(gson.fromJson(currentComment, Comment.class));
-            } else {
-                comments.add(gson.fromJson(currentComment, Comment.class));
-                commentStack.addAll(getReplyChildren(currentReplies.getAsJsonObject()));
+            if (currentReplies != null) {
+                if (currentReplies.isJsonPrimitive()) {
+                    comments.add(gson.fromJson(currentComment, Comment.class));
+                } else {
+                    comments.add(gson.fromJson(currentComment, Comment.class));
+                    commentStack.addAll(getReplyChildren(currentReplies.getAsJsonObject()));
+                }
             }
         } while (!commentStack.isEmpty());
         return comments;

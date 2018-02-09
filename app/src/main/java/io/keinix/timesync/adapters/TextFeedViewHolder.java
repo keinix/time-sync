@@ -24,12 +24,21 @@ public class TextFeedViewHolder extends BaseFeedViewHolder {
         super.bindView(position);
         Data_ post = mAdapter.getRedditFeed().getData().getChildren().get(position).getData();
         selfTextView.setText(post.getSelfText());
+        long timeSincePosted = getTimeSincePosted(post.getCreatedUtc());
+        String postDetails = "u/" +post.getAuthor() + " \u2022 "
+                + timeSincePosted + "h";
 
         commentImageButton.setOnClickListener(v -> {
             Intent intent = new Intent(mFeedItemInterface.getContext(), CommentsActivity.class);
             intent.putExtra(CommentsActivity.KEY_COMMENTS_LAYOUT_TYPE, CommentsActivity.VALUE_TEXT_COMMENTS_LAYOUT);
+            intent.putExtra(CommentsActivity.KEY_POST_SUBREDDIT, post.getSubredditNamePrefixed());
+            intent.putExtra(CommentsActivity.KEY_POST_SUBREDDIT_NO_PREFIX, post.getSubreddit());
+            intent.putExtra(CommentsActivity.KEY_POST_TITLE, post.getTitle());
+            intent.putExtra(CommentsActivity.KEY_POST_ID, post.getName());
+            intent.putExtra(CommentsActivity.KEY_POST_DETAILS, postDetails);
+            intent.putExtra(CommentsActivity.KEY_POST_ARTICLE, post.getId());
+            intent.putExtra(CommentsActivity.KEY_SELF_TEXT, post.getSelfText());
             mFeedItemInterface.getContext().startActivity(intent);
-
         });
     }
 }

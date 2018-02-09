@@ -85,10 +85,11 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
         }
     }
 
+    //TODO:bug where a link has no picture (post hint is normally null in this case)
     @Override
     public int getItemViewType(int position) {
         Data_ post = mRedditFeed.getData().getChildren().get(position).getData();
-        if (post.isSelf() && post.getPreview() == null) {
+        if ((post.isSelf()) && post.getPreview() == null) {
             return VIEW_ITEM_TYPE_TEXT;
         } else if (post.getDomain().equals("v.redd.it")) {
             return VIEW_ITEM_TYPE_VIDEO;

@@ -68,7 +68,6 @@ public class CommentsAdapter extends RecyclerView.Adapter {
                     Log.d(TAG, "Responce: " + response.body().toString());
                     JsonElement baseCommentElement = response.body();
                     mCommentTree = mCommentsInterface.createCommentTree(baseCommentElement);
-                    Log.d(TAG, mCommentTree.get(0).toString());
                     notifyDataSetChanged();
                     mCommentsProgressBar.setVisibility(View.GONE);
                     Log.d(TAG, "Comment Tree Length: " + mCommentTree.size());

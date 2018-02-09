@@ -43,8 +43,11 @@ public class CommentsFragment extends Fragment {
     }
 
     @Nullable @BindView(R.id.postDraweeView) SimpleDraweeView mPostDraweeView;
+    @Nullable @BindView(R.id.commentsTextPostTitle) TextView mCommentsTextPostTitle;
+    @Nullable @BindView(R.id.commentText) TextView mCommentText;
+    @Nullable @BindView(R.id.commentsPostTitle) TextView mCommentsPostTitle;
+
     @BindView(R.id.commentsPostInfo) TextView mCommentsPostDetails;
-    @BindView(R.id.commentsPostTitle) TextView mCommentsPostTitle;
     @BindView(R.id.commentsSubRedditName) TextView mCommentsSubreddit;
     @BindView(R.id.commentsRecyclerView) RecyclerView mCommentsRecyclerView;
     @BindView(R.id.commentsProgressBar) ProgressBar mcommentsProgressBar;
@@ -56,12 +59,18 @@ public class CommentsFragment extends Fragment {
     private String mPostDetails;
     private String mPostID;
     private String mPostSubreddit;
-    private String mPostArticle;
+    private String mSelfText;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_comments_image, container, false);
+        View view;
+        if (getActivity().getIntent().getStringExtra(CommentsActivity.KEY_COMMENTS_LAYOUT_TYPE)
+                .equals(CommentsActivity.VALUE_TEXT_COMMENTS_LAYOUT)) {
+            view = inflater.inflate(R.layout.fragment_comments_text, container, false);
+        } else {
+        view = inflater.inflate(R.layout.fragment_comments_image, container, false);
+        }
         ButterKnife.bind(this, view);
         unPackIntent();
         mCommentsInterface = (CommentsInterface) getActivity();
@@ -78,6 +87,7 @@ public class CommentsFragment extends Fragment {
                 setGifImage();
                 break;
             case CommentsActivity.VALUE_TEXT_COMMENTS_LAYOUT:
+                bindTextCommentsView();
                 break;
             case CommentsActivity.VALUE_VIDEO_COMMENTS_LAYOUT:
                 break;
@@ -91,13 +101,24 @@ public class CommentsFragment extends Fragment {
         mPostDetails = intent.getStringExtra(CommentsActivity.KEY_POST_DETAILS);
         mPostID = intent.getStringExtra(CommentsActivity.KEY_POST_ID);
         mPostSubreddit = intent.getStringExtra(CommentsActivity.KEY_POST_SUBREDDIT);
-        mPostArticle = intent.getStringExtra(CommentsActivity.KEY_POST_ARTICLE);
+        if (intent.getStringExtra(CommentsActivity.KEY_SELF_TEXT) != null) {
+            mSelfText = intent.getStringExtra(CommentsActivity.KEY_SELF_TEXT);
+        }
+
     }
 
     private void bindCommentsView() {
         mCommentsPostDetails.setText(mPostDetails);
         mCommentsPostTitle.setText(mPostTitle);
         mCommentsSubreddit.setText(mPostSubreddit);
+    }
+
+    private void bindTextCommentsView() {
+        mCommentsTextPostTitle.setText(mPostTitle);
+        mCommentText.setText(mSelfText);
+        mCommentsSubreddit.setText(mPostSubreddit);
+        mCommentsPostDetails.setText(mPostDetails);
+
     }
 
     private void setRecyclerView() {
