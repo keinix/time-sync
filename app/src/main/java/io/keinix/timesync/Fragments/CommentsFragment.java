@@ -1,5 +1,6 @@
 package io.keinix.timesync.Fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -37,6 +39,7 @@ public class CommentsFragment extends Fragment {
     public interface CommentsInterface {
         Call<JsonElement> getComments();
         List<Comment> createCommentTree(JsonElement baseCommentElement);
+        CommentsActivity getContext();
     }
 
     @Nullable @BindView(R.id.postDraweeView) SimpleDraweeView mPostDraweeView;
@@ -44,7 +47,7 @@ public class CommentsFragment extends Fragment {
     @BindView(R.id.commentsPostTitle) TextView mCommentsPostTitle;
     @BindView(R.id.commentsSubRedditName) TextView mCommentsSubreddit;
     @BindView(R.id.commentsRecyclerView) RecyclerView mCommentsRecyclerView;
-
+    @BindView(R.id.commentsProgressBar) ProgressBar mcommentsProgressBar;
     public static final String KEY_INDEX = "KEY_INDEX";
 
     private CommentsInterface mCommentsInterface;
@@ -98,7 +101,7 @@ public class CommentsFragment extends Fragment {
     }
 
     private void setRecyclerView() {
-        mCommentsRecyclerView.setAdapter(new CommentsAdapter(mCommentsInterface));
+        mCommentsRecyclerView.setAdapter(new CommentsAdapter(mCommentsInterface, mcommentsProgressBar));
         mCommentsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 

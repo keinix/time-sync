@@ -1,6 +1,5 @@
 package io.keinix.timesync.adapters;
 
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -8,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.gson.JsonElement;
@@ -30,17 +30,19 @@ public class CommentsAdapter extends RecyclerView.Adapter {
 
     private CommentsFragment.CommentsInterface mCommentsInterface;
     private List<Comment> mCommentTree;
+    private ProgressBar mCommentsProgressBar;
 
-    public CommentsAdapter(CommentsFragment.CommentsInterface commentsInterface) {
+    public CommentsAdapter(CommentsFragment.CommentsInterface commentsInterface, ProgressBar progressBar) {
         mCommentsInterface = commentsInterface;
         mCommentTree = new ArrayList<>();
+        mCommentsProgressBar = progressBar;
         populateComments();
         Log.d(TAG, "CommentAdapter created");
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View commentItemView  =LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_item, parent, false);
+        View commentItemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_item, parent, false);
         return new CommentsViewHolder(commentItemView);
     }
 
@@ -56,29 +58,30 @@ public class CommentsAdapter extends RecyclerView.Adapter {
 
     private void populateComments() {
 
-           mCommentsInterface.getComments().enqueue(new Callback<JsonElement>() {
-               @Override
-               public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
-                    Log.d(TAG, "Call: " + call);
-                    Log.d(TAG, "response: " + response);
+       mCommentsInterface.getComments().enqueue(new Callback<JsonElement>() {
+           @Override
+           public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                Log.d(TAG, "Call: " + call);
+                Log.d(TAG, "response: " + response);
 
-                    if (response.isSuccessful()) {
-                        Log.d(TAG, "Responce: " + response.body().toString());
-                        JsonElement baseCommentElement = response.body();
-                        mCommentTree = mCommentsInterface.createCommentTree(baseCommentElement);
-                        Log.d(TAG, mCommentTree.get(0).toString());
-                        notifyDataSetChanged();
-                        Log.d(TAG, "Comment Tree Length: " + mCommentTree.size());
-                    }
-               }
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "Responce: " + response.body().toString());
+                    JsonElement baseCommentElement = response.body();
+                    mCommentTree = mCommentsInterface.createCommentTree(baseCommentElement);
+                    Log.d(TAG, mCommentTree.get(0).toString());
+                    notifyDataSetChanged();
+                    mCommentsProgressBar.setVisibility(View.GONE);
+                    Log.d(TAG, "Comment Tree Length: " + mCommentTree.size());
+                }
+           }
 
-               @Override
-               public void onFailure(Call<JsonElement> call, Throwable t) {
-                    Log.d(TAG, "OnFailure called for getComments");
-                    Log.d(TAG, "Call: " + call.request());
-                    Log.d(TAG, t.toString());
-               }
-           });
+           @Override
+           public void onFailure(Call<JsonElement> call, Throwable t) {
+                Log.d(TAG, "OnFailure called for getComments");
+                Log.d(TAG, "Call: " + call.request());
+                Log.d(TAG, t.toString());
+           }
+       });
     }
 
     public class CommentsViewHolder extends RecyclerView.ViewHolder {
@@ -97,11 +100,15 @@ public class CommentsAdapter extends RecyclerView.Adapter {
             ButterKnife.bind(this, itemView);
         }
 
-
+        //TODO:add html and hyperlink/subreddit parsing
         public void bindView(int position) {
             mPostion = position;
             Comment comment = mCommentTree.get(position);
-            detailsTextView.setText("u/" + comment.getAuthor());
+            String commentDetails = "u/"
+                    + comment.getAuthor()
+                    + " \u2022 "
+                    + getTimeSincePosted(comment.getCreatedUtc()) + "h";
+            detailsTextView.setText(commentDetails);
             textTextView.setText(comment.getBody());
             upCountTextView.setText(String.valueOf(comment.getScore()));
             setCommentTreeMargins(baseConstraintLayout, comment);
@@ -114,18 +121,15 @@ public class CommentsAdapter extends RecyclerView.Adapter {
             if (mPostion >= 1) {
                 topMargin = comment.getDepth() == 0 ? 10 : 0;
             }
-            layoutParams.setMargins(Math.max(comment.getDepth() * 20, 4), topMargin, 4, 0);
+            layoutParams.setMargins(Math.max(comment.getDepth() * 20, 6), topMargin, 6, 0);
             item.setLayoutParams(layoutParams);
 
         }
 
-//        public int setReplyColor(Comment comment) {
-//
-//            switch (comment.getDepth()) {
-//                case 1:
-//
-//            }
-//            return null;
-//        }
+        protected long getTimeSincePosted(long createdUtc) {
+            long systemTime = System.currentTimeMillis() / 1000;
+            return ((systemTime - createdUtc) / 60) / 60;
+        }
+
     }
 }
