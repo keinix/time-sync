@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
     public static final String TAG_MESSAGES_FRAGMENT = "TAG_MESSAGES_FRAGMENT";
     public static final String TAB_ACCOUNT_FRAGMENT = "TAB_ACCOUNT_FRAGMENT";
     public static final String TAG_VIEW_PAGER_FRAGMENT = "TAG_VIEW_PAGER_FRAGMENT";
-    public static final String TAG_COMMENTS_FRAGMENT = "TAG_COMMENTS_FRAGMENT";
+    public static final String TAG_COMMENTS_FRAGMENT = "TAG_COMMENTS_NORMAL_FRAGMENT";
     public static final String EXTRA_REDDIT_TOKEN = "EXTRA_REDDIT_TOKEN";
 
     public AccountManager mAccountManager;

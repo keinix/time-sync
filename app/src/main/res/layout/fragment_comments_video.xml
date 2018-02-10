@@ -11,42 +11,39 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:nestedScrollingEnabled="true">
+        android:orientation="vertical">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/black">
 
-            <TextView
-                android:id="@+id/commentsTextPostTitle"
+            <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+                android:id="@+id/postExoPlayer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
-                android:text="Testing some"
-                android:textSize="19sp"
-                android:textColor="@android:color/white"
                 android:background="@android:color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/commentsSubRedditName"
                 app:layout_constraintVertical_bias="0.0"
-                />
+                fresco:actualImageScaleType="fitCenter"/>
 
             <TextView
-                android:id="@+id/commentText"
+                android:id="@+id/commentsPostTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:text="Check out this super interesting post title"
-                android:textColor="@color/colorCountText"
+                android:textColor="@android:color/white"
+                android:textSize="19sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/commentsTextPostTitle"/>
+                app:layout_constraintTop_toBottomOf="@+id/postExoPlayer"/>
 
             <TextView
                 android:id="@+id/commentsSubRedditName"
@@ -73,13 +70,12 @@
                 android:textColor="@color/colorAccent"
                 android:paddingBottom="6dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/commentText"/>
+                app:layout_constraintTop_toBottomOf="@+id/commentsPostTitle"/>
 
         </android.support.constraint.ConstraintLayout>
 
         <ProgressBar
             android:id="@+id/commentsProgressBar"
-            android:nestedScrollingEnabled="true"
             android:layout_width="42dp"
             android:layout_height="42dp"
             android:layout_marginTop="20dp"
@@ -87,8 +83,8 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/commentsRecyclerView"
-            android:nestedScrollingEnabled="false"
             android:layout_width="match_parent"
+            android:nestedScrollingEnabled="false"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             />

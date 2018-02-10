@@ -40,8 +40,19 @@ public class VideoFeedViewHolder extends BaseFeedViewHolder implements ToroPlaye
                 .getScrubberMediaUrl());
 
         commentImageButton.setOnClickListener(v -> {
+            long timeSincePosted = getTimeSincePosted(post.getCreatedUtc());
+            String postDetails = "u/" +post.getAuthor() + " \u2022 "
+                    + timeSincePosted + "h";
+
             Intent intent = new Intent(mFeedItemInterface.getContext(), CommentsActivity.class);
             intent.putExtra(CommentsActivity.KEY_COMMENTS_LAYOUT_TYPE, CommentsActivity.VALUE_VIDEO_COMMENTS_LAYOUT);
+            intent.putExtra(CommentsActivity.KEY_VIDEO_URI, mVideoUri.toString());
+            intent.putExtra(CommentsActivity.KEY_POST_SUBREDDIT, post.getSubredditNamePrefixed());
+            intent.putExtra(CommentsActivity.KEY_POST_SUBREDDIT_NO_PREFIX, post.getSubreddit());
+            intent.putExtra(CommentsActivity.KEY_POST_TITLE, post.getTitle());
+            intent.putExtra(CommentsActivity.KEY_POST_ID, post.getName());
+            intent.putExtra(CommentsActivity.KEY_POST_DETAILS, postDetails);
+            intent.putExtra(CommentsActivity.KEY_POST_ARTICLE, post.getId());
             mFeedItemInterface.getContext().startActivity(intent);
         });
     }

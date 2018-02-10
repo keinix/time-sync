@@ -1,7 +1,6 @@
 package io.keinix.timesync.Activities;
 
 import android.accounts.AccountManager;
-import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +18,7 @@ import java.util.Deque;
 import java.util.List;
 
 import io.keinix.timesync.Fragments.CommentsFragment;
+import io.keinix.timesync.Fragments.CommentsFragmentVideo;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.Api;
 import io.keinix.timesync.reddit.RedditAuthInterceptor;
@@ -33,7 +33,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CommentsActivity extends AppCompatActivity implements CommentsFragment.CommentsInterface{
 
-    public static final String TAG_COMMENTS_FRAGMENT = "TAG_COMMENTS_FRAGMENT";
+    public static final String TAG_COMMENTS_NORMAL_FRAGMENT = "TAG_COMMENTS_NORMAL_FRAGMENT";
+    public static final String TAG_COMMENTS_VIDEO_FRAGMENT = "TAG_COMMENTS_VIDEO_FRAGMENT";
     public static final String KEY_COMMENTS_LAYOUT_TYPE = "KEY_COMMENTS_LAYOUT_TYPE";
 
     public static final String KEY_IMAGE_URL = "KEY_IMAGE_URL";
@@ -44,6 +45,7 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
     public static final String KEY_POST_ARTICLE = "KEY_POST_ARTICLE";
     public static final String KEY_POST_SUBREDDIT_NO_PREFIX ="KEY_POST_SUBREDDIT_NO_PREFIX";
     public static final String KEY_SELF_TEXT = "KEY_SELF_TEXT";
+    public static final String KEY_VIDEO_URI = "KEY_VIDEO_URI";
 
     public static final String VALUE_IMAGE_COMMENTS_LAYOUT = "VALUE_IMAGE_COMMENTS_LAYOUT";
     public static final String VALUE_GIF_COMMENTS_LAYOUT = "VALUE_GIF_COMMENTS_LAYOUT";
@@ -69,14 +71,26 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
         mAccountManager = AccountManager.get(this);
         unPackIntent();
         initApi();
+        launchFragment();
+    }
 
-        CommentsFragment savedFragment = (CommentsFragment) getSupportFragmentManager().findFragmentByTag(TAG_COMMENTS_FRAGMENT);
-
-        if (savedFragment == null) {
-            CommentsFragment commentsFragment = new CommentsFragment();
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.add(R.id.commentsPlaceHolder, commentsFragment, TAG_COMMENTS_FRAGMENT);
-            fragmentTransaction.commit();
+    private void launchFragment() {
+        if (mPostLayoutType.equals(VALUE_VIDEO_COMMENTS_LAYOUT)) {
+            CommentsFragmentVideo savedFragment = (CommentsFragmentVideo) getSupportFragmentManager().findFragmentByTag(TAG_COMMENTS_NORMAL_FRAGMENT);
+            if (savedFragment == null) {
+                CommentsFragmentVideo commentsFragment = new CommentsFragmentVideo();
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.add(R.id.commentsPlaceHolder, commentsFragment, TAG_COMMENTS_VIDEO_FRAGMENT);
+                fragmentTransaction.commit();
+            }
+        } else {
+            CommentsFragment savedFragment = (CommentsFragment) getSupportFragmentManager().findFragmentByTag(TAG_COMMENTS_NORMAL_FRAGMENT);
+            if (savedFragment == null) {
+                CommentsFragment commentsFragment = new CommentsFragment();
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.add(R.id.commentsPlaceHolder, commentsFragment, TAG_COMMENTS_NORMAL_FRAGMENT);
+                fragmentTransaction.commit();
+            }
         }
     }
 
@@ -101,6 +115,7 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
         mPostSubreddit = intent.getStringExtra(KEY_POST_SUBREDDIT);
         mPostArticle = intent.getStringExtra(KEY_POST_ARTICLE);
         mPostSubredditNoPrefix = intent.getStringExtra(KEY_POST_SUBREDDIT_NO_PREFIX);
+        mPostLayoutType = intent.getStringExtra(KEY_COMMENTS_LAYOUT_TYPE);
     }
 
     @Override
@@ -139,9 +154,14 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
             JsonObject currentComment = commentStack.pop();
             JsonElement currentReplies = currentComment.get("replies");
 
+            //check if comment object
             if (currentReplies != null) {
                 if (currentReplies.isJsonPrimitive()) {
-                    comments.add(gson.fromJson(currentComment, Comment.class));
+                    //remove deleted comments with no replies
+                    if (!currentComment.getAsJsonPrimitive("author")
+                            .getAsString().equals("[deleted]")) {
+                        comments.add(gson.fromJson(currentComment, Comment.class));
+                    }
                 } else {
                     comments.add(gson.fromJson(currentComment, Comment.class));
                     commentStack.addAll(getReplyChildren(currentReplies.getAsJsonObject()));

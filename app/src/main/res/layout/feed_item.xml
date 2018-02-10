@@ -53,13 +53,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
-                android:paddingRight="1dp"
+                android:paddingRight="13dp"
                 android:text="This is a test title testing a longertie"
                 android:textColor="@android:color/white"
                 android:textSize="24dp"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toBottomOf="@+id/imageView"
-                android:paddingEnd="1dp"/>
+                android:paddingEnd="13dp"/>
 
             <TextView
                 android:id="@+id/websiteDisplayTextView"

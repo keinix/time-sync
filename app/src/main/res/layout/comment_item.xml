@@ -25,20 +25,23 @@
         android:layout_marginTop="8dp"
         android:text="TextView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="8dp"/>
 
     <TextView
         android:id="@+id/commentTextTextView"
         android:textColor="@color/colorCountText"
         android:layout_width="wrap_content"
-        android:layout_marginRight="2dp"
+        android:paddingRight="9dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="2dp"
         android:text="TextView"
+        android:paddingEnd="9dp"
         app:layout_constraintStart_toStartOf="parent"
         android:paddingBottom="3dp"
-        app:layout_constraintTop_toBottomOf="@+id/commentDetailsTextView"/>
+        app:layout_constraintTop_toBottomOf="@+id/commentDetailsTextView"
+        android:layout_marginLeft="8dp"/>
 
     <android.support.design.widget.CheckableImageButton
         android:id="@+id/commentReplyImageButton"
@@ -48,7 +51,8 @@
         android:background="@null"
         android:src="@drawable/ic_reply_white_24dp"
         app:layout_constraintEnd_toStartOf="@+id/commentUpVoteImageButton"
-        app:layout_constraintTop_toBottomOf="@+id/commentTextTextView"/>
+        app:layout_constraintTop_toBottomOf="@+id/commentTextTextView"
+        android:layout_marginRight="48dp"/>
 
     <android.support.design.widget.CheckableImageButton
         android:id="@+id/commentUpVoteImageButton"
@@ -58,7 +62,8 @@
         android:background="@null"
         android:src="@drawable/ic_arrow_upward_white_24dp"
         app:layout_constraintEnd_toStartOf="@+id/commentUpCount"
-        app:layout_constraintTop_toBottomOf="@+id/commentTextTextView"/>
+        app:layout_constraintTop_toBottomOf="@+id/commentTextTextView"
+        android:layout_marginRight="8dp"/>
 
     <TextView
         android:id="@+id/commentUpCount"
@@ -68,7 +73,8 @@
         android:textColor="@android:color/white"
         android:text="23"
         app:layout_constraintEnd_toStartOf="@+id/commentDownVoteImageButton"
-        app:layout_constraintTop_toBottomOf="@+id/commentTextTextView"/>
+        app:layout_constraintTop_toBottomOf="@+id/commentTextTextView"
+        android:layout_marginRight="8dp"/>
 
     <android.support.design.widget.CheckableImageButton
         android:id="@+id/commentDownVoteImageButton"
@@ -79,7 +85,8 @@
         android:background="@null"
         android:src="@drawable/ic_arrow_upward_white_24dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/commentTextTextView"/>
+        app:layout_constraintTop_toBottomOf="@+id/commentTextTextView"
+        android:layout_marginRight="32dp"/>
 
     <android.support.design.widget.CheckableImageButton
         android:id="@+id/commentMenuImageButton"
@@ -89,7 +96,8 @@
         android:background="@null"
         android:src="@drawable/ic_menu_white_24dp"
         app:layout_constraintEnd_toStartOf="@+id/commentReplyImageButton"
-        app:layout_constraintTop_toBottomOf="@+id/commentTextTextView"/>
+        app:layout_constraintTop_toBottomOf="@+id/commentTextTextView"
+        android:layout_marginRight="64dp"/>
 
 
 </android.support.constraint.ConstraintLayout>
