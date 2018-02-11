@@ -30,6 +30,7 @@ import im.ene.toro.exoplayer.SimpleExoPlayerViewHelper;
 import io.keinix.timesync.Activities.CommentsActivity;
 import io.keinix.timesync.R;
 import io.keinix.timesync.adapters.CommentsAdapter;
+import io.keinix.timesync.reddit.Api;
 import io.keinix.timesync.reddit.model.comment.Comment;
 import io.keinix.timesync.reddit.model.comment.CommentBase;
 import retrofit2.Call;
@@ -42,6 +43,7 @@ public class CommentsFragment extends Fragment {
         Call<JsonElement> getComments();
         List<Comment> createCommentTree(JsonElement baseCommentElement);
         CommentsActivity getContext();
+        Api getApi();
     }
 
     @Nullable @BindView(R.id.postExoPlayer) SimpleExoPlayerView mExoPlayer;

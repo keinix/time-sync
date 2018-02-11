@@ -143,6 +143,11 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
         return this;
     }
 
+    @Override
+    public Api getApi() {
+        return mApi;
+    }
+
 
     public List<Comment> parseComments(JsonObject json) {
         Gson gson = new Gson();

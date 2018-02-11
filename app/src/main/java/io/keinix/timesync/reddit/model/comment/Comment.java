@@ -45,6 +45,28 @@ public class Comment {
     @SerializedName("depth")
     @Expose
     private int depth;
+    @SerializedName("likes")
+    @Expose
+    private Boolean likes;
+    @SerializedName("name")
+    @Expose
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Boolean getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Boolean likes) {
+        this.likes = likes;
+    }
 
     public int getDepth() {
         return depth;
@@ -165,6 +187,8 @@ public class Comment {
                 ", isSubmitter=" + isSubmitter +
                 ", createdUtc=" + createdUtc +
                 ", depth=" + depth +
+                ", likes=" + likes +
+                ", name='" + name + '\'' +
                 '}';
     }
 }

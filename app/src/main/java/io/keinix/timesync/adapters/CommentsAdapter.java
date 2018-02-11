@@ -20,6 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.timesync.Fragments.CommentsFragment;
 import io.keinix.timesync.R;
+import io.keinix.timesync.reddit.RedditVoteHelper;
 import io.keinix.timesync.reddit.model.comment.Comment;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -112,18 +113,30 @@ public class CommentsAdapter extends RecyclerView.Adapter {
             textTextView.setText(comment.getBody());
             upCountTextView.setText(String.valueOf(comment.getScore()));
             setCommentTreeMargins(baseConstraintLayout, comment);
+
+             new RedditVoteHelper(mCommentsInterface.getContext(),
+                    upVoteImageButton, downVoteImageButton, upCountTextView,
+                    mCommentsInterface.getApi(), getVoteStatus(comment), comment.getName());
+        }
+
+        public int getVoteStatus(Comment comment) {
+            if (comment.getLikes() != null) {
+                if (comment.getLikes()) {
+                    return RedditVoteHelper.VALUE_UPVOTED;
+                } else {
+                    return RedditVoteHelper.VALUE_DOWNVOTED;
+                }
+            } else {
+                return RedditVoteHelper.VALUE_NOT_VOTED; }
         }
 
         public void setCommentTreeMargins(CardView item, Comment comment) {
             CardView.LayoutParams layoutParams = new CardView.LayoutParams(
                     CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.WRAP_CONTENT);
             int topMargin = 10;
-            if (mPostion >= 1) {
-                topMargin = comment.getDepth() == 0 ? 10 : 0;
-            }
+            if (mPostion >= 1) {topMargin = comment.getDepth() == 0 ? 10 : 0;}
             layoutParams.setMargins(Math.max(comment.getDepth() * 20, 6), topMargin, 6, 0);
             item.setLayoutParams(layoutParams);
-
         }
 
         protected long getTimeSincePosted(long createdUtc) {
