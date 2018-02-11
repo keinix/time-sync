@@ -19,6 +19,8 @@ import butterknife.ButterKnife;
 import im.ene.toro.exoplayer.SimpleExoPlayerViewHelper;
 import io.keinix.timesync.Fragments.FeedFragment;
 import io.keinix.timesync.R;
+import io.keinix.timesync.reddit.ItemDetailsHelper;
+import io.keinix.timesync.reddit.RedditVoteHelper;
 import io.keinix.timesync.reddit.model.Data_;
 import io.keinix.timesync.reddit.model.VoteResult;
 import retrofit2.Call;
@@ -78,23 +80,15 @@ public class BaseFeedViewHolder extends RecyclerView.ViewHolder {
             mIndex = position;
             Data_ post = mAdapter.getRedditFeed().getData().getChildren().get(position).getData();
             String id = post.getName();
-            String domain = post.getDomain();
-            if (domain.startsWith("self")) {
-                domain = "self";
-            }
-            long timeSincePosted = getTimeSincePosted(post.getCreatedUtc());
-            String postInfo = String.format(post.getSubredditNamePrefixed() +
-                    " \u2022 " + timeSincePosted + "h" + " \u2022 " +
-                    domain);
-
             postTitleTextView.setText(post.getTitle());
             upVoteCountTextView.setText(String.valueOf(post.getUps()));
             commentCountTextView.setText(String.valueOf(post.getNumComments()));
-            websiteDisplayTextView.setText(postInfo);
+            websiteDisplayTextView.setText(ItemDetailsHelper.getPostDetails(post));
 
-            setVoteColor(id);
-            setVoteOnClick(position, id, post);
-
+            new RedditVoteHelper(mFeedItemInterface.getContext(), upVoteImageButton,
+                    downVoteImageButton, upVoteCountTextView, mFeedItemInterface.getApi(), post.isLiked(), id);
+//            setVoteColor(id);
+//            setVoteOnClick(position, id, post);
         }
 
     private void setVoteOnClick(int position, String id, Data_ post) {

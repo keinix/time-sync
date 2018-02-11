@@ -137,6 +137,11 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
         return this;
     }
 
+    @Override
+    public Api getApi() {
+        return mApi;
+    }
+
     // -----------Message Fragment Interface Methods-----------------
 
     @Override

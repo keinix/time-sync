@@ -20,6 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.timesync.Fragments.CommentsFragment;
 import io.keinix.timesync.R;
+import io.keinix.timesync.reddit.ItemDetailsHelper;
 import io.keinix.timesync.reddit.RedditVoteHelper;
 import io.keinix.timesync.reddit.model.comment.Comment;
 import retrofit2.Call;
@@ -105,29 +106,15 @@ public class CommentsAdapter extends RecyclerView.Adapter {
         public void bindView(int position) {
             mPostion = position;
             Comment comment = mCommentTree.get(position);
-            String commentDetails = "u/"
-                    + comment.getAuthor()
-                    + " \u2022 "
-                    + getTimeSincePosted(comment.getCreatedUtc()) + "h";
-            detailsTextView.setText(commentDetails);
+
+            detailsTextView.setText(ItemDetailsHelper.getUserDetails(comment.getAuthor(), comment.getCreatedUtc()));
             textTextView.setText(comment.getBody());
             upCountTextView.setText(String.valueOf(comment.getScore()));
             setCommentTreeMargins(baseConstraintLayout, comment);
 
              new RedditVoteHelper(mCommentsInterface.getContext(),
                     upVoteImageButton, downVoteImageButton, upCountTextView,
-                    mCommentsInterface.getApi(), getVoteStatus(comment), comment.getName());
-        }
-
-        public int getVoteStatus(Comment comment) {
-            if (comment.getLikes() != null) {
-                if (comment.getLikes()) {
-                    return RedditVoteHelper.VALUE_UPVOTED;
-                } else {
-                    return RedditVoteHelper.VALUE_DOWNVOTED;
-                }
-            } else {
-                return RedditVoteHelper.VALUE_NOT_VOTED; }
+                    mCommentsInterface.getApi(), comment.getLikes(), comment.getName());
         }
 
         public void setCommentTreeMargins(CardView item, Comment comment) {
@@ -138,11 +125,5 @@ public class CommentsAdapter extends RecyclerView.Adapter {
             layoutParams.setMargins(Math.max(comment.getDepth() * 20, 6), topMargin, 6, 0);
             item.setLayoutParams(layoutParams);
         }
-
-        protected long getTimeSincePosted(long createdUtc) {
-            long systemTime = System.currentTimeMillis() / 1000;
-            return ((systemTime - createdUtc) / 60) / 60;
-        }
-
     }
 }

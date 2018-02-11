@@ -12,6 +12,7 @@ import java.util.Map;
 
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.model.VoteResult;
+import io.keinix.timesync.reddit.model.comment.Comment;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -42,11 +43,11 @@ public class RedditVoteHelper {
     private int mColorWhite;
 
     public RedditVoteHelper(Context context, ImageButton upButton,
-                            ImageButton downButton, TextView voteCount, Api api, int voteStatus, String id) {
+                            ImageButton downButton, TextView voteCount, Api api, Boolean isLiked, String id) {
         mDownVoteImageButton = downButton;
         mUpVoteImageButton = upButton;
         mVoteCountTextView = voteCount;
-        mVoteStatus = voteStatus;
+        mVoteStatus = parseVoteType(isLiked);
         mContext = context;
         mApi = api;
         mId = id;
@@ -144,6 +145,17 @@ public class RedditVoteHelper {
                 Toast.makeText(mContext, "Vote Not Counted: network problem", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private int parseVoteType(Boolean isLiked) {
+            if (isLiked != null) {
+                if (isLiked) {
+                    return RedditVoteHelper.VALUE_UPVOTED;
+                } else {
+                    return RedditVoteHelper.VALUE_DOWNVOTED;
+                }
+            } else {
+                return RedditVoteHelper.VALUE_NOT_VOTED; }
     }
 
     public void bindColors() {

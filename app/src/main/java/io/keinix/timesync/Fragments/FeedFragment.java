@@ -20,6 +20,7 @@ import butterknife.ButterKnife;
 import im.ene.toro.widget.Container;
 import io.keinix.timesync.R;
 import io.keinix.timesync.adapters.FeedAdapter;
+import io.keinix.timesync.reddit.Api;
 import io.keinix.timesync.reddit.model.RedditFeed;
 import io.keinix.timesync.reddit.model.VoteResult;
 import okhttp3.Callback;
@@ -44,6 +45,7 @@ public class FeedFragment extends Fragment {
         void populateRedditFeed(FeedAdapter adapter);
         Call<RedditFeed> appendFeed(String after);
         Context getContext();
+        Api getApi();
     }
 
     @Nullable
