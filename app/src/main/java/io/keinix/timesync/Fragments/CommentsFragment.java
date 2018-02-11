@@ -124,7 +124,6 @@ public class CommentsFragment extends Fragment {
         if (intent.getStringExtra(CommentsActivity.KEY_SELF_TEXT) != null) {
             mSelfText = intent.getStringExtra(CommentsActivity.KEY_SELF_TEXT);
         }
-
     }
 
     protected void bindCommentsView() {
@@ -138,16 +137,15 @@ public class CommentsFragment extends Fragment {
         mCommentText.setText(mSelfText);
         mCommentsSubreddit.setText(mPostSubreddit);
         mCommentsPostDetails.setText(mPostDetails);
-
-    }
-
-    protected void setVideo() {
-
     }
 
     protected void setRecyclerView() {
         mCommentsRecyclerView.setAdapter(new CommentsAdapter(mCommentsInterface, mcommentsProgressBar));
         mCommentsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+    }
+
+    protected void setVideo() {
+
     }
 
     private void setGifImage() {

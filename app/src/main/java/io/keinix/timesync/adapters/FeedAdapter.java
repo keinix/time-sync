@@ -44,7 +44,6 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
         mFeedFragment = feedFragment;
         mLocalVoteTracker = Collections.synchronizedMap(new HashMap<>());
         mAfter = "";
-
     }
 
     @Override

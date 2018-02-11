@@ -76,7 +76,7 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
 
     private void launchFragment() {
         if (mPostLayoutType.equals(VALUE_VIDEO_COMMENTS_LAYOUT)) {
-            CommentsFragmentVideo savedFragment = (CommentsFragmentVideo) getSupportFragmentManager().findFragmentByTag(TAG_COMMENTS_NORMAL_FRAGMENT);
+            CommentsFragmentVideo savedFragment = (CommentsFragmentVideo) getSupportFragmentManager().findFragmentByTag(TAG_COMMENTS_VIDEO_FRAGMENT);
             if (savedFragment == null) {
                 CommentsFragmentVideo commentsFragment = new CommentsFragmentVideo();
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
