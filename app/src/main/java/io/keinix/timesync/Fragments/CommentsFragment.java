@@ -133,7 +133,7 @@ public class CommentsFragment extends Fragment {
         mPostDetails = intent.getStringExtra(CommentsActivity.KEY_POST_DETAILS);
         mPostID = intent.getStringExtra(CommentsActivity.KEY_POST_ID);
         mPostSubreddit = intent.getStringExtra(CommentsActivity.KEY_POST_SUBREDDIT);
-        mVoteStatus = intent.getIntExtra(CommentsActivity.KEY_VOTE_TYPE, 0);
+        mVoteStatus = intent.getIntExtra(CommentsActivity.KEY_INIT_VOTE_TYPE, 0);
         mVoteCount = intent.getIntExtra(CommentsActivity.KEY_VOTE_COUNT, 0);
 
         if (intent.getStringExtra(CommentsActivity.KEY_VIDEO_URI) != null) {

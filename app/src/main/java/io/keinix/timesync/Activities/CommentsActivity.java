@@ -212,4 +212,12 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
     public Call<JsonElement> getComments() {
         return mApi.getComments(mPostSubredditNoPrefix, mPostArticle, mPostArticle);
     }
+
+    public int getInitVoteType() {
+        return mInitVoteType;
+    }
+
+    public void setInitVoteType(int initVoteType) {
+        mInitVoteType = initVoteType;
+    }
 }
