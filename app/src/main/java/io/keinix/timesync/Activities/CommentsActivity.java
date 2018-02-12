@@ -1,6 +1,7 @@
 package io.keinix.timesync.Activities;
 
 import android.accounts.AccountManager;
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -56,6 +57,7 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
     public static final String VALUE_TEXT_COMMENTS_LAYOUT = "VALUE_TEXT_COMMENTS_LAYOUT";
     private static final String TAG = CommentsActivity.class.getSimpleName();
 
+    private CommentsFragment mCommentsFragment;
     private Api mApi;
     private AccountManager mAccountManager;
     private String mPostLayoutType;
@@ -81,17 +83,17 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
         if (mPostLayoutType.equals(VALUE_VIDEO_COMMENTS_LAYOUT)) {
             CommentsFragmentVideo savedFragment = (CommentsFragmentVideo) getSupportFragmentManager().findFragmentByTag(TAG_COMMENTS_VIDEO_FRAGMENT);
             if (savedFragment == null) {
-                CommentsFragmentVideo commentsFragment = new CommentsFragmentVideo();
+                mCommentsFragment = new CommentsFragmentVideo();
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.add(R.id.commentsPlaceHolder, commentsFragment, TAG_COMMENTS_VIDEO_FRAGMENT);
+                fragmentTransaction.add(R.id.commentsPlaceHolder, mCommentsFragment, TAG_COMMENTS_VIDEO_FRAGMENT);
                 fragmentTransaction.commit();
             }
         } else {
             CommentsFragment savedFragment = (CommentsFragment) getSupportFragmentManager().findFragmentByTag(TAG_COMMENTS_NORMAL_FRAGMENT);
             if (savedFragment == null) {
-                CommentsFragment commentsFragment = new CommentsFragment();
+                mCommentsFragment = new CommentsFragment();
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.add(R.id.commentsPlaceHolder, commentsFragment, TAG_COMMENTS_NORMAL_FRAGMENT);
+                fragmentTransaction.add(R.id.commentsPlaceHolder, mCommentsFragment, TAG_COMMENTS_NORMAL_FRAGMENT);
                 fragmentTransaction.commit();
             }
         }
@@ -191,6 +193,9 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
 
     @Override
     public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra(CommentsActivity.KEY_VOTE_TYPE, mCommentsFragment.getRedditVoteHelper().getVoteStatus());
+        setResult(Activity.RESULT_OK, intent);
         finish();
     }
 

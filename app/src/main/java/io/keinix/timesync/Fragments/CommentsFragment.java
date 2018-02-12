@@ -180,16 +180,7 @@ public class CommentsFragment extends Fragment {
         mPostDraweeView.setImageURI(imageUri);
     }
 
-    @Override
-    public void onDestroy() {
-        Log.d(TAG, "ON Destroy CALLED");
-        Intent intent = new Intent();
-        intent.putExtra(CommentsActivity.KEY_VOTE_TYPE, mRedditVoteHelper.getVoteStatus());
-        if (getActivity().getParent() != null) {
-            getActivity().getParent().setResult(Activity.RESULT_OK, intent);
-        } else {
-        getActivity().setResult(Activity.RESULT_OK, intent);
-        }
-        super.onDestroy();
+    public RedditVoteHelper getRedditVoteHelper() {
+        return mRedditVoteHelper;
     }
 }
