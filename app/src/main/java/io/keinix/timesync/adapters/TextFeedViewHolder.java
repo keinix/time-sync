@@ -8,6 +8,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import io.keinix.timesync.Activities.CommentsActivity;
 import io.keinix.timesync.Fragments.FeedFragment;
+import io.keinix.timesync.MainActivity;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.ItemDetailsHelper;
 import io.keinix.timesync.reddit.model.Data_;
@@ -44,6 +45,6 @@ public class TextFeedViewHolder extends BaseFeedViewHolder {
         intent.putExtra(CommentsActivity.KEY_VOTE_TYPE, ItemDetailsHelper.parseVoteType(post.isLiked()));
         intent.putExtra(CommentsActivity.KEY_SELF_TEXT, post.getSelfText());
         intent.putExtra(CommentsActivity.KEY_VOTE_COUNT, post.getUps());
-        mFeedItemInterface.getContext().startActivity(intent);
+        ((MainActivity) mFeedItemInterface.getContext()).startActivityForResult(intent, CommentsActivity.REQUEST_CODE);
     }
 }

@@ -46,6 +46,8 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
         mAfter = "";
     }
 
+
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View imageItem = LayoutInflater.from(parent.getContext()).inflate(R.layout.feed_item, parent, false);

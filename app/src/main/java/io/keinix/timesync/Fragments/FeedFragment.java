@@ -1,6 +1,7 @@
 package io.keinix.timesync.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import im.ene.toro.widget.Container;
+import io.keinix.timesync.MainActivity;
 import io.keinix.timesync.R;
 import io.keinix.timesync.adapters.FeedAdapter;
 import io.keinix.timesync.reddit.Api;
@@ -34,6 +36,7 @@ public class FeedFragment extends Fragment {
     FeedItemInterface mFeedItemInterface;
     private FeedAdapter mFeedAdapter;
     private boolean mLoading;
+    private LinearLayoutManager mLinearLayoutManager;
     public static final String TAG = FeedFragment.class.getSimpleName();
 
     public interface FeedItemInterface {
@@ -46,6 +49,7 @@ public class FeedFragment extends Fragment {
         Call<RedditFeed> appendFeed(String after);
         Context getContext();
         Api getApi();
+        int getCommentsResult();
     }
 
     @Nullable
@@ -60,15 +64,15 @@ public class FeedFragment extends Fragment {
 
         mFeedAdapter = new FeedAdapter(mFeedItemInterface, this);
         feedRecyclerView.setAdapter(mFeedAdapter);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        feedRecyclerView.setLayoutManager(linearLayoutManager);
+        mLinearLayoutManager = new LinearLayoutManager(getActivity());
+        feedRecyclerView.setLayoutManager(mLinearLayoutManager);
         feedRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
+                int lastVisibleItem = mLinearLayoutManager.findLastVisibleItemPosition();
 
-                if (!mLoading && linearLayoutManager.getItemCount() <= (lastVisibleItem + 5) && mFeedAdapter.initLoadComplete) {
+                if (!mLoading && mLinearLayoutManager.getItemCount() <= (lastVisibleItem + 5) && mFeedAdapter.initLoadComplete) {
                     Log.d(TAG, "onScrolled Activated.");
                     mLoading = true;
                     mFeedAdapter.appendRedditFeed();
@@ -99,4 +103,12 @@ public class FeedFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onResume() {
+        Log.d(TAG, "FEED FRAGMENT ON RESUME");
+        if (mFeedItemInterface.getCommentsResult() != MainActivity.NULL_RESULT) {
+            Log.d(TAG, "Vote Result from comments: " + mFeedItemInterface.getCommentsResult());
+        }
+        super.onResume();
+    }
 }

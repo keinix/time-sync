@@ -36,6 +36,7 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
     public static final String TAG_COMMENTS_NORMAL_FRAGMENT = "TAG_COMMENTS_NORMAL_FRAGMENT";
     public static final String TAG_COMMENTS_VIDEO_FRAGMENT = "TAG_COMMENTS_VIDEO_FRAGMENT";
     public static final String KEY_COMMENTS_LAYOUT_TYPE = "KEY_COMMENTS_LAYOUT_TYPE";
+    public static final int REQUEST_CODE =  101;
 
     public static final String KEY_IMAGE_URL = "KEY_IMAGE_URL";
     public static final String KEY_POST_DETAILS = "KEY_POST_DETAILS";
@@ -186,6 +187,11 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
             replyChildren.add(reply.getAsJsonObject().getAsJsonObject("data"));
         }
         return replyChildren;
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 
     @Override

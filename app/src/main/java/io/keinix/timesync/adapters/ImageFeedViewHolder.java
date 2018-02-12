@@ -17,6 +17,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import io.keinix.timesync.Activities.CommentsActivity;
 import io.keinix.timesync.Fragments.FeedFragment;
+import io.keinix.timesync.MainActivity;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.ItemDetailsHelper;
 import io.keinix.timesync.reddit.model.Data_;
@@ -66,7 +67,7 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
             }
 
             packIntent(post, intent);
-            mFeedItemInterface.getContext().startActivity(intent);
+            ((MainActivity) mFeedItemInterface.getContext()).startActivityForResult(intent, CommentsActivity.REQUEST_CODE);
         });
     }
 

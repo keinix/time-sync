@@ -13,6 +13,7 @@ import im.ene.toro.media.PlaybackInfo;
 import im.ene.toro.widget.Container;
 import io.keinix.timesync.Activities.CommentsActivity;
 import io.keinix.timesync.Fragments.FeedFragment;
+import io.keinix.timesync.MainActivity;
 import io.keinix.timesync.reddit.ItemDetailsHelper;
 import io.keinix.timesync.reddit.model.Data_;
 
@@ -56,7 +57,7 @@ public class VideoFeedViewHolder extends BaseFeedViewHolder implements ToroPlaye
             intent.putExtra(CommentsActivity.KEY_VOTE_TYPE, ItemDetailsHelper.parseVoteType(post.isLiked()));
             intent.putExtra(CommentsActivity.KEY_POST_ARTICLE, post.getId());
             intent.putExtra(CommentsActivity.KEY_VOTE_COUNT, post.getUps());
-            mFeedItemInterface.getContext().startActivity(intent);
+            ((MainActivity) mFeedItemInterface.getContext()).startActivityForResult(intent, CommentsActivity.REQUEST_CODE);
         });
     }
 

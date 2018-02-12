@@ -1,6 +1,7 @@
 package io.keinix.timesync;
 
 import android.accounts.AccountManager;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 
 import butterknife.ButterKnife;
 import io.keinix.timesync.Activities.AddAccountActivity;
+import io.keinix.timesync.Activities.CommentsActivity;
 import io.keinix.timesync.Fragments.CommentsFragment;
 import io.keinix.timesync.Fragments.FeedFragment;
 import io.keinix.timesync.Fragments.MessagesFragment;
@@ -41,10 +43,12 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
     public static final String TAG_VIEW_PAGER_FRAGMENT = "TAG_VIEW_PAGER_FRAGMENT";
     public static final String TAG_COMMENTS_FRAGMENT = "TAG_COMMENTS_NORMAL_FRAGMENT";
     public static final String EXTRA_REDDIT_TOKEN = "EXTRA_REDDIT_TOKEN";
+    public static final int NULL_RESULT = 4;
 
     public AccountManager mAccountManager;
     public Api mApi;
     private boolean backPressedOnce;
+    private int mCommentsResultVoteValue = NULL_RESULT;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +98,8 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
         }
     }
 
+
+
     // -----------Feed Fragment Interface Methods-----------------
     @Override
     public Call<VoteResult> vote(String id, String voteType) {
@@ -104,6 +110,17 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
 
     @Override
     public void share(int index) {
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "OnResult called in ACTIVITY");
+        Log.d(TAG, "Request Code: " + requestCode + "Result Code: " + resultCode);
+        super.onActivityResult(requestCode, resultCode, data);
+        if ( resultCode == Activity.RESULT_OK && requestCode == CommentsActivity.REQUEST_CODE) {
+            mCommentsResultVoteValue = data.getIntExtra(CommentsActivity.KEY_VOTE_TYPE, NULL_RESULT);
+        }
 
     }
 
@@ -140,6 +157,11 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
     @Override
     public Api getApi() {
         return mApi;
+    }
+
+    @Override
+    public int getCommentsResult() {
+        return mCommentsResultVoteValue;
     }
 
     // -----------Message Fragment Interface Methods-----------------

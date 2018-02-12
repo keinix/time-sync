@@ -55,6 +55,7 @@ public class BaseFeedViewHolder extends RecyclerView.ViewHolder {
         SimpleExoPlayerViewHelper mExoPlayerViewHelper;
         protected FeedFragment.FeedItemInterface mFeedItemInterface;
         protected FeedAdapter mAdapter;
+        protected RedditVoteHelper mRedditVoteHelper;
 
         protected int mIndex;
         protected int mUpVoteColor;
@@ -85,14 +86,21 @@ public class BaseFeedViewHolder extends RecyclerView.ViewHolder {
             commentCountTextView.setText(String.valueOf(post.getNumComments()));
             websiteDisplayTextView.setText(ItemDetailsHelper.getPostDetails(post));
 
-            new RedditVoteHelper(mFeedItemInterface.getContext(), upVoteImageButton,
-                    downVoteImageButton, upVoteCountTextView, mFeedItemInterface.getApi(),
+            mRedditVoteHelper = new RedditVoteHelper(mFeedItemInterface.getContext(),
+                    upVoteImageButton, downVoteImageButton, upVoteCountTextView, mFeedItemInterface.getApi(),
                     ItemDetailsHelper.parseVoteType(post.isLiked()), id);
         }
 
+    public RedditVoteHelper getRedditVoteHelper() {
+        return mRedditVoteHelper;
+    }
+
+    public void setRedditVoteHelper(RedditVoteHelper redditVoteHelper) {
+        mRedditVoteHelper = redditVoteHelper;
+    }
 
     public void setVoteOnClick(int position, String id, Data_ post,
-                                ImageView upVoteImageButton, ImageView downVoteImageButton, TextView upVoteCountTextView) {
+                               ImageView upVoteImageButton, ImageView downVoteImageButton, TextView upVoteCountTextView) {
         upVoteImageButton.setOnClickListener(v -> {
             Log.d(TAG, "ID: " + id +  ": " + mAdapter.mLocalVoteTracker.get(id));
             if (mAdapter.mLocalVoteTracker.get(id) != null) {

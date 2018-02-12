@@ -1,5 +1,6 @@
 package io.keinix.timesync.Fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,9 +60,11 @@ public class CommentsFragment extends Fragment {
     @BindView(R.id.commentsRecyclerView) RecyclerView mCommentsRecyclerView;
     @BindView(R.id.commentsProgressBar) ProgressBar mcommentsProgressBar;
     public static final String KEY_INDEX = "KEY_INDEX";
+    public static final String TAG = CommentsFragment.class.getSimpleName();
 
     protected CommentsInterface mCommentsInterface;
     protected SimpleExoPlayerViewHelper mExoPlayerViewHelper;
+    protected RedditVoteHelper mRedditVoteHelper;
     protected String mPostLayoutType;
     protected int mVoteStatus;
     protected int mVoteCount;
@@ -83,7 +87,7 @@ public class CommentsFragment extends Fragment {
         setRecyclerView();
         populateLayout();
         mVoteCountTextView.setText(String.valueOf(mVoteCount));
-        new RedditVoteHelper(mCommentsInterface.getContext(), mUpVoteImageButton, mDownVoteImageButton,
+        mRedditVoteHelper = new RedditVoteHelper(mCommentsInterface.getContext(), mUpVoteImageButton, mDownVoteImageButton,
                 mVoteCountTextView, mCommentsInterface.getApi(), mVoteStatus, mPostID);
         return mView;
     }
@@ -176,6 +180,16 @@ public class CommentsFragment extends Fragment {
         mPostDraweeView.setImageURI(imageUri);
     }
 
-
-
+    @Override
+    public void onDestroy() {
+        Log.d(TAG, "ON Destroy CALLED");
+        Intent intent = new Intent();
+        intent.putExtra(CommentsActivity.KEY_VOTE_TYPE, mRedditVoteHelper.getVoteStatus());
+        if (getActivity().getParent() != null) {
+            getActivity().getParent().setResult(Activity.RESULT_OK, intent);
+        } else {
+        getActivity().setResult(Activity.RESULT_OK, intent);
+        }
+        super.onDestroy();
+    }
 }

@@ -42,6 +42,8 @@ public class RedditVoteHelper {
     private int mDefaultCountTextColor;
     private int mColorWhite;
 
+    private boolean setResults;
+
     public RedditVoteHelper(Context context, ImageButton upButton,
                             ImageButton downButton, TextView voteCount, Api api, int voteStatus, String id) {
         mDownVoteImageButton = downButton;
@@ -147,21 +149,26 @@ public class RedditVoteHelper {
         });
     }
 
-    private int parseVoteType(Boolean isLiked) {
-            if (isLiked != null) {
-                if (isLiked) {
-                    return RedditVoteHelper.VALUE_UPVOTED;
-                } else {
-                    return RedditVoteHelper.VALUE_DOWNVOTED;
-                }
-            } else {
-                return RedditVoteHelper.VALUE_NOT_VOTED; }
-    }
-
     public void bindColors() {
         mUpVoteColor = ContextCompat.getColor(mContext, R.color.upVoteColor);
         mDownVoteColor = ContextCompat.getColor(mContext, R.color.downVoteColor);
         mDefaultCountTextColor = ContextCompat.getColor(mContext, R.color.colorCountText);
         mColorWhite = ContextCompat.getColor(mContext, R.color.white);
+    }
+
+    public int getVoteStatus() {
+        return mVoteStatus;
+    }
+
+    public void setVoteStatus(int voteStatus) {
+        mVoteStatus = voteStatus;
+    }
+
+    public void setResults() {
+        setResults = true;
+    }
+
+    public void launchResultCall() {
+
     }
 }
