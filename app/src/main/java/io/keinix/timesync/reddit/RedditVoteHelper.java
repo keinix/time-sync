@@ -61,6 +61,17 @@ public class RedditVoteHelper {
         setOnClick();
     }
 
+    // use to update a item view in the post feed if a vote was cast while viewing the post in the comments section
+    public RedditVoteHelper(ImageButton upVoteImageButton, ImageButton downVoteImageButton, TextView voteCount, int voteStatus) {
+        mUpVoteImageButton = upVoteImageButton;
+        mDownVoteImageButton = downVoteImageButton;
+        mVoteCountTextView = voteCount;
+        mVoteStatus = voteStatus;
+
+        bindColors();
+        setInitialVoteColors();
+    }
+
     //default is triggered when not vote has been cast
     public void setOnClick() {
         mUpVoteImageButton.setOnClickListener(v -> {

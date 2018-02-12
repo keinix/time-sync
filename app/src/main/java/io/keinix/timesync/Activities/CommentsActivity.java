@@ -20,6 +20,7 @@ import java.util.List;
 
 import io.keinix.timesync.Fragments.CommentsFragment;
 import io.keinix.timesync.Fragments.CommentsFragmentVideo;
+import io.keinix.timesync.MainActivity;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.Api;
 import io.keinix.timesync.reddit.RedditAuthInterceptor;
@@ -50,6 +51,8 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
     public static final String KEY_VIDEO_URI = "KEY_VIDEO_URI";
     public static final String KEY_VOTE_TYPE = "KEY_VOTE_TYPE";
     public static final String KEY_VOTE_COUNT = "KEY_VOTE_COUNT";
+    public static final String KEY_INIT_VOTE_TYPE = "KEY_INIT_VOTE_TYPE";
+    public static final String KEY_ORIGINAL_POST_POSITION = "KEY_ORIGINAL_POST_POSITION";
 
     public static final String VALUE_IMAGE_COMMENTS_LAYOUT = "VALUE_IMAGE_COMMENTS_LAYOUT";
     public static final String VALUE_GIF_COMMENTS_LAYOUT = "VALUE_GIF_COMMENTS_LAYOUT";
@@ -67,6 +70,8 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
     private String mPostSubreddit;
     private String mPostArticle;
     private String mPostSubredditNoPrefix;
+    private int mInitVoteType;
+    private int mOrigionalPostPosition;
 
 
     @Override
@@ -121,6 +126,8 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
         mPostArticle = intent.getStringExtra(KEY_POST_ARTICLE);
         mPostSubredditNoPrefix = intent.getStringExtra(KEY_POST_SUBREDDIT_NO_PREFIX);
         mPostLayoutType = intent.getStringExtra(KEY_COMMENTS_LAYOUT_TYPE);
+        mInitVoteType = intent.getIntExtra(KEY_INIT_VOTE_TYPE, MainActivity.NULL_RESULT);
+        mOrigionalPostPosition = intent.getIntExtra(KEY_ORIGINAL_POST_POSITION, MainActivity.NULL_RESULT);
     }
 
     @Override
@@ -195,6 +202,8 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
     public void onBackPressed() {
         Intent intent = new Intent();
         intent.putExtra(CommentsActivity.KEY_VOTE_TYPE, mCommentsFragment.getRedditVoteHelper().getVoteStatus());
+        intent.putExtra(KEY_INIT_VOTE_TYPE, mInitVoteType);
+        intent.putExtra(KEY_ORIGINAL_POST_POSITION, mOrigionalPostPosition);
         setResult(Activity.RESULT_OK, intent);
         finish();
     }

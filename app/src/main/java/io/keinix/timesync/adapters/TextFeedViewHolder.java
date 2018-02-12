@@ -29,11 +29,11 @@ public class TextFeedViewHolder extends BaseFeedViewHolder {
         long timeSincePosted = getTimeSincePosted(post.getCreatedUtc());
         String postDetails = "u/" +post.getAuthor() + " \u2022 "
                 + timeSincePosted + "h";
-        selfTextView.setOnClickListener(v -> launchCommentsActivity(post, postDetails));
-        commentImageButton.setOnClickListener(v -> launchCommentsActivity(post, postDetails));
+        selfTextView.setOnClickListener(v -> launchCommentsActivity(post, postDetails, position));
+        commentImageButton.setOnClickListener(v -> launchCommentsActivity(post, postDetails, position));
     }
 
-    private void launchCommentsActivity(Data_ post, String postDetails) {
+    private void launchCommentsActivity(Data_ post, String postDetails, int position) {
         Intent intent = new Intent(mFeedItemInterface.getContext(), CommentsActivity.class);
         intent.putExtra(CommentsActivity.KEY_COMMENTS_LAYOUT_TYPE, CommentsActivity.VALUE_TEXT_COMMENTS_LAYOUT);
         intent.putExtra(CommentsActivity.KEY_POST_SUBREDDIT, post.getSubredditNamePrefixed());
@@ -45,6 +45,8 @@ public class TextFeedViewHolder extends BaseFeedViewHolder {
         intent.putExtra(CommentsActivity.KEY_VOTE_TYPE, ItemDetailsHelper.parseVoteType(post.isLiked()));
         intent.putExtra(CommentsActivity.KEY_SELF_TEXT, post.getSelfText());
         intent.putExtra(CommentsActivity.KEY_VOTE_COUNT, post.getUps());
+        intent.putExtra(CommentsActivity.KEY_ORIGINAL_POST_POSITION, position);
+        intent.putExtra(CommentsActivity.KEY_INIT_VOTE_TYPE, mRedditVoteHelper.getVoteStatus());
         ((MainActivity) mFeedItemInterface.getContext()).startActivityForResult(intent, CommentsActivity.REQUEST_CODE);
     }
 }

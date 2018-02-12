@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
     public Api mApi;
     private boolean backPressedOnce;
     private int mCommentsResultVoteValue = NULL_RESULT;
+    private int mInitVoteType;
+    private int mOriginalPostPosition;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,6 +122,8 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
         super.onActivityResult(requestCode, resultCode, data);
         if ( resultCode == Activity.RESULT_OK && requestCode == CommentsActivity.REQUEST_CODE) {
             mCommentsResultVoteValue = data.getIntExtra(CommentsActivity.KEY_VOTE_TYPE, NULL_RESULT);
+            mInitVoteType = data.getIntExtra(CommentsActivity.KEY_INIT_VOTE_TYPE, NULL_RESULT);
+            mOriginalPostPosition = data.getIntExtra(CommentsActivity.KEY_ORIGINAL_POST_POSITION, NULL_RESULT);
         }
 
     }
@@ -162,6 +166,16 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
     @Override
     public int getCommentsResult() {
         return mCommentsResultVoteValue;
+    }
+
+    @Override
+    public int getPostInitVoteType() {
+        return mInitVoteType;
+    }
+
+    @Override
+    public int getOriginalPostPosition() {
+        return mOriginalPostPosition;
     }
 
     // -----------Message Fragment Interface Methods-----------------

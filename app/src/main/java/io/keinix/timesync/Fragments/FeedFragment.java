@@ -15,6 +15,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,6 +25,8 @@ import io.keinix.timesync.MainActivity;
 import io.keinix.timesync.R;
 import io.keinix.timesync.adapters.FeedAdapter;
 import io.keinix.timesync.reddit.Api;
+import io.keinix.timesync.reddit.RedditVoteHelper;
+import io.keinix.timesync.reddit.model.Data_;
 import io.keinix.timesync.reddit.model.RedditFeed;
 import io.keinix.timesync.reddit.model.VoteResult;
 import okhttp3.Callback;
@@ -31,7 +35,8 @@ import retrofit2.Call;
 
 public class FeedFragment extends Fragment {
 
-    @BindView(R.id.feedRecyclerView) Container feedRecyclerView;
+    @BindView(R.id.feedRecyclerView)
+    Container feedRecyclerView;
 
     FeedItemInterface mFeedItemInterface;
     private FeedAdapter mFeedAdapter;
@@ -43,13 +48,24 @@ public class FeedFragment extends Fragment {
         //TODO: implement this in MainActivity then get a reference using getActivity()
         //TODO: put the methods in the onclickListeners
         Call<VoteResult> vote(String id, String voteType);
+
         void share(int index);
+
         void launchCommentFragment(int index);
+
         void populateRedditFeed(FeedAdapter adapter);
+
         Call<RedditFeed> appendFeed(String after);
+
         Context getContext();
+
         Api getApi();
+
         int getCommentsResult();
+
+        int getPostInitVoteType();
+
+        int getOriginalPostPosition();
     }
 
     @Nullable
@@ -106,9 +122,34 @@ public class FeedFragment extends Fragment {
     @Override
     public void onResume() {
         Log.d(TAG, "FEED FRAGMENT ON RESUME");
-        if (mFeedItemInterface.getCommentsResult() != MainActivity.NULL_RESULT) {
-            Log.d(TAG, "Vote Result from comments: " + mFeedItemInterface.getCommentsResult());
-        }
+        processVoteFromCommentSection();
         super.onResume();
+    }
+
+    private void processVoteFromCommentSection() {
+        if (mFeedItemInterface.getCommentsResult() != MainActivity.NULL_RESULT) {
+            int voteTypeFromComments = mFeedItemInterface.getCommentsResult();
+            int initPostVoteType = mFeedItemInterface.getPostInitVoteType();
+
+            if (voteTypeFromComments != initPostVoteType) {
+                int postPosition = mFeedItemInterface.getOriginalPostPosition();
+                Data_ post = mFeedAdapter.getRedditFeed().getData().getChildren().get(postPosition).getData();
+                Boolean isLiked;
+
+                switch (voteTypeFromComments){
+                    case RedditVoteHelper.VALUE_UPVOTED:
+                        isLiked = true;
+                        break;
+                    case RedditVoteHelper.VALUE_DOWNVOTED:
+                        isLiked = false;
+                        break;
+                    default:
+                        isLiked = null;
+                        break;
+                }
+                post.setLiked(isLiked);
+                mFeedAdapter.notifyItemChanged(postPosition);
+            }
+        }
     }
 }
