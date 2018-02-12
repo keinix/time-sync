@@ -43,11 +43,11 @@ public class RedditVoteHelper {
     private int mColorWhite;
 
     public RedditVoteHelper(Context context, ImageButton upButton,
-                            ImageButton downButton, TextView voteCount, Api api, Boolean isLiked, String id) {
+                            ImageButton downButton, TextView voteCount, Api api, int voteStatus, String id) {
         mDownVoteImageButton = downButton;
         mUpVoteImageButton = upButton;
         mVoteCountTextView = voteCount;
-        mVoteStatus = parseVoteType(isLiked);
+        mVoteStatus = voteStatus;
         mContext = context;
         mApi = api;
         mId = id;
@@ -137,7 +137,7 @@ public class RedditVoteHelper {
         mApi.vote(voteType, mId).enqueue(new Callback<VoteResult>() {
             @Override
             public void onResponse(Call<VoteResult> call, Response<VoteResult> response) {
-                Toast.makeText(mContext, "Voted!" + voteType, Toast.LENGTH_SHORT).show();
+                // Toast.makeText(mContext, "Voted!" + voteType, Toast.LENGTH_SHORT).show();
             }
 
             @Override

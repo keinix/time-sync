@@ -72,6 +72,46 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/commentsPostTitle"/>
 
+            <ImageButton
+                android:id="@+id/commentPostUpVote"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@null"
+                android:src="@drawable/ic_arrow_upward_white_24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/commentPostVoteCount"
+                app:layout_constraintTop_toBottomOf="@+id/commentsPostTitle"/>
+
+            <TextView
+                android:id="@+id/commentPostVoteCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:text="212"
+                android:textColor="@android:color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/commentPostDownVote"
+                app:layout_constraintTop_toBottomOf="@+id/commentsPostTitle"/>
+
+            <ImageButton
+                android:id="@+id/commentPostDownVote"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@null"
+                android:rotation="180"
+                android:src="@drawable/ic_arrow_downward_white_24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/commentsPostTitle"/>
+
         </android.support.constraint.ConstraintLayout>
 
         <ProgressBar

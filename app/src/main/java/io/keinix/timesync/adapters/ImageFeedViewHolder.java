@@ -18,6 +18,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import io.keinix.timesync.Activities.CommentsActivity;
 import io.keinix.timesync.Fragments.FeedFragment;
 import io.keinix.timesync.R;
+import io.keinix.timesync.reddit.ItemDetailsHelper;
 import io.keinix.timesync.reddit.model.Data_;
 import io.keinix.timesync.utils.OnSwipeTouchListener;
 
@@ -85,11 +86,13 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
         }
 
         intent.putExtra(CommentsActivity.KEY_POST_SUBREDDIT, post.getSubredditNamePrefixed());
+        intent.putExtra(CommentsActivity.KEY_VOTE_TYPE, ItemDetailsHelper.parseVoteType(post.isLiked()));
         intent.putExtra(CommentsActivity.KEY_POST_SUBREDDIT_NO_PREFIX, post.getSubreddit());
         intent.putExtra(CommentsActivity.KEY_POST_TITLE, post.getTitle());
         intent.putExtra(CommentsActivity.KEY_POST_ID, post.getName());
         intent.putExtra(CommentsActivity.KEY_POST_DETAILS, postDetails);
         intent.putExtra(CommentsActivity.KEY_POST_ARTICLE, post.getId());
+        intent.putExtra(CommentsActivity.KEY_VOTE_COUNT, post.getUps());
     }
 
 
@@ -154,6 +157,7 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
 
     private void setPostImage(Data_ post, SimpleDraweeView imageView) {
         mGifUri = null;
+        isGif = false;
         if (post.getPreview()!= null) {
 
             if (post.getPreview().getImages().get(0).getVariants().getGif() != null) {

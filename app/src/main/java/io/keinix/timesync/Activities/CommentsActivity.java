@@ -46,6 +46,8 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
     public static final String KEY_POST_SUBREDDIT_NO_PREFIX ="KEY_POST_SUBREDDIT_NO_PREFIX";
     public static final String KEY_SELF_TEXT = "KEY_SELF_TEXT";
     public static final String KEY_VIDEO_URI = "KEY_VIDEO_URI";
+    public static final String KEY_VOTE_TYPE = "KEY_VOTE_TYPE";
+    public static final String KEY_VOTE_COUNT = "KEY_VOTE_COUNT";
 
     public static final String VALUE_IMAGE_COMMENTS_LAYOUT = "VALUE_IMAGE_COMMENTS_LAYOUT";
     public static final String VALUE_GIF_COMMENTS_LAYOUT = "VALUE_GIF_COMMENTS_LAYOUT";

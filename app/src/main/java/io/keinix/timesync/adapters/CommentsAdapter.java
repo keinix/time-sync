@@ -1,5 +1,6 @@
 package io.keinix.timesync.adapters;
 
+import android.content.ClipData;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -114,7 +115,8 @@ public class CommentsAdapter extends RecyclerView.Adapter {
 
              new RedditVoteHelper(mCommentsInterface.getContext(),
                     upVoteImageButton, downVoteImageButton, upCountTextView,
-                    mCommentsInterface.getApi(), comment.getLikes(), comment.getName());
+                    mCommentsInterface.getApi(), ItemDetailsHelper.parseVoteType(comment.getLikes()),
+                     comment.getName());
         }
 
         public void setCommentTreeMargins(CardView item, Comment comment) {

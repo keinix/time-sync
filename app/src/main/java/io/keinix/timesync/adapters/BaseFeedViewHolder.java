@@ -86,36 +86,10 @@ public class BaseFeedViewHolder extends RecyclerView.ViewHolder {
             websiteDisplayTextView.setText(ItemDetailsHelper.getPostDetails(post));
 
             new RedditVoteHelper(mFeedItemInterface.getContext(), upVoteImageButton,
-                    downVoteImageButton, upVoteCountTextView, mFeedItemInterface.getApi(), post.isLiked(), id);
-//            setVoteColor(id);
-//            setVoteOnClick(position, id, post);
+                    downVoteImageButton, upVoteCountTextView, mFeedItemInterface.getApi(),
+                    ItemDetailsHelper.parseVoteType(post.isLiked()), id);
         }
 
-    private void setVoteOnClick(int position, String id, Data_ post) {
-            upVoteImageButton.setOnClickListener(v -> {
-                Log.d(TAG, "ID: " + id +  ": " + mAdapter.mLocalVoteTracker.get(id));
-                if (mAdapter.mLocalVoteTracker.get(id) != null) {
-                    if (mAdapter.mLocalVoteTracker.get(id).equals(VALUE_UPVOTED)) {
-                        unVote(id, position, post);
-                    } else {
-                        upVote(id, position, post);
-                    }
-                } else {
-                    upVote(id, position, post);
-                }});
-
-            downVoteImageButton.setOnClickListener(v -> {
-                Log.d(TAG, "ID: " + id +  ": " + mAdapter.mLocalVoteTracker.get(id));
-                if (mAdapter.mLocalVoteTracker.get(id) != null) {
-                    if (mAdapter.mLocalVoteTracker.get(id).equals(VALUE_DOWNVOTED)) {
-                        unVote(id, position, post);
-                    } else {
-                        downVote(id, position, post);
-                    }
-                } else {
-                    downVote(id, position, post);
-                }});
-        }
 
     public void setVoteOnClick(int position, String id, Data_ post,
                                 ImageView upVoteImageButton, ImageView downVoteImageButton, TextView upVoteCountTextView) {
@@ -161,25 +135,6 @@ public class BaseFeedViewHolder extends RecyclerView.ViewHolder {
                 upVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
             }});
     }
-
-        //TODO: upVote click effect popUP and feed item
-        private void setVoteColor(String id) {
-            if (mAdapter.mLocalVoteTracker.get(id) != null) {
-                if (mAdapter.mLocalVoteTracker.get(id).equals(VALUE_UPVOTED)) {
-                    upVoteImageButton.getDrawable().setColorFilter(mUpVoteColor, PorterDuff.Mode.MULTIPLY);
-                    upVoteCountTextView.setTextColor(mUpVoteColor);
-                    downVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
-                } else {
-                    downVoteImageButton.getDrawable().setColorFilter(mDownVoteColor, PorterDuff.Mode.MULTIPLY);
-                    upVoteCountTextView.setTextColor(mDownVoteColor);
-                    upVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
-                }
-            } else {
-                upVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
-                downVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
-                upVoteCountTextView.setTextColor(mDefaultCountTextColor);
-            }
-        }
 
         //TODO: clean up these API call into a single method
         private void downVote(String id, int position, Data_ post) {

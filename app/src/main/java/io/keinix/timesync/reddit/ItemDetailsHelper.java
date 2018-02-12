@@ -22,4 +22,16 @@ public abstract class ItemDetailsHelper {
                 " \u2022 " + getTimeSincePosted(post.getCreatedUtc()) + "h" + " \u2022 " +
                 domain;
     }
+
+    //parse the vote type before sending it to the RedditVoteHelper Class
+    public static int parseVoteType(Boolean isLiked) {
+        if (isLiked != null) {
+            if (isLiked) {
+                return RedditVoteHelper.VALUE_UPVOTED;
+            } else {
+                return RedditVoteHelper.VALUE_DOWNVOTED;
+            }
+        } else {
+            return RedditVoteHelper.VALUE_NOT_VOTED; }
+    }
 }

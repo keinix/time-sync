@@ -1,6 +1,5 @@
 package io.keinix.timesync.Fragments;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -18,9 +18,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 import java.util.List;
 
@@ -31,8 +29,8 @@ import io.keinix.timesync.Activities.CommentsActivity;
 import io.keinix.timesync.R;
 import io.keinix.timesync.adapters.CommentsAdapter;
 import io.keinix.timesync.reddit.Api;
+import io.keinix.timesync.reddit.RedditVoteHelper;
 import io.keinix.timesync.reddit.model.comment.Comment;
-import io.keinix.timesync.reddit.model.comment.CommentBase;
 import retrofit2.Call;
 
 
@@ -52,6 +50,9 @@ public class CommentsFragment extends Fragment {
     @Nullable @BindView(R.id.commentText) TextView mCommentText;
     @Nullable @BindView(R.id.commentsPostTitle) TextView mCommentsPostTitle;
 
+    @BindView(R.id.commentPostVoteCount) TextView mVoteCountTextView;
+    @BindView(R.id.commentPostUpVote) ImageButton mUpVoteImageButton;
+    @BindView(R.id.commentPostDownVote) ImageButton mDownVoteImageButton;
     @BindView(R.id.commentsPostInfo) TextView mCommentsPostDetails;
     @BindView(R.id.commentsSubRedditName) TextView mCommentsSubreddit;
     @BindView(R.id.commentsRecyclerView) RecyclerView mCommentsRecyclerView;
@@ -61,6 +62,8 @@ public class CommentsFragment extends Fragment {
     protected CommentsInterface mCommentsInterface;
     protected SimpleExoPlayerViewHelper mExoPlayerViewHelper;
     protected String mPostLayoutType;
+    protected int mVoteStatus;
+    protected int mVoteCount;
     protected String mPostTitle;
     protected String mPostDetails;
     protected String mPostID;
@@ -78,7 +81,14 @@ public class CommentsFragment extends Fragment {
         unPackIntent();
         mCommentsInterface = (CommentsInterface) getActivity();
         setRecyclerView();
+        populateLayout();
+        mVoteCountTextView.setText(String.valueOf(mVoteCount));
+        new RedditVoteHelper(mCommentsInterface.getContext(), mUpVoteImageButton, mDownVoteImageButton,
+                mVoteCountTextView, mCommentsInterface.getApi(), mVoteStatus, mPostID);
+        return mView;
+    }
 
+    private void populateLayout() {
         switch (mPostLayoutType) {
             case CommentsActivity.VALUE_IMAGE_COMMENTS_LAYOUT:
                 bindCommentsView();
@@ -96,7 +106,6 @@ public class CommentsFragment extends Fragment {
                 setVideo();
                 break;
         }
-        return mView;
     }
 
     protected View setCommentsView(LayoutInflater inflater, ViewGroup container) {
@@ -120,6 +129,9 @@ public class CommentsFragment extends Fragment {
         mPostDetails = intent.getStringExtra(CommentsActivity.KEY_POST_DETAILS);
         mPostID = intent.getStringExtra(CommentsActivity.KEY_POST_ID);
         mPostSubreddit = intent.getStringExtra(CommentsActivity.KEY_POST_SUBREDDIT);
+        mVoteStatus = intent.getIntExtra(CommentsActivity.KEY_VOTE_TYPE, 0);
+        mVoteCount = intent.getIntExtra(CommentsActivity.KEY_VOTE_COUNT, 0);
+
         if (intent.getStringExtra(CommentsActivity.KEY_VIDEO_URI) != null) {
             mVideoUri = intent.getStringExtra(CommentsActivity.KEY_VIDEO_URI);
         }
