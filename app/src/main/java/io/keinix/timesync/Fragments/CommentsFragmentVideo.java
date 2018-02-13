@@ -72,12 +72,12 @@ public class CommentsFragmentVideo extends CommentsFragment implements ToroPlaye
 
     @Override
     public boolean wantsToPlay() {
-        return ToroUtil.visibleAreaOffset(this, mView.getParent()) >= .85;
+        return ToroUtil.visibleAreaOffset(this, mCommentsNextScrollView.getParent()) >= .85;
     }
 
     @Override
     public int getPlayerOrder() {
-        return 0;
+        return mCommentsNextScrollView.getVerticalScrollbarPosition();
     }
 
     @Override

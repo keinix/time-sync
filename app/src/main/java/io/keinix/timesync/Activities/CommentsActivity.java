@@ -82,6 +82,7 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
         unPackIntent();
         initApi();
         launchFragment();
+
     }
 
     private void launchFragment() {

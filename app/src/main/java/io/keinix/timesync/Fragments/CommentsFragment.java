@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -35,7 +36,7 @@ import io.keinix.timesync.reddit.RedditVoteHelper;
 import io.keinix.timesync.reddit.model.comment.Comment;
 import io.keinix.timesync.views.WrapContentDraweeView;
 import retrofit2.Call;
-
+import ru.noties.markwon.Markwon;
 
 
 public class CommentsFragment extends Fragment {
@@ -54,7 +55,7 @@ public class CommentsFragment extends Fragment {
     @Nullable @BindView(R.id.commentsPostTitle) TextView mCommentsPostTitle;
     @Nullable @BindView(R.id.postGifDraweeView) SimpleDraweeView mPostGifDraweeView;
 
-
+    @BindView(R.id.commentsNestScrollView) NestedScrollView mCommentsNextScrollView;
     @BindView(R.id.commentPostVoteCount) TextView mVoteCountTextView;
     @BindView(R.id.commentPostUpVote) ImageButton mUpVoteImageButton;
     @BindView(R.id.commentPostDownVote) ImageButton mDownVoteImageButton;

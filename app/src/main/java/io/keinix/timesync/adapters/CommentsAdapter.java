@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,7 @@ import io.keinix.timesync.reddit.model.comment.Comment;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import ru.noties.markwon.Markwon;
 
 public class CommentsAdapter extends RecyclerView.Adapter {
 

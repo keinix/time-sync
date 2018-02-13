@@ -51,6 +51,17 @@ public class Comment {
     @SerializedName("name")
     @Expose
     private String name;
+    @SerializedName("body_html")
+    @Expose
+    private String htmlBody;
+
+    public String getHtmlBody() {
+        return htmlBody;
+    }
+
+    public void setHtmlBody(String htmlBody) {
+        this.htmlBody = htmlBody;
+    }
 
     public String getName() {
         return name;
@@ -189,6 +200,7 @@ public class Comment {
                 ", depth=" + depth +
                 ", likes=" + likes +
                 ", name='" + name + '\'' +
+                ", htmlBody='" + htmlBody + '\'' +
                 '}';
     }
 }
