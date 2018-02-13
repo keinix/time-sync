@@ -42,7 +42,7 @@ public class CommentsFragmentVideo extends CommentsFragment implements ToroPlaye
     @Override
     public void initialize(@NonNull Container container, @Nullable PlaybackInfo playbackInfo) {
         if (mExoPlayerViewHelper == null) {
-            mExoPlayerViewHelper = new SimpleExoPlayerViewHelper(container, this, Uri.parse(mVideoUri));
+            mExoPlayerViewHelper = new SimpleExoPlayerViewHelper(container, this, mVideoUri);
         }
         mExoPlayerViewHelper.initialize(playbackInfo);
     }

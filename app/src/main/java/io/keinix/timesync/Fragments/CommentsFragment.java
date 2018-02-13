@@ -33,6 +33,7 @@ import io.keinix.timesync.adapters.CommentsAdapter;
 import io.keinix.timesync.reddit.Api;
 import io.keinix.timesync.reddit.RedditVoteHelper;
 import io.keinix.timesync.reddit.model.comment.Comment;
+import io.keinix.timesync.views.WrapContentDraweeView;
 import retrofit2.Call;
 
 
@@ -47,10 +48,12 @@ public class CommentsFragment extends Fragment {
     }
 
     @Nullable @BindView(R.id.postExoPlayer) SimpleExoPlayerView mExoPlayer;
-    @Nullable @BindView(R.id.postDraweeView) SimpleDraweeView mPostDraweeView;
+    @Nullable @BindView(R.id.postDraweeView) WrapContentDraweeView mPostDraweeView;
     @Nullable @BindView(R.id.commentsTextPostTitle) TextView mCommentsTextPostTitle;
     @Nullable @BindView(R.id.commentText) TextView mCommentText;
     @Nullable @BindView(R.id.commentsPostTitle) TextView mCommentsPostTitle;
+    @Nullable @BindView(R.id.postGifDraweeView) SimpleDraweeView mPostGifDraweeView;
+
 
     @BindView(R.id.commentPostVoteCount) TextView mVoteCountTextView;
     @BindView(R.id.commentPostUpVote) ImageButton mUpVoteImageButton;
@@ -73,7 +76,7 @@ public class CommentsFragment extends Fragment {
     protected String mPostID;
     protected String mPostSubreddit;
     protected String mSelfText;
-    protected String mVideoUri;
+    protected Uri mVideoUri;
     protected View mView;
 
     @Nullable
@@ -99,6 +102,7 @@ public class CommentsFragment extends Fragment {
                 setBasicImage();
                 break;
             case CommentsActivity.VALUE_GIF_COMMENTS_LAYOUT:
+                Log.d(TAG, "Is gif triggered in switch");
                 bindCommentsView();
                 setGifImage();
                 break;
@@ -117,7 +121,7 @@ public class CommentsFragment extends Fragment {
             case CommentsActivity.VALUE_TEXT_COMMENTS_LAYOUT:
                 return inflater.inflate(R.layout.fragment_comments_text, container, false);
             case CommentsActivity.VALUE_GIF_COMMENTS_LAYOUT:
-                return inflater.inflate(R.layout.fragment_comments_image, container, false);
+                return inflater.inflate(R.layout.fragment_comments_gif, container, false);
             case CommentsActivity.VALUE_IMAGE_COMMENTS_LAYOUT:
                 return inflater.inflate(R.layout.fragment_comments_image, container, false);
             case CommentsActivity.VALUE_VIDEO_COMMENTS_LAYOUT:
@@ -137,7 +141,7 @@ public class CommentsFragment extends Fragment {
         mVoteCount = intent.getIntExtra(CommentsActivity.KEY_VOTE_COUNT, 0);
 
         if (intent.getStringExtra(CommentsActivity.KEY_VIDEO_URI) != null) {
-            mVideoUri = intent.getStringExtra(CommentsActivity.KEY_VIDEO_URI);
+            mVideoUri = Uri.parse(intent.getStringExtra(CommentsActivity.KEY_VIDEO_URI));
         }
         if (intent.getStringExtra(CommentsActivity.KEY_SELF_TEXT) != null) {
             mSelfText = intent.getStringExtra(CommentsActivity.KEY_SELF_TEXT);
@@ -162,17 +166,19 @@ public class CommentsFragment extends Fragment {
         mCommentsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
+
     protected void setVideo() {
 
     }
 
     private void setGifImage() {
         Uri gifUri = Uri.parse(getActivity().getIntent().getStringExtra(CommentsActivity.KEY_IMAGE_URL));
+        Log.d(TAG, "gif URI in setGifImage: " + gifUri);
         DraweeController controller = Fresco.newDraweeControllerBuilder()
                 .setUri(gifUri)
                 .setAutoPlayAnimations(true)
                 .build();
-        mPostDraweeView.setController(controller);
+        mPostGifDraweeView.setController(controller);
     }
 
     private void setBasicImage() {

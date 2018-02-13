@@ -60,11 +60,6 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
 
         commentImageButton.setOnClickListener(v -> {
             Intent intent = new Intent(mFeedItemInterface.getContext(), CommentsActivity.class);
-            if (isGif) {
-                intent.putExtra(CommentsActivity.KEY_COMMENTS_LAYOUT_TYPE, CommentsActivity.VALUE_GIF_COMMENTS_LAYOUT);
-            } else {
-                intent.putExtra(CommentsActivity.KEY_COMMENTS_LAYOUT_TYPE, CommentsActivity.VALUE_IMAGE_COMMENTS_LAYOUT);
-            }
 
             packIntent(post, intent, position);
             ((MainActivity) mFeedItemInterface.getContext()).startActivityForResult(intent, CommentsActivity.REQUEST_CODE);
@@ -72,18 +67,19 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
     }
 
     private void packIntent(Data_ post, Intent intent, int position) {
-        long timeSincePosted = getTimeSincePosted(post.getCreatedUtc());
-        String domain = post.getDomain();
-        if (domain.startsWith("self")) {
-            domain = "self";
-        }
-        String postDetails = "u/" +post.getAuthor() + " \u2022 "
-                + timeSincePosted + "h" + " \u2022 " +
-                domain;
+
         if (isGif) {
             intent.putExtra(CommentsActivity.KEY_IMAGE_URL, mGifUri.toString());
+            Log.d(TAG, "IS GIF TRIGGERED");
+            Log.d(TAG, "Gif Uri: " + mGifUri.toString());
         } else {
+            Log.d(TAG, "NOT GIF TRIGGERED");
             intent.putExtra(CommentsActivity.KEY_IMAGE_URL, post.getPreview().getImages().get(0).getSource().getUrl());
+        }
+        if (isGif) {
+            intent.putExtra(CommentsActivity.KEY_COMMENTS_LAYOUT_TYPE, CommentsActivity.VALUE_GIF_COMMENTS_LAYOUT);
+        } else {
+            intent.putExtra(CommentsActivity.KEY_COMMENTS_LAYOUT_TYPE, CommentsActivity.VALUE_IMAGE_COMMENTS_LAYOUT);
         }
 
         intent.putExtra(CommentsActivity.KEY_INIT_VOTE_TYPE, mRedditVoteHelper.getVoteStatus());
@@ -92,7 +88,7 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
         intent.putExtra(CommentsActivity.KEY_POST_SUBREDDIT_NO_PREFIX, post.getSubreddit());
         intent.putExtra(CommentsActivity.KEY_POST_TITLE, post.getTitle());
         intent.putExtra(CommentsActivity.KEY_POST_ID, post.getName());
-        intent.putExtra(CommentsActivity.KEY_POST_DETAILS, postDetails);
+        intent.putExtra(CommentsActivity.KEY_POST_DETAILS, ItemDetailsHelper.getPostDetails(post));
         intent.putExtra(CommentsActivity.KEY_POST_ARTICLE, post.getId());
         intent.putExtra(CommentsActivity.KEY_VOTE_COUNT, post.getUps());
         intent.putExtra(CommentsActivity.KEY_ORIGINAL_POST_POSITION, position);
