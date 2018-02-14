@@ -178,7 +178,8 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
                         .build();
                 imageView.setController(controller);
             } else {
-                Uri uri = Uri.parse(post.getPreview().getImages().get(0).getSource().getUrl());
+                // Uri uri = Uri.parse(post.getPreview().getImages().get(0).getSource().getUrl());
+                Uri uri = Uri.parse(post.getThumbnail());
                 imageView.setImageURI(uri);
             }
         }

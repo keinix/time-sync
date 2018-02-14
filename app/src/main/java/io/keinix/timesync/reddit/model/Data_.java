@@ -3,6 +3,8 @@ package io.keinix.timesync.reddit.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class Data_ {
 
     @SerializedName("domain")
@@ -149,6 +151,25 @@ public class Data_ {
     @SerializedName("selftext")
     @Expose
     private String selfText;
+    @SerializedName("crosspost_parent_list")
+    @Expose
+    private List<Data_> crossLinks;
+
+    public Boolean getLiked() {
+        return isLiked;
+    }
+
+    public Boolean getSelf() {
+        return isSelf;
+    }
+
+    public List<Data_> getCrossLinks() {
+        return crossLinks;
+    }
+
+    public void setCrossLinks(List<Data_> crossLinks) {
+        this.crossLinks = crossLinks;
+    }
 
     public String getSelfText() {
         return selfText;

@@ -4,14 +4,20 @@ import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -31,6 +37,10 @@ import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import ru.noties.markwon.Markwon;
+import ru.noties.markwon.SpannableConfiguration;
+import ru.noties.markwon.renderer.SpannableRenderer;
+import ru.noties.markwon.spans.SpannableTheme;
 
 
 public class CommentsActivity extends AppCompatActivity implements CommentsFragment.CommentsInterface{
@@ -72,6 +82,8 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
     private String mPostSubredditNoPrefix;
     private int mInitVoteType;
     private int mOrigionalPostPosition;
+    private Parser mParser;
+    private SpannableConfiguration mMarkDownConfig;
 
 
     @Override
@@ -177,7 +189,7 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
                 if (currentReplies.isJsonPrimitive()) {
                     //remove deleted comments with no replies
                     if (!currentComment.getAsJsonPrimitive("author")
-                            .getAsString().equals("[deleted]")) {
+                            .getAsString().equals("u/[deleted]")) {
                         comments.add(gson.fromJson(currentComment, Comment.class));
                     }
                 } else {
@@ -200,6 +212,32 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
     }
 
     @Override
+    public Call<JsonElement> getComments() {
+        return mApi.getComments(mPostSubredditNoPrefix, mPostArticle, mPostArticle);
+    }
+
+    @Override
+    public void setMarkDownText(TextView textView, String text) {
+         String parsedPext = text.replace("&gt;", ">");
+       if (mParser == null) mParser = Markwon.createParser();
+       if (mMarkDownConfig == null) {
+           int blockQuoteColor = ContextCompat.getColor(this, R.color.colorAccent);
+           SpannableTheme spannableTheme = SpannableTheme
+                   .builderWithDefaults(this)
+                   .blockQuoteColor(blockQuoteColor)
+                   .build();
+           mMarkDownConfig = SpannableConfiguration.create(this).builder(this).theme(spannableTheme).build();
+       }
+        SpannableRenderer spannableRenderer = new SpannableRenderer();
+        Node node = mParser.parse(parsedPext);
+        CharSequence markDownText = spannableRenderer.render(mMarkDownConfig, node);
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+        Markwon.unscheduleDrawables(textView);
+        Markwon.unscheduleTableRows(textView);
+        textView.setText(markDownText);
+    }
+
+    @Override
     public void onBackPressed() {
         Intent intent = new Intent();
         intent.putExtra(CommentsActivity.KEY_VOTE_TYPE, mCommentsFragment.getRedditVoteHelper().getVoteStatus());
@@ -207,11 +245,6 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
         intent.putExtra(KEY_ORIGINAL_POST_POSITION, mOrigionalPostPosition);
         setResult(Activity.RESULT_OK, intent);
         finish();
-    }
-
-    @Override
-    public Call<JsonElement> getComments() {
-        return mApi.getComments(mPostSubredditNoPrefix, mPostArticle, mPostArticle);
     }
 
     public int getInitVoteType() {

@@ -5,6 +5,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.gson.JsonElement;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,8 +112,8 @@ public class CommentsAdapter extends RecyclerView.Adapter {
             mPostion = position;
             Comment comment = mCommentTree.get(position);
 
+            mCommentsInterface.setMarkDownText(textTextView, comment.getBody());
             detailsTextView.setText(ItemDetailsHelper.getUserDetails(comment.getAuthor(), comment.getCreatedUtc()));
-            textTextView.setText(comment.getBody());
             upCountTextView.setText(String.valueOf(comment.getScore()));
             setCommentTreeMargins(baseConstraintLayout, comment);
 

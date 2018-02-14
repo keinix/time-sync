@@ -62,8 +62,12 @@ dependencies {
     // EXO player for RecyclerView video
     implementation "im.ene.toro3:toro-ext-exoplayer:3.3.0"
 
-    //parse markdown
+    //Markdown parser
     compile 'ru.noties:markwon:1.0.3'
+
+
+
+
 
 
 }

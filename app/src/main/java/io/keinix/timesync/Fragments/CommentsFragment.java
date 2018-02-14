@@ -36,7 +36,6 @@ import io.keinix.timesync.reddit.RedditVoteHelper;
 import io.keinix.timesync.reddit.model.comment.Comment;
 import io.keinix.timesync.views.WrapContentDraweeView;
 import retrofit2.Call;
-import ru.noties.markwon.Markwon;
 
 
 public class CommentsFragment extends Fragment {
@@ -46,6 +45,7 @@ public class CommentsFragment extends Fragment {
         List<Comment> createCommentTree(JsonElement baseCommentElement);
         CommentsActivity getContext();
         Api getApi();
+        void setMarkDownText(TextView textView, String text);
     }
 
     @Nullable @BindView(R.id.postExoPlayer) SimpleExoPlayerView mExoPlayer;

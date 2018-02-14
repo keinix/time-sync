@@ -31,15 +31,20 @@ public class VideoFeedViewHolder extends BaseFeedViewHolder implements ToroPlaye
         super.bindView(position);
         Data_ post = super.mAdapter.getRedditFeed().getData().getChildren().get(position).getData();
         setViewIcon(post);
-        mVideoUri = Uri.parse(mAdapter
-                .getRedditFeed()
-                .getData()
-                .getChildren()
-                .get(position)
-                .getData()
-                .getMedia()
-                .getRedditVideo()
-                .getScrubberMediaUrl());
+        if (post.getCrossLinks() != null) {
+            mVideoUri = Uri.parse(post.getCrossLinks().get(0).getMedia().getRedditVideo().getScrubberMediaUrl());
+        } else {
+            mVideoUri = Uri.parse(post.getMedia().getRedditVideo().getScrubberMediaUrl());
+        }
+//        mVideoUri = Uri.parse(mAdapter
+//                .getRedditFeed()
+//                .getData()
+//                .getChildren()
+//                .get(position)
+//                .getData()
+//                .getMedia()
+//                .getRedditVideo()
+//                .getScrubberMediaUrl());
 
         commentImageButton.setOnClickListener(v -> {
             long timeSincePosted = getTimeSincePosted(post.getCreatedUtc());
