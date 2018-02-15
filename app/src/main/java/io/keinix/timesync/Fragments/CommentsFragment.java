@@ -157,7 +157,7 @@ public class CommentsFragment extends Fragment {
 
     private void bindTextCommentsView() {
         mCommentsTextPostTitle.setText(mPostTitle);
-        mCommentText.setText(mSelfText);
+        mCommentsInterface.setMarkDownText(mCommentText, mSelfText);
         mCommentsSubreddit.setText(mPostSubreddit);
         mCommentsPostDetails.setText(mPostDetails);
     }
