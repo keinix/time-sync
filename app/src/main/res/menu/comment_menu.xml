@@ -8,6 +8,7 @@
     <item android:id="@+id/copy"
         android:title="Copy Text"/>
     <item android:id="@+id/report"
+          android:visible="false"
         android:title="Report"/>
 
 </menu>

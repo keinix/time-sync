@@ -23,6 +23,7 @@ import io.keinix.timesync.reddit.ItemDetailsHelper;
 import io.keinix.timesync.reddit.RedditVoteHelper;
 import io.keinix.timesync.reddit.model.Data_;
 import io.keinix.timesync.reddit.model.VoteResult;
+import io.keinix.timesync.utils.ShareUtil;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -85,19 +86,13 @@ public class BaseFeedViewHolder extends RecyclerView.ViewHolder {
             upVoteCountTextView.setText(String.valueOf(post.getUps()));
             commentCountTextView.setText(String.valueOf(post.getNumComments()));
             websiteDisplayTextView.setText(ItemDetailsHelper.getPostDetails(post));
+            String shareText = "www.reddit.com" + post.getPermalink();
+            shareImageButton.setOnClickListener(v -> ShareUtil.shareText(mFeedItemInterface.getContext(), shareText));
 
             mRedditVoteHelper = new RedditVoteHelper(mFeedItemInterface.getContext(),
                     upVoteImageButton, downVoteImageButton, upVoteCountTextView, mFeedItemInterface.getApi(),
                     ItemDetailsHelper.parseVoteType(post.isLiked()), id);
         }
-
-    public RedditVoteHelper getRedditVoteHelper() {
-        return mRedditVoteHelper;
-    }
-
-    public void setRedditVoteHelper(RedditVoteHelper redditVoteHelper) {
-        mRedditVoteHelper = redditVoteHelper;
-    }
 
     public void setVoteOnClick(int position, String id, Data_ post,
                                ImageView upVoteImageButton, ImageView downVoteImageButton, TextView upVoteCountTextView) {

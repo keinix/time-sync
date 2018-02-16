@@ -27,6 +27,7 @@ import io.keinix.timesync.reddit.ItemDetailsHelper;
 import io.keinix.timesync.reddit.RedditVoteHelper;
 import io.keinix.timesync.reddit.model.comment.Comment;
 import io.keinix.timesync.utils.CopyUtil;
+import io.keinix.timesync.utils.ShareUtil;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -167,6 +168,9 @@ public class CommentsAdapter extends RecyclerView.Adapter {
                     }
                     return true;
                 case R.id.share:
+                    String shareText = "u/" +mComment.getAuthor() +
+                            ": " + mComment.getBody() + "\n\nwww.reddit.com" + mComment.getPermalink();
+                    ShareUtil.shareText(mCommentsInterface.getContext(), shareText);
                     return true;
                 case R.id.copy:
                     Toast.makeText(mCommentsInterface.getContext(), "Text copied", Toast.LENGTH_SHORT).show();

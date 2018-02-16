@@ -58,6 +58,18 @@ public class Comment {
     @Expose
     private boolean isSaved;
 
+    @SerializedName("permalink")
+    @Expose
+    private String permalink;
+
+    public String getPermalink() {
+        return permalink;
+    }
+
+    public void setPermalink(String permalink) {
+        this.permalink = permalink;
+    }
+
     public boolean isSaved() {
         return isSaved;
     }
@@ -213,6 +225,7 @@ public class Comment {
                 ", name='" + name + '\'' +
                 ", htmlBody='" + htmlBody + '\'' +
                 ", isSaved=" + isSaved +
+                ", permalink='" + permalink + '\'' +
                 '}';
     }
 }
