@@ -57,10 +57,10 @@ public class VideoFeedViewHolder extends BaseFeedViewHolder implements ToroPlaye
             intent.putExtra(CommentsActivity.KEY_POST_SUBREDDIT, post.getSubredditNamePrefixed());
             intent.putExtra(CommentsActivity.KEY_POST_SUBREDDIT_NO_PREFIX, post.getSubreddit());
             intent.putExtra(CommentsActivity.KEY_POST_TITLE, post.getTitle());
-            intent.putExtra(CommentsActivity.KEY_POST_ID, post.getName());
+            intent.putExtra(CommentsActivity.KEY_POST_ID, post.getId());
             intent.putExtra(CommentsActivity.KEY_POST_DETAILS, postDetails);
             intent.putExtra(CommentsActivity.KEY_VOTE_TYPE, ItemDetailsHelper.parseVoteType(post.isLiked()));
-            intent.putExtra(CommentsActivity.KEY_POST_ARTICLE, post.getId());
+            intent.putExtra(CommentsActivity.KEY_POST_ARTICLE, post.getName());
             intent.putExtra(CommentsActivity.KEY_VOTE_COUNT, post.getUps());
             intent.putExtra(CommentsActivity.KEY_INIT_VOTE_TYPE, mRedditVoteHelper.getVoteStatus());
             intent.putExtra(CommentsActivity.KEY_ORIGINAL_POST_POSITION, position);

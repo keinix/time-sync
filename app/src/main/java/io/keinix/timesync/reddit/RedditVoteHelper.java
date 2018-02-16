@@ -3,6 +3,7 @@ package io.keinix.timesync.reddit;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -147,10 +148,16 @@ public class RedditVoteHelper {
 
     public void vote(String voteType) {
         mVoteStatus = Integer.parseInt(voteType);
+        Log.d(TAG, "ID: " + mId);
         mApi.vote(voteType, mId).enqueue(new Callback<VoteResult>() {
             @Override
             public void onResponse(Call<VoteResult> call, Response<VoteResult> response) {
                 // Toast.makeText(mContext, "Voted!" + voteType, Toast.LENGTH_SHORT).show();
+                if (!response.isSuccessful()) {
+                    Log.d(TAG, "Response: " + response.toString());
+                    Toast.makeText(mContext, "Vote Not Counted: network problem", Toast.LENGTH_SHORT).show();
+
+                }
             }
 
             @Override

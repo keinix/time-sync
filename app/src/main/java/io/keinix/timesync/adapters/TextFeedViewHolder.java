@@ -31,6 +31,7 @@ public class TextFeedViewHolder extends BaseFeedViewHolder {
                 + timeSincePosted + "h";
         selfTextView.setOnClickListener(v -> launchCommentsActivity(post, postDetails, position));
         commentImageButton.setOnClickListener(v -> launchCommentsActivity(post, postDetails, position));
+        commentCountTextView.setOnClickListener(v -> launchCommentsActivity(post, postDetails, position));
     }
 
     private void launchCommentsActivity(Data_ post, String postDetails, int position) {

@@ -54,6 +54,17 @@ public class Comment {
     @SerializedName("body_html")
     @Expose
     private String htmlBody;
+    @SerializedName("saved")
+    @Expose
+    private boolean isSaved;
+
+    public boolean isSaved() {
+        return isSaved;
+    }
+
+    public void setSaved(boolean saved) {
+        isSaved = saved;
+    }
 
     public String getHtmlBody() {
         return htmlBody;
@@ -201,6 +212,7 @@ public class Comment {
                 ", likes=" + likes +
                 ", name='" + name + '\'' +
                 ", htmlBody='" + htmlBody + '\'' +
+                ", isSaved=" + isSaved +
                 '}';
     }
 }

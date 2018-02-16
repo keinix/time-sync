@@ -64,6 +64,12 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
             packIntent(post, intent, position);
             ((MainActivity) mFeedItemInterface.getContext()).startActivityForResult(intent, CommentsActivity.REQUEST_CODE);
         });
+        commentCountTextView.setOnClickListener(v -> {
+            Intent intent = new Intent(mFeedItemInterface.getContext(), CommentsActivity.class);
+
+            packIntent(post, intent, position);
+            ((MainActivity) mFeedItemInterface.getContext()).startActivityForResult(intent, CommentsActivity.REQUEST_CODE);
+        });
     }
 
     private void packIntent(Data_ post, Intent intent, int position) {
@@ -74,7 +80,7 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
             Log.d(TAG, "Gif Uri: " + mGifUri.toString());
         } else {
             Log.d(TAG, "NOT GIF TRIGGERED");
-            intent.putExtra(CommentsActivity.KEY_IMAGE_URL, post.getPreview().getImages().get(0).getSource().getUrl());
+            intent.putExtra(CommentsActivity.KEY_IMAGE_URL, post.getPreview().getImages().get(0).getSource().getUrl().replace("amp;", ""));
         }
         if (isGif) {
             intent.putExtra(CommentsActivity.KEY_COMMENTS_LAYOUT_TYPE, CommentsActivity.VALUE_GIF_COMMENTS_LAYOUT);
