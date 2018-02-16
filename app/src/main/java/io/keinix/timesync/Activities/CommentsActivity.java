@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -35,6 +36,8 @@ import io.keinix.timesync.reddit.TokenAuthenticator;
 import io.keinix.timesync.reddit.model.comment.Comment;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.noties.markwon.Markwon;
@@ -238,6 +241,40 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
     }
 
     @Override
+    public void save(String id) {
+        mApi.save(id).enqueue(new Callback<JsonElement>() {
+            @Override
+            public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(CommentsActivity.this, "Saved", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonElement> call, Throwable t) {
+                Toast.makeText(CommentsActivity.this, "Saved", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void unsave(String id) {
+        mApi.unsave(id).enqueue(new Callback<JsonElement>() {
+            @Override
+            public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(CommentsActivity.this, "Saved", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonElement> call, Throwable t) {
+                Toast.makeText(CommentsActivity.this, "Saved", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
     public void onBackPressed() {
         Intent intent = new Intent();
         intent.putExtra(CommentsActivity.KEY_VOTE_TYPE, mCommentsFragment.getRedditVoteHelper().getVoteStatus());
@@ -247,11 +284,4 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
         finish();
     }
 
-    public int getInitVoteType() {
-        return mInitVoteType;
-    }
-
-    public void setInitVoteType(int initVoteType) {
-        mInitVoteType = initVoteType;
-    }
 }

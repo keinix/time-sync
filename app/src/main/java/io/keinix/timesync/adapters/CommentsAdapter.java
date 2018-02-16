@@ -26,6 +26,7 @@ import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.ItemDetailsHelper;
 import io.keinix.timesync.reddit.RedditVoteHelper;
 import io.keinix.timesync.reddit.model.comment.Comment;
+import io.keinix.timesync.utils.CopyUtil;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -101,6 +102,7 @@ public class CommentsAdapter extends RecyclerView.Adapter {
         @BindView(R.id.commentMenuImageButton) ImageButton menuImageButton;
         private int mPostion;
         private boolean commentSaved;
+        private Comment mComment;
 
         public CommentsViewHolder(View itemView) {
             super(itemView);
@@ -110,19 +112,19 @@ public class CommentsAdapter extends RecyclerView.Adapter {
         //TODO:add html and hyperlink/subreddit parsing
         public void bindView(int position) {
             mPostion = position;
-            Comment comment = mCommentTree.get(position);
-            commentSaved = comment.isSaved();
+            mComment = mCommentTree.get(position);
+            commentSaved = mComment.isSaved();
             menuImageButton.setOnClickListener(v -> showPopUpMenu(menuImageButton));
 
-            mCommentsInterface.setMarkDownText(textTextView, comment.getBody());
-            detailsTextView.setText(ItemDetailsHelper.getUserDetails(comment.getAuthor(), comment.getCreatedUtc()));
-            upCountTextView.setText(String.valueOf(comment.getScore()));
-            setCommentTreeMargins(baseConstraintLayout, comment);
+            mCommentsInterface.setMarkDownText(textTextView, mComment.getBody());
+            detailsTextView.setText(ItemDetailsHelper.getUserDetails(mComment.getAuthor(), mComment.getCreatedUtc()));
+            upCountTextView.setText(String.valueOf(mComment.getScore()));
+            setCommentTreeMargins(baseConstraintLayout, mComment);
 
              new RedditVoteHelper(mCommentsInterface.getContext(),
                     upVoteImageButton, downVoteImageButton, upCountTextView,
-                    mCommentsInterface.getApi(), ItemDetailsHelper.parseVoteType(comment.getLikes()),
-                     comment.getName());
+                    mCommentsInterface.getApi(), ItemDetailsHelper.parseVoteType(mComment.getLikes()),
+                     mComment.getName());
         }
 
         public void setCommentTreeMargins(CardView item, Comment comment) {
@@ -156,9 +158,11 @@ public class CommentsAdapter extends RecyclerView.Adapter {
                 case R.id.save:
                     if (commentSaved) {
                         commentSaved = false;
+                        mCommentsInterface.unsave(mComment.getName());
                         Toast.makeText(mCommentsInterface.getContext(), "Unsaved", Toast.LENGTH_SHORT).show();
                     } else {
                         commentSaved = true;
+                        mCommentsInterface.save(mComment.getName());
                         Toast.makeText(mCommentsInterface.getContext(), "Saved", Toast.LENGTH_SHORT).show();
                     }
                     return true;
@@ -166,6 +170,7 @@ public class CommentsAdapter extends RecyclerView.Adapter {
                     return true;
                 case R.id.copy:
                     Toast.makeText(mCommentsInterface.getContext(), "Text copied", Toast.LENGTH_SHORT).show();
+                    CopyUtil.copy(mCommentsInterface.getContext(), mComment.getBody());
                     return true;
                 case R.id.report:
                     Toast.makeText(mCommentsInterface.getContext(), "Reported", Toast.LENGTH_SHORT).show();
@@ -173,6 +178,7 @@ public class CommentsAdapter extends RecyclerView.Adapter {
                 default:
                     return false;
             }
+
         }
     }
 }

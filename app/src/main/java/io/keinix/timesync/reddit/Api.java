@@ -60,4 +60,12 @@ public interface Api {
         @Path("article") String article,
         @Header("article") String postArticle
     );
+
+    @POST("api/save")
+    @FormUrlEncoded
+    Call<JsonElement> save(@Field("id") String id);
+
+    @POST("api/unsave")
+    @FormUrlEncoded
+    Call<JsonElement> unsave(@Field("id") String id);
 }

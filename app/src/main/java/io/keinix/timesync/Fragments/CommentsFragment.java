@@ -48,6 +48,8 @@ public class CommentsFragment extends Fragment {
         CommentsActivity getContext();
         Api getApi();
         void setMarkDownText(TextView textView, String text);
+        void save(String id);
+        void unsave(String id);
     }
 
     @Nullable @BindView(R.id.postExoPlayer) SimpleExoPlayerView mExoPlayer;

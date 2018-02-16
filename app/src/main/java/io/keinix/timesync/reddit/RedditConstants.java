@@ -7,7 +7,7 @@ public final class RedditConstants {
     public static final String REDDIT_AUTH_URL =
             "https://www.reddit.com/api/v1/authorize.compact?client_id=%s" +
                     "&response_type=code&state=%s&redirect_uri=%s&" +
-                    "duration=permanent&scope=identity+read+mysubreddits+vote";
+                    "duration=permanent&scope=identity+read+mysubreddits+vote+save";
     public static final String REDDIT_CLIENT_ID = "gX4PnW7oHz7dgQ";
 
     public static final String REDDIT_REDIRECT_URL = "io.keinix://www.keinix.io/timesync";
