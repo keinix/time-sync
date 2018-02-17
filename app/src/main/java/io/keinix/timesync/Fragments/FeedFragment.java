@@ -95,6 +95,7 @@ public class FeedFragment extends Fragment {
                 }
             }
         });
+        mFeedItemInterface.populateRedditFeed(mFeedAdapter);
         return view;
     }
 

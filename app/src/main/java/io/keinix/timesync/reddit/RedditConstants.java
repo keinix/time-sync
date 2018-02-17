@@ -37,7 +37,6 @@ public final class RedditConstants {
     public static final String REDDIT_USER_AGENT = "android:io.keinix.timeSync:v0.1 (by /u/keinix)";
 
     // for Api parameters
-
     public static final String UP_VOTE = String.valueOf(1);
 
     public static final String DOWN_VOTE = String.valueOf(-1);

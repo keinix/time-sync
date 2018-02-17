@@ -4,7 +4,11 @@
                 android:layout_width="match_parent"
                 android:id="@+id/feedRelativeLayout"
                 xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <ProgressBar
+        android:id="@+id/feedProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" />
 
     <im.ene.toro.widget.Container
         android:id="@+id/feedRecyclerView"

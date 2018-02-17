@@ -120,7 +120,6 @@ public class AddAccountActivity extends AccountAuthenticatorActivity {
                 Log.e(TAG, "onFailure: " + t.getMessage());
             }
         });
-
     }
 
     @Override
