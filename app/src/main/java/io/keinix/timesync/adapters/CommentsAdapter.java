@@ -25,6 +25,7 @@ import io.keinix.timesync.Fragments.CommentsFragment;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.ItemDetailsHelper;
 import io.keinix.timesync.reddit.RedditVoteHelper;
+import io.keinix.timesync.reddit.ReplyPopUp;
 import io.keinix.timesync.reddit.model.comment.Comment;
 import io.keinix.timesync.utils.CopyUtil;
 import io.keinix.timesync.utils.ShareUtil;
@@ -115,7 +116,9 @@ public class CommentsAdapter extends RecyclerView.Adapter {
             mPostion = position;
             mComment = mCommentTree.get(position);
             commentSaved = mComment.isSaved();
+            ReplyPopUp replyPopUp = new ReplyPopUp(mCommentsInterface.getContext(), mComment.getAuthor(), mComment.getBody());
             menuImageButton.setOnClickListener(v -> showPopUpMenu(menuImageButton));
+            replyImageButton.setOnClickListener(v -> replyPopUp.show());
 
             mCommentsInterface.setMarkDownText(textTextView, mComment.getBody());
             detailsTextView.setText(ItemDetailsHelper.getUserDetails(mComment.getAuthor(), mComment.getCreatedUtc()));
@@ -184,5 +187,7 @@ public class CommentsAdapter extends RecyclerView.Adapter {
             }
 
         }
+
+
     }
 }
