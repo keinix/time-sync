@@ -10,4 +10,5 @@
     <color name="white">#ffffffff</color>
     <color name="linkColor">#71767c</color>
     <color name="selfTextBackground">#0f0f0f</color>
+    <color name="darkGreen">#006400</color>
 </resources>

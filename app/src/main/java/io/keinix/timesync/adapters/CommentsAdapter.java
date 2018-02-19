@@ -1,5 +1,6 @@
 package io.keinix.timesync.adapters;
 
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,6 +22,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.keinix.timesync.Activities.ReplyActivity;
 import io.keinix.timesync.Fragments.CommentsFragment;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.ItemDetailsHelper;
@@ -116,9 +118,8 @@ public class CommentsAdapter extends RecyclerView.Adapter {
             mPostion = position;
             mComment = mCommentTree.get(position);
             commentSaved = mComment.isSaved();
-            ReplyPopUp replyPopUp = new ReplyPopUp(mCommentsInterface.getContext(), mComment.getAuthor(), mComment.getBody());
             menuImageButton.setOnClickListener(v -> showPopUpMenu(menuImageButton));
-            replyImageButton.setOnClickListener(v -> replyPopUp.show());
+            replyImageButton.setOnClickListener(v -> launchReplyActivity());
 
             mCommentsInterface.setMarkDownText(textTextView, mComment.getBody());
             detailsTextView.setText(ItemDetailsHelper.getUserDetails(mComment.getAuthor(), mComment.getCreatedUtc()));
@@ -140,8 +141,6 @@ public class CommentsAdapter extends RecyclerView.Adapter {
             item.setLayoutParams(layoutParams);
         }
 
-
-
         public void showPopUpMenu(View v) {
             PopupMenu popUp = new PopupMenu(mCommentsInterface.getContext(), v);
             MenuInflater menuInflater = popUp.getMenuInflater();
@@ -154,6 +153,14 @@ public class CommentsAdapter extends RecyclerView.Adapter {
                  saveItem.setTitle("Save");
              }
             popUp.show();
+        }
+
+        public void launchReplyActivity() {
+            Intent intent = new Intent(mCommentsInterface.getContext(), ReplyActivity.class);
+            intent.putExtra(ReplyActivity.KEY_AUTHOR, mComment.getAuthor());
+            intent.putExtra(ReplyActivity.KEY_BODY, mComment.getBody());
+            intent.putExtra(ReplyActivity.KEY_CREATED_UTC, mComment.getCreatedUtc());
+            mCommentsInterface.getContext().startActivityForResult(intent, ReplyActivity.REQUEST_CODE);
         }
 
         @Override

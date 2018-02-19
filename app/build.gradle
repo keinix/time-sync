@@ -66,8 +66,4 @@ dependencies {
     compile 'ru.noties:markwon:1.0.3'
 
 
-
-
-
-
 }

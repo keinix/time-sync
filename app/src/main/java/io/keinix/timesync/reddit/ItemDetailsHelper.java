@@ -34,4 +34,8 @@ public abstract class ItemDetailsHelper {
         } else {
             return RedditVoteHelper.VALUE_NOT_VOTED; }
     }
+
+    public static String getReplyDetails(String author, long createdUtc) {
+        return "u/" + author + " \u2022 " + getTimeSincePosted(createdUtc);
+    }
 }
