@@ -42,11 +42,13 @@ public class CommentsAdapter extends RecyclerView.Adapter {
     private CommentsFragment.CommentsInterface mCommentsInterface;
     private List<Comment> mCommentTree;
     private ProgressBar mCommentsProgressBar;
+    private CommentsFragment mFragment;
 
-    public CommentsAdapter(CommentsFragment.CommentsInterface commentsInterface, ProgressBar progressBar) {
+    public CommentsAdapter(CommentsFragment.CommentsInterface commentsInterface, ProgressBar progressBar, CommentsFragment fragment) {
         mCommentsInterface = commentsInterface;
         mCommentTree = new ArrayList<>();
         mCommentsProgressBar = progressBar;
+        mFragment = fragment;
         populateComments();
         Log.d(TAG, "CommentAdapter created");
     }
@@ -160,8 +162,10 @@ public class CommentsAdapter extends RecyclerView.Adapter {
             intent.putExtra(ReplyActivity.KEY_AUTHOR, mComment.getAuthor());
             intent.putExtra(ReplyActivity.KEY_BODY, mComment.getBody());
             intent.putExtra(ReplyActivity.KEY_CREATED_UTC, mComment.getCreatedUtc());
-            mCommentsInterface.getContext().startActivityForResult(intent, ReplyActivity.REQUEST_CODE);
+            intent.putExtra(ReplyActivity.KEY_POSITION, mPostion);
+            mFragment.startActivityForResult(intent, ReplyActivity.REQUEST_CODE);
         }
+
 
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {

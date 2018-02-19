@@ -30,6 +30,8 @@ public final class RedditConstants {
 
     public static final String KEY_EXPIRES_IN = "KEY_EXPIRES_IN";
 
+    public static final String KEY_NAME = "KEY_NAME";
+
 
     // for Http Requests
     public static final String REDDIT_BASE_URL_OAUTH2 = "https://oauth.reddit.com/";

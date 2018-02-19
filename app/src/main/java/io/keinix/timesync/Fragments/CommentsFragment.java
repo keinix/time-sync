@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
@@ -31,6 +32,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import im.ene.toro.exoplayer.SimpleExoPlayerViewHelper;
 import io.keinix.timesync.Activities.CommentsActivity;
+import io.keinix.timesync.Activities.ReplyActivity;
 import io.keinix.timesync.R;
 import io.keinix.timesync.adapters.CommentsAdapter;
 import io.keinix.timesync.reddit.Api;
@@ -38,6 +40,8 @@ import io.keinix.timesync.reddit.RedditVoteHelper;
 import io.keinix.timesync.reddit.model.comment.Comment;
 import io.keinix.timesync.views.WrapContentDraweeView;
 import retrofit2.Call;
+
+import static android.support.v4.provider.FontsContractCompat.FontRequestCallback.RESULT_OK;
 
 
 public class CommentsFragment extends Fragment {
@@ -167,13 +171,22 @@ public class CommentsFragment extends Fragment {
     }
 
     protected void setRecyclerView() {
-        mCommentsRecyclerView.setAdapter(new CommentsAdapter(mCommentsInterface, mcommentsProgressBar));
+        mCommentsRecyclerView.setAdapter(new CommentsAdapter(mCommentsInterface, mcommentsProgressBar, this));
         mCommentsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
 
     protected void setVideo() {
 
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == -1 && requestCode == ReplyActivity.REQUEST_CODE) {
+            Toast.makeText(mCommentsInterface.getContext(), "onActivityResult", Toast.LENGTH_SHORT).show();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void setGifImage() {

@@ -87,6 +87,7 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
     private int mOrigionalPostPosition;
     private Parser mParser;
     private SpannableConfiguration mMarkDownConfig;
+    private Comment mReply;
 
 
     @Override
@@ -238,6 +239,12 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
         Markwon.unscheduleDrawables(textView);
         Markwon.unscheduleTableRows(textView);
         textView.setText(markDownText);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

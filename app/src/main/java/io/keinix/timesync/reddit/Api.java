@@ -2,6 +2,7 @@ package io.keinix.timesync.reddit;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,9 @@ public interface Api {
         @HeaderMap Map<String, String> headers,
         @FieldMap Map<String, String> fields
     );
+
+    @GET("api/v1/me/")
+    Call<JsonObject> getUsername();
 
     // **below use RedditAuthInterceptor and TokenAuthenticator**
     @GET(".")

@@ -25,11 +25,13 @@ public class ReplyActivity extends AppCompatActivity {
     public static final String KEY_BODY = "KEY_BODY";
     public static final String KEY_REPLY_BODY = "KEY_REPLY_BODY ";
     public static final String KEY_CREATED_UTC = "KEY_CREATED_UTC";
+    public static final String KEY_POSITION = "KEY_POSITION";
     public static final int REQUEST_CODE = 102;
 
     private String mAuthor;
     private String mBody;
     private long mCreatedUtc;
+    private int mPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,7 @@ public class ReplyActivity extends AppCompatActivity {
         mAuthor = intent.getStringExtra(KEY_AUTHOR);
         mBody = intent.getStringExtra(KEY_BODY);
         mCreatedUtc = intent.getLongExtra(KEY_CREATED_UTC, 0);
+        mPosition = intent.getIntExtra(KEY_POSITION, 0);
     }
 
     public void bindView() {
@@ -66,6 +69,7 @@ public class ReplyActivity extends AppCompatActivity {
             case R.id.replyMenuPost:
                 Intent intent = new Intent();
                 intent.putExtra(KEY_REPLY_BODY, replyEditText.getText().toString());
+                intent.putExtra(KEY_POSITION, mPosition);
                 setResult(RESULT_OK, intent);
                 finish();
                 break;

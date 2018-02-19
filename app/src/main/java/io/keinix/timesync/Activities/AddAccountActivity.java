@@ -4,12 +4,15 @@ import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.google.gson.JsonObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,8 +22,11 @@ import butterknife.ButterKnife;
 import io.keinix.timesync.MainActivity;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.Api;
+import io.keinix.timesync.reddit.RedditAuthInterceptor;
 import io.keinix.timesync.reddit.RedditConstants;
+import io.keinix.timesync.reddit.TokenAuthenticator;
 import io.keinix.timesync.reddit.model.RedditAccessToken;
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -103,13 +109,14 @@ public class AddAccountActivity extends AccountAuthenticatorActivity {
                 Log.d(TAG, "response: " + response.toString());
 
                 if (response.body().getError() == null) {
-                    AccountManager am = AccountManager.get(AddAccountActivity.this);
+                    mAccountManager = AccountManager.get(AddAccountActivity.this);
                     Bundle userdata = new Bundle();
 
                     Account account = new Account(RedditConstants.ACCOUNT_NAME, RedditConstants.ACCOUNT_TYPE);
-                    am.addAccountExplicitly(account, "123", userdata);
-                    am.setAuthToken(account, RedditConstants.KEY_AUTH_TOKEN, response.body().getAccess_token());
-                    am.setUserData(account, RedditConstants.KEY_REFRESH_TOKEN, response.body().getRefresh_token());
+                    mAccountManager.addAccountExplicitly(account, "123", userdata);
+                    mAccountManager.setAuthToken(account, RedditConstants.KEY_AUTH_TOKEN, response.body().getAccess_token());
+                    mAccountManager.setUserData(account, RedditConstants.KEY_REFRESH_TOKEN, response.body().getRefresh_token());
+                    getUserName();
                 } else {
                     Toast.makeText(AddAccountActivity.this, "There was an error", Toast.LENGTH_SHORT).show();
                 }
@@ -120,6 +127,37 @@ public class AddAccountActivity extends AccountAuthenticatorActivity {
                 Log.e(TAG, "onFailure: " + t.getMessage());
             }
         });
+    }
+
+    private void getUserName() {
+        Api api = initApi();
+        api.getUsername().enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                Log.d(TAG, "Response: " + response.body());
+                String name = response.body().get("name").getAsString();
+                SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+                prefs.edit().putString(RedditConstants.KEY_NAME, "u/" + name).apply();
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public Api initApi() {
+        OkHttpClient.Builder client = new OkHttpClient.Builder()
+                .authenticator(new TokenAuthenticator(mAccountManager))
+                .addInterceptor(new RedditAuthInterceptor(mAccountManager, this));
+
+        return new Retrofit.Builder()
+                .baseUrl(RedditConstants.REDDIT_BASE_URL_OAUTH2)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client.build())
+                .build()
+                .create(Api.class);
     }
 
     @Override
@@ -133,5 +171,11 @@ public class AddAccountActivity extends AccountAuthenticatorActivity {
     public void onBackPressed() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        getUserName();
+        super.onDestroy();
     }
 }
