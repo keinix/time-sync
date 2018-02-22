@@ -3,6 +3,7 @@ package io.keinix.timesync.Activities;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -279,6 +280,17 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
                 Toast.makeText(CommentsActivity.this, "Saved", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public Comment generateReplyComment(Intent data) {
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        Comment reply = new Comment();
+        reply.setBody(data.getStringExtra(ReplyActivity.KEY_REPLY_BODY));
+        reply.setAuthor(prefs.getString(RedditConstants.KEY_NAME, "/u/me"));
+        reply.setCreatedUtc(System.currentTimeMillis() / 1000);
+        reply.setDepth(data.getIntExtra(ReplyActivity.KEY_DEPTH, 0));
+        return reply;
     }
 
     @Override

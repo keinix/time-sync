@@ -54,6 +54,7 @@ public class CommentsFragment extends Fragment {
         void setMarkDownText(TextView textView, String text);
         void save(String id);
         void unsave(String id);
+        Comment generateReplyComment(Intent data);
     }
 
     @Nullable @BindView(R.id.postExoPlayer) SimpleExoPlayerView mExoPlayer;
@@ -87,6 +88,7 @@ public class CommentsFragment extends Fragment {
     protected String mSelfText;
     protected Uri mVideoUri;
     protected View mView;
+    protected CommentsAdapter mAdapter;
 
     @Nullable
     @Override
@@ -171,7 +173,8 @@ public class CommentsFragment extends Fragment {
     }
 
     protected void setRecyclerView() {
-        mCommentsRecyclerView.setAdapter(new CommentsAdapter(mCommentsInterface, mcommentsProgressBar, this));
+        mAdapter = new CommentsAdapter(mCommentsInterface, mcommentsProgressBar, this);
+        mCommentsRecyclerView.setAdapter(mAdapter);
         mCommentsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
@@ -184,9 +187,17 @@ public class CommentsFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == -1 && requestCode == ReplyActivity.REQUEST_CODE) {
-            Toast.makeText(mCommentsInterface.getContext(), "onActivityResult", Toast.LENGTH_SHORT).show();
+            postReply(data);
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void postReply(Intent data) {
+        int position = data.getIntExtra(ReplyActivity.KEY_POSITION, mAdapter.getItemCount());
+        //int replyPosition = position++;
+        Comment reply = mCommentsInterface.generateReplyComment(data);
+        mAdapter.insertReply(position, reply);
+        mAdapter.notifyItemInserted(position);
     }
 
     private void setGifImage() {

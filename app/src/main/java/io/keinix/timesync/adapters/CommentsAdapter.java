@@ -69,6 +69,10 @@ public class CommentsAdapter extends RecyclerView.Adapter {
         return mCommentTree.size();
     }
 
+    public void insertReply(int position, Comment reply) {
+        mCommentTree.add(position, reply);
+    }
+
     private void populateComments() {
 
        mCommentsInterface.getComments().enqueue(new Callback<JsonElement>() {
@@ -95,6 +99,7 @@ public class CommentsAdapter extends RecyclerView.Adapter {
            }
        });
     }
+
 
     public class CommentsViewHolder extends RecyclerView.ViewHolder implements PopupMenu.OnMenuItemClickListener {
 
@@ -163,6 +168,7 @@ public class CommentsAdapter extends RecyclerView.Adapter {
             intent.putExtra(ReplyActivity.KEY_BODY, mComment.getBody());
             intent.putExtra(ReplyActivity.KEY_CREATED_UTC, mComment.getCreatedUtc());
             intent.putExtra(ReplyActivity.KEY_POSITION, mPostion);
+            intent.putExtra(ReplyActivity.KEY_DEPTH, mComment.getDepth());
             mFragment.startActivityForResult(intent, ReplyActivity.REQUEST_CODE);
         }
 

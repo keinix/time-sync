@@ -26,12 +26,16 @@ public class ReplyActivity extends AppCompatActivity {
     public static final String KEY_REPLY_BODY = "KEY_REPLY_BODY ";
     public static final String KEY_CREATED_UTC = "KEY_CREATED_UTC";
     public static final String KEY_POSITION = "KEY_POSITION";
+    public static final String KEY_DEPTH = "KEY_DEPTH";
+    public static final String KEY_IS_REPLY_TO_OP = "KEY_IS_REPLY_TO_OP";
     public static final int REQUEST_CODE = 102;
 
     private String mAuthor;
     private String mBody;
     private long mCreatedUtc;
     private int mPosition;
+    private int mReplyDepth;
+    private boolean mIsReplyToOp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +53,9 @@ public class ReplyActivity extends AppCompatActivity {
         mBody = intent.getStringExtra(KEY_BODY);
         mCreatedUtc = intent.getLongExtra(KEY_CREATED_UTC, 0);
         mPosition = intent.getIntExtra(KEY_POSITION, 0);
+        mIsReplyToOp = intent.getBooleanExtra(KEY_IS_REPLY_TO_OP, false);
+        int depth =intent.getIntExtra(KEY_DEPTH, 0);
+        mReplyDepth = mIsReplyToOp ? 0 : depth + 1;
     }
 
     public void bindView() {
@@ -70,6 +77,7 @@ public class ReplyActivity extends AppCompatActivity {
                 Intent intent = new Intent();
                 intent.putExtra(KEY_REPLY_BODY, replyEditText.getText().toString());
                 intent.putExtra(KEY_POSITION, mPosition);
+                intent.putExtra(KEY_DEPTH, mReplyDepth);
                 setResult(RESULT_OK, intent);
                 finish();
                 break;
