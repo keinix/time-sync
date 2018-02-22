@@ -194,10 +194,10 @@ public class CommentsFragment extends Fragment {
 
     private void postReply(Intent data) {
         int position = data.getIntExtra(ReplyActivity.KEY_POSITION, mAdapter.getItemCount());
-        //int replyPosition = position++;
+        int replyPosition = ++position;
         Comment reply = mCommentsInterface.generateReplyComment(data);
-        mAdapter.insertReply(position, reply);
-        mAdapter.notifyItemInserted(position);
+        mAdapter.insertReply(replyPosition, reply);
+        mAdapter.notifyItemInserted(replyPosition);
     }
 
     private void setGifImage() {

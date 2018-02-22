@@ -190,7 +190,7 @@ public class Comment {
         isCollasped = collasped;
     }
 
-    public Boolean getSubmitter() {
+    public Boolean isSubmitter() {
         return isSubmitter;
     }
 

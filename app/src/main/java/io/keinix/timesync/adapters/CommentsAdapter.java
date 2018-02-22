@@ -1,6 +1,7 @@
 package io.keinix.timesync.adapters;
 
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -27,7 +28,6 @@ import io.keinix.timesync.Fragments.CommentsFragment;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.ItemDetailsHelper;
 import io.keinix.timesync.reddit.RedditVoteHelper;
-import io.keinix.timesync.reddit.ReplyPopUp;
 import io.keinix.timesync.reddit.model.comment.Comment;
 import io.keinix.timesync.utils.CopyUtil;
 import io.keinix.timesync.utils.ShareUtil;
@@ -133,6 +133,15 @@ public class CommentsAdapter extends RecyclerView.Adapter {
             upCountTextView.setText(String.valueOf(mComment.getScore()));
             setCommentTreeMargins(baseConstraintLayout, mComment);
 
+            //change to red when usernames match
+//            int red = ContextCompat.getColor(mCommentsInterface.getContext(), R.color.red);
+//            int accent = ContextCompat.getColor(mCommentsInterface.getContext(), R.color.colorAccent);
+//            if (mComment.isSubmitter()) {
+//                detailsTextView.setTextColor(red);
+//            } else {
+//                detailsTextView.setTextColor(accent);
+//            }
+
              new RedditVoteHelper(mCommentsInterface.getContext(),
                     upVoteImageButton, downVoteImageButton, upCountTextView,
                     mCommentsInterface.getApi(), ItemDetailsHelper.parseVoteType(mComment.getLikes()),
@@ -167,7 +176,7 @@ public class CommentsAdapter extends RecyclerView.Adapter {
             intent.putExtra(ReplyActivity.KEY_AUTHOR, mComment.getAuthor());
             intent.putExtra(ReplyActivity.KEY_BODY, mComment.getBody());
             intent.putExtra(ReplyActivity.KEY_CREATED_UTC, mComment.getCreatedUtc());
-            intent.putExtra(ReplyActivity.KEY_POSITION, mPostion);
+            intent.putExtra(ReplyActivity.KEY_POSITION, getAdapterPosition());
             intent.putExtra(ReplyActivity.KEY_DEPTH, mComment.getDepth());
             mFragment.startActivityForResult(intent, ReplyActivity.REQUEST_CODE);
         }
