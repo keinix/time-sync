@@ -178,6 +178,7 @@ public class CommentsAdapter extends RecyclerView.Adapter {
             intent.putExtra(ReplyActivity.KEY_CREATED_UTC, mComment.getCreatedUtc());
             intent.putExtra(ReplyActivity.KEY_POSITION, getAdapterPosition());
             intent.putExtra(ReplyActivity.KEY_DEPTH, mComment.getDepth());
+            intent.putExtra(ReplyActivity.KEY_PARENT_ID, mComment.getName());
             mFragment.startActivityForResult(intent, ReplyActivity.REQUEST_CODE);
         }
 

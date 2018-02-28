@@ -28,10 +28,12 @@ public class ReplyActivity extends AppCompatActivity {
     public static final String KEY_POSITION = "KEY_POSITION";
     public static final String KEY_DEPTH = "KEY_DEPTH";
     public static final String KEY_IS_REPLY_TO_OP = "KEY_IS_REPLY_TO_OP";
+    public static final String KEY_PARENT_ID = "KEY_PARENT_ID";
     public static final int REQUEST_CODE = 102;
 
     private String mAuthor;
     private String mBody;
+    private String mParentId;
     private long mCreatedUtc;
     private int mPosition;
     private int mReplyDepth;
@@ -53,6 +55,7 @@ public class ReplyActivity extends AppCompatActivity {
         mBody = intent.getStringExtra(KEY_BODY);
         mCreatedUtc = intent.getLongExtra(KEY_CREATED_UTC, 0);
         mPosition = intent.getIntExtra(KEY_POSITION, 0);
+        mParentId = intent.getStringExtra(KEY_PARENT_ID);
         mIsReplyToOp = intent.getBooleanExtra(KEY_IS_REPLY_TO_OP, false);
         int depth =intent.getIntExtra(KEY_DEPTH, 0);
         mReplyDepth = mIsReplyToOp ? 0 : depth + 1;
@@ -78,6 +81,7 @@ public class ReplyActivity extends AppCompatActivity {
                 intent.putExtra(KEY_REPLY_BODY, replyEditText.getText().toString());
                 intent.putExtra(KEY_POSITION, mPosition);
                 intent.putExtra(KEY_DEPTH, mReplyDepth);
+                intent.putExtra(KEY_PARENT_ID, mParentId);
                 setResult(RESULT_OK, intent);
                 finish();
                 break;

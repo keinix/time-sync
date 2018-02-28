@@ -72,4 +72,11 @@ public interface Api {
     @POST("api/unsave")
     @FormUrlEncoded
     Call<JsonElement> unsave(@Field("id") String id);
+
+    @POST("api/comment")
+    @FormUrlEncoded
+    Call<JsonObject> comment(
+    @Field("parent") String parent,
+    @Field("text") String text
+    );
 }

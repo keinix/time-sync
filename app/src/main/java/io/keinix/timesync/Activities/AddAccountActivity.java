@@ -175,7 +175,7 @@ public class AddAccountActivity extends AccountAuthenticatorActivity {
 
     @Override
     protected void onDestroy() {
-        getUserName();
+        // getUserName();
         super.onDestroy();
     }
 }

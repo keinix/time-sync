@@ -286,11 +286,34 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
     public Comment generateReplyComment(Intent data) {
         SharedPreferences prefs = getPreferences(MODE_PRIVATE);
         Comment reply = new Comment();
-        reply.setBody(data.getStringExtra(ReplyActivity.KEY_REPLY_BODY));
+        String parentId = data.getStringExtra(ReplyActivity.KEY_PARENT_ID);
+        String body = data.getStringExtra(ReplyActivity.KEY_REPLY_BODY);
+        postReply(parentId, body);
+
+        reply.setBody(body);
         reply.setAuthor(prefs.getString(RedditConstants.KEY_NAME, "/u/me"));
         reply.setCreatedUtc(System.currentTimeMillis() / 1000);
         reply.setDepth(data.getIntExtra(ReplyActivity.KEY_DEPTH, 0));
         return reply;
+    }
+
+    public void postReply(String parentId, String text) {
+
+        mApi.comment(parentId, text).enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "Responce: " + response);
+                } else {
+                    Log.d(TAG, "Responce NOT SUCCESS: " + response);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.d(TAG, "on Fail from post Reply");
+            }
+        });
     }
 
     @Override
