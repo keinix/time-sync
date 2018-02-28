@@ -1,6 +1,8 @@
 package io.keinix.timesync.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -8,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -77,13 +80,19 @@ public class ReplyActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.replyMenuPost:
-                Intent intent = new Intent();
-                intent.putExtra(KEY_REPLY_BODY, replyEditText.getText().toString());
-                intent.putExtra(KEY_POSITION, mPosition);
-                intent.putExtra(KEY_DEPTH, mReplyDepth);
-                intent.putExtra(KEY_PARENT_ID, mParentId);
-                setResult(RESULT_OK, intent);
-                finish();
+                ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+                if (cm.getActiveNetwork() == null) {
+                    Toast.makeText(this, "No Network Connection", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent intent = new Intent();
+                    intent.putExtra(KEY_REPLY_BODY, replyEditText.getText().toString());
+                    intent.putExtra(KEY_POSITION, mPosition);
+                    intent.putExtra(KEY_DEPTH, mReplyDepth);
+                    intent.putExtra(KEY_PARENT_ID, mParentId);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);

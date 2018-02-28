@@ -288,8 +288,8 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
         Comment reply = new Comment();
         String parentId = data.getStringExtra(ReplyActivity.KEY_PARENT_ID);
         String body = data.getStringExtra(ReplyActivity.KEY_REPLY_BODY);
-        postReply(parentId, body);
 
+        postReply(parentId, body);
         reply.setBody(body);
         reply.setAuthor(prefs.getString(RedditConstants.KEY_NAME, "/u/me"));
         reply.setCreatedUtc(System.currentTimeMillis() / 1000);

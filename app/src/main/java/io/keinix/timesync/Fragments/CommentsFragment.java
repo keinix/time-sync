@@ -1,7 +1,9 @@
 package io.keinix.timesync.Fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -38,6 +40,7 @@ import io.keinix.timesync.adapters.CommentsAdapter;
 import io.keinix.timesync.reddit.Api;
 import io.keinix.timesync.reddit.RedditVoteHelper;
 import io.keinix.timesync.reddit.model.comment.Comment;
+import io.keinix.timesync.utils.CopyUtil;
 import io.keinix.timesync.views.WrapContentDraweeView;
 import retrofit2.Call;
 
