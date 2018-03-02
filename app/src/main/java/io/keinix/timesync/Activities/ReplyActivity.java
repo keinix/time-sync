@@ -66,7 +66,11 @@ public class ReplyActivity extends AppCompatActivity {
 
     public void bindView() {
         MarkDownParser.parse(this, bodyTextView, mBody);
-        authorTextView.setText(ItemDetailsHelper.getReplyDetails(mAuthor, mCreatedUtc));
+        if (mIsReplyToOp) {
+            authorTextView.setText(mAuthor);
+        } else {
+            authorTextView.setText(ItemDetailsHelper.getReplyDetails(mAuthor, mCreatedUtc));
+        }
     }
 
     @Override
@@ -90,6 +94,7 @@ public class ReplyActivity extends AppCompatActivity {
                     intent.putExtra(KEY_POSITION, mPosition);
                     intent.putExtra(KEY_DEPTH, mReplyDepth);
                     intent.putExtra(KEY_PARENT_ID, mParentId);
+                    intent.putExtra(KEY_IS_REPLY_TO_OP, mIsReplyToOp);
                     setResult(RESULT_OK, intent);
                     finish();
                 }

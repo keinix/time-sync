@@ -111,6 +111,7 @@ public class CommentsAdapter extends RecyclerView.Adapter {
         @BindView(R.id.commentDownVoteImageButton) ImageButton downVoteImageButton;
         @BindView(R.id.commentCardView) CardView baseConstraintLayout;
         @BindView(R.id.commentMenuImageButton) ImageButton menuImageButton;
+
         private int mPostion;
         private boolean commentSaved;
         private Comment mComment;
@@ -173,10 +174,11 @@ public class CommentsAdapter extends RecyclerView.Adapter {
 
         public void launchReplyActivity() {
             Intent intent = new Intent(mCommentsInterface.getContext(), ReplyActivity.class);
+            intent.putExtra(ReplyActivity.KEY_POSITION, getAdapterPosition());
+            intent.putExtra(ReplyActivity.KEY_IS_REPLY_TO_OP, false);
             intent.putExtra(ReplyActivity.KEY_AUTHOR, mComment.getAuthor());
             intent.putExtra(ReplyActivity.KEY_BODY, mComment.getBody());
             intent.putExtra(ReplyActivity.KEY_CREATED_UTC, mComment.getCreatedUtc());
-            intent.putExtra(ReplyActivity.KEY_POSITION, getAdapterPosition());
             intent.putExtra(ReplyActivity.KEY_DEPTH, mComment.getDepth());
             intent.putExtra(ReplyActivity.KEY_PARENT_ID, mComment.getName());
             mFragment.startActivityForResult(intent, ReplyActivity.REQUEST_CODE);

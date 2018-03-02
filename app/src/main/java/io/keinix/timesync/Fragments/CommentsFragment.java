@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -75,6 +76,8 @@ public class CommentsFragment extends Fragment {
     @BindView(R.id.commentsSubRedditName) TextView mCommentsSubreddit;
     @BindView(R.id.commentsRecyclerView) RecyclerView mCommentsRecyclerView;
     @BindView(R.id.commentsProgressBar) ProgressBar mcommentsProgressBar;
+    @BindView(R.id.replyToOpCard) CardView replyToOpCardView;
+
     public static final String KEY_INDEX = "KEY_INDEX";
     public static final String TAG = CommentsFragment.class.getSimpleName();
 
@@ -92,6 +95,7 @@ public class CommentsFragment extends Fragment {
     protected Uri mVideoUri;
     protected View mView;
     protected CommentsAdapter mAdapter;
+    protected LinearLayoutManager mLayoutManager;
 
     @Nullable
     @Override
@@ -166,6 +170,7 @@ public class CommentsFragment extends Fragment {
         mCommentsPostDetails.setText(mPostDetails);
         mCommentsPostTitle.setText(mPostTitle);
         mCommentsSubreddit.setText(mPostSubreddit);
+        replyToOpCardView.setOnClickListener(v -> launchReplyActivity());
     }
 
     private void bindTextCommentsView() {
@@ -176,14 +181,29 @@ public class CommentsFragment extends Fragment {
     }
 
     protected void setRecyclerView() {
+        mLayoutManager = new LinearLayoutManager(getActivity());
         mAdapter = new CommentsAdapter(mCommentsInterface, mcommentsProgressBar, this);
         mCommentsRecyclerView.setAdapter(mAdapter);
-        mCommentsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        mCommentsRecyclerView.setLayoutManager(mLayoutManager);
     }
 
 
     protected void setVideo() {
 
+    }
+
+    public void launchReplyActivity() {
+        String body = mSelfText != null ? mSelfText : mPostSubreddit;
+        Intent intent = new Intent(mCommentsInterface.getContext(), ReplyActivity.class);
+        intent.putExtra(ReplyActivity.KEY_POSITION, mAdapter.getItemCount());
+        intent.putExtra(ReplyActivity.KEY_IS_REPLY_TO_OP, true);
+        intent.putExtra(ReplyActivity.KEY_AUTHOR, mPostDetails);
+        intent.putExtra(ReplyActivity.KEY_BODY, body);
+        intent.putExtra(ReplyActivity.KEY_CREATED_UTC, 0);
+        intent.putExtra(ReplyActivity.KEY_DEPTH, 0);
+        intent.putExtra(ReplyActivity.KEY_PARENT_ID, mPostID);
+        startActivityForResult(intent, ReplyActivity.REQUEST_CODE);
     }
 
 
@@ -196,11 +216,16 @@ public class CommentsFragment extends Fragment {
     }
 
     private void postReply(Intent data) {
+        boolean isReplyToOp = data.getBooleanExtra(ReplyActivity.KEY_IS_REPLY_TO_OP, false);
         int position = data.getIntExtra(ReplyActivity.KEY_POSITION, mAdapter.getItemCount());
-        int replyPosition = ++position;
+        int replyPosition = isReplyToOp ? position : ++position;
         Comment reply = mCommentsInterface.generateReplyComment(data);
         mAdapter.insertReply(replyPosition, reply);
         mAdapter.notifyItemInserted(replyPosition);
+        Log.d(TAG, "isOpReply:~~~~~~~~~~~~~~~~~~~~ " + isReplyToOp);
+        if (isReplyToOp) {
+            mLayoutManager.scrollToPositionWithOffset(mAdapter.getItemCount() -1, 0);
+        }
     }
 
     private void setGifImage() {

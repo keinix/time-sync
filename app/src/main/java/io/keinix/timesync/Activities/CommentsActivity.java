@@ -292,7 +292,7 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
 
         postReply(parentId, body);
         reply.setBody(body);
-        reply.setAuthor(prefs.getString(RedditConstants.KEY_NAME, "/u/me"));
+        reply.setAuthor(prefs.getString(RedditConstants.KEY_NAME, "me"));
         reply.setCreatedUtc(System.currentTimeMillis() / 1000);
         reply.setDepth(data.getIntExtra(ReplyActivity.KEY_DEPTH, 0));
         return reply;

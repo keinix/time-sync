@@ -17,12 +17,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorPrimary"
-        app:layout_constraintBottom_toTopOf="@+id/editText2">
+        app:layout_constraintBottom_toTopOf="@+id/replyToOpCard"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingBottom="40dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@color/colorPrimary">
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
@@ -143,21 +146,32 @@
 
     </android.support.v4.widget.NestedScrollView>
 
-    <TextView
-        android:id="@+id/oPReply"
+    <android.support.v7.widget.CardView
+        android:id="@+id/replyToOpCard"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginBottom="0dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:background="@color/colorPrimary"
-        android:elevation="5dp"
-        android:text="Add a comment..."
-        android:textColor="@android:color/white"
-        android:textSize="18sp"
+        android:layout_height="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:cardCornerRadius="4dp"
+        android:background="@color/colorPrimaryDark"
+        android:backgroundTint="@color/colorPrimaryDark">
+        <TextView
+            android:id="@+id/oPReplyTextView"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_margin="5dp"
+            android:background="@color/colorPrimary"
+            android:elevation="5dp"
+            android:text="   Add a comment..."
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textColor="@color/colorCountText"
+            />
+
+    </android.support.v7.widget.CardView>
 </android.support.constraint.ConstraintLayout>
 
 
