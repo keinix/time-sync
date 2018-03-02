@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<android.support.constraint.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/colorPrimary">
+
 <android.support.v4.widget.NestedScrollView
     android:id="@+id/commentsNestScrollView"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -133,3 +141,18 @@
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>
+
+    <TextView
+        android:id="@+id/oPReply"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginBottom="1dp"
+        android:background="@color/colorPrimaryDark"
+        android:elevation="5dp"
+        android:text="Add a comment..."
+        android:textSize="18sp"
+        android:textColor="@color/colorCountText"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+</android.support.constraint.ConstraintLayout>

@@ -216,6 +216,7 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
         return replyChildren;
     }
 
+
     @Override
     public Call<JsonElement> getComments() {
         return mApi.getComments(mPostSubredditNoPrefix, mPostArticle, mPostArticle);
