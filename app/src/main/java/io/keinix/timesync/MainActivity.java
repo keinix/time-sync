@@ -100,8 +100,6 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
         }
     }
 
-
-
     // -----------Feed Fragment Interface Methods-----------------
     @Override
     public Call<VoteResult> vote(String id, String voteType) {
