@@ -103,6 +103,7 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
         Log.d(TAG, "response "+ response.toString());
 
         if (response.isSuccessful()) {
+            mFeedFragment.feedProgressBar.setVisibility(View.INVISIBLE);
             mRedditFeed = response.body();
             mAfter = response.body().getData().getAfter();
             populateLocalVoteTracker(mRedditFeed.getData().getChildren());

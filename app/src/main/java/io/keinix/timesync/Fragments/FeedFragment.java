@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -35,8 +36,8 @@ import retrofit2.Call;
 
 public class FeedFragment extends Fragment {
 
-    @BindView(R.id.feedRecyclerView)
-    Container feedRecyclerView;
+    @BindView(R.id.feedRecyclerView) Container feedRecyclerView;
+     public @BindView(R.id.feedProgressBar) ProgressBar feedProgressBar;
 
     FeedItemInterface mFeedItemInterface;
     private FeedAdapter mFeedAdapter;
@@ -95,6 +96,7 @@ public class FeedFragment extends Fragment {
                 }
             }
         });
+        feedProgressBar.setVisibility(View.VISIBLE);
         mFeedItemInterface.populateRedditFeed(mFeedAdapter);
         return view;
     }
@@ -114,6 +116,7 @@ public class FeedFragment extends Fragment {
 
         switch (item.getItemId()) {
             case R.id.refreshFeedMenu:
+                feedProgressBar.setVisibility(View.VISIBLE);
                 mFeedItemInterface.populateRedditFeed(mFeedAdapter);
                 break;
         }
