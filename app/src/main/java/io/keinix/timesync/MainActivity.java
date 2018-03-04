@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.PopupWindow;
@@ -20,6 +22,7 @@ import io.keinix.timesync.Activities.CommentsActivity;
 import io.keinix.timesync.Fragments.CommentsFragment;
 import io.keinix.timesync.Fragments.FeedFragment;
 import io.keinix.timesync.Fragments.MessagesFragment;
+import io.keinix.timesync.Fragments.SubredditNavigationFragment;
 import io.keinix.timesync.Fragments.ViewPagerFragment;
 import io.keinix.timesync.adapters.FeedAdapter;
 import io.keinix.timesync.reddit.Api;
@@ -41,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
     public static final String TAG_MESSAGES_FRAGMENT = "TAG_MESSAGES_FRAGMENT";
     public static final String TAB_ACCOUNT_FRAGMENT = "TAB_ACCOUNT_FRAGMENT";
     public static final String TAG_VIEW_PAGER_FRAGMENT = "TAG_VIEW_PAGER_FRAGMENT";
+    public static final String TAG_SUB_REDDIT_FRAGMENT = "TAG_SUB_REDDIT_FRAGMENT";
     public static final String TAG_COMMENTS_FRAGMENT = "TAG_COMMENTS_NORMAL_FRAGMENT";
     public static final String EXTRA_REDDIT_TOKEN = "EXTRA_REDDIT_TOKEN";
     public static final int NULL_RESULT = 4;
@@ -57,11 +61,18 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         mAccountManager = AccountManager.get(this);
-        if (!Fresco.hasBeenInitialized()) {
-            Fresco.initialize(this);
-        }
+        if (!Fresco.hasBeenInitialized()) Fresco.initialize(this);
         initApi();
+        replaceFragmentPlaceHolders();
+//        initNavigationDrawer();
+    }
 
+//    private void initNavigationDrawer() {
+//        DrawerLayout drawerLayout = findViewById(R.id.subredditDrawerLayout);
+//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, null, "hello", "goodbye");
+//    }
+
+    private void replaceFragmentPlaceHolders() {
         ViewPagerFragment savedFragment = (ViewPagerFragment) getSupportFragmentManager()
                 .findFragmentByTag(TAG_VIEW_PAGER_FRAGMENT);
         if (savedFragment == null) {
@@ -69,6 +80,18 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.placeHolder, viewPagerFragment, TAG_VIEW_PAGER_FRAGMENT);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        }
+
+        SubredditNavigationFragment saveNavFragment = (SubredditNavigationFragment) getSupportFragmentManager()
+                .findFragmentByTag(TAG_SUB_REDDIT_FRAGMENT);
+
+        if (saveNavFragment == null) {
+            SubredditNavigationFragment subredditNavigationFragment = new SubredditNavigationFragment();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.add(R.id.drawerFragmentPlaceHolder, subredditNavigationFragment, TAG_SUB_REDDIT_FRAGMENT);
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
         }
