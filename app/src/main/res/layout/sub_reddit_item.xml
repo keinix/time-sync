@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/colorPrimaryDark">
+        
+        <ImageButton
+            android:id="@+id/subImageView"
+            android:layout_width="40dp"
+            android:layout_height="40dp"/>
+        
+        <TextView
+            android:id="@+id/subNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="r/InterestingAsFuck"
+            android:textColor="@color/white"
+            android:paddingLeft="15dp"
+            android:textSize="26sp"
+            android:gravity="center_vertical"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="30dp"
+            android:gravity="end"
+            android:src="@drawable/ic_star_white_24dp"/>
+
+    </LinearLayout>
+    
+    
+
+</android.support.constraint.ConstraintLayout>
