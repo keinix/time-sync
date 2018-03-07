@@ -1,11 +1,11 @@
 package io.keinix.timesync.Fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,9 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,7 +28,6 @@ import io.keinix.timesync.reddit.RedditVoteHelper;
 import io.keinix.timesync.reddit.model.Data_;
 import io.keinix.timesync.reddit.model.RedditFeed;
 import io.keinix.timesync.reddit.model.VoteResult;
-import okhttp3.Callback;
 import retrofit2.Call;
 
 
@@ -100,6 +97,9 @@ public class FeedFragment extends Fragment {
         mFeedItemInterface.populateRedditFeed(mFeedAdapter);
         return view;
     }
+
+
+
 
     public void setLoaded() {
         mLoading = false;

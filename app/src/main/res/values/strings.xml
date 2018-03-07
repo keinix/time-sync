@@ -2,4 +2,6 @@
     <string name="app_name">Time Sync</string>
     <string name="label">Time Sync</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="navOpen">Navigation droor Open</string>
+    <string name="navClose">Navigation droor Cloed</string>
 </resources>

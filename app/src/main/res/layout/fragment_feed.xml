@@ -1,28 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:id="@+id/feedRelativeLayout"
-                xmlns:android="http://schemas.android.com/apk/res/android">
-
-
-    <im.ene.toro.widget.Container
-        android:id="@+id/feedRecyclerView"
-        android:layout_width="match_parent"
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:background="@color/colorPrimary"
-        android:layout_alignParentStart="true">
-    </im.ene.toro.widget.Container>
+        android:layout_width="match_parent"
+        android:id="@+id/feedRelativeLayout"
+        android:orientation="vertical" >
 
-    <ProgressBar
-        android:id="@+id/feedProgressBar"
-        android:paddingTop="50dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true" />
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:fitsSystemWindows="true"
+            android:minHeight="?attr/actionBarSize"/>
+
+        <im.ene.toro.widget.Container
+            android:id="@+id/feedRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="@color/colorPrimary"
+            android:layout_alignParentStart="true" />
+
+        <ProgressBar
+            android:id="@+id/feedProgressBar"
+            android:paddingTop="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true" />
+
+    </RelativeLayout>
 
 
-
-</RelativeLayout>

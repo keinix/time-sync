@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout
-    android:id="@+id/subredditDrawerLayout"
+    android:id="@+id/drawerLayout"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:fitsSystemWindows="true">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        xmlns:android="http://schemas.android.com/apk/res/android">
 
-        <FrameLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/placeHolder"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context="io.keinix.timesync.MainActivity"/>
-    </LinearLayout>
+            <FrameLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/placeHolder"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="io.keinix.timesync.MainActivity"/>
+        </RelativeLayout>
 
-    <FrameLayout
-        android:id="@+id/drawerFragmentPlaceHolder"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
+    <android.support.design.widget.NavigationView
+        android:id="@+id/navigationPlaceHolder"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"/>
 
 </android.support.v4.widget.DrawerLayout>
+
+

@@ -46,7 +46,9 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
     public static final String TAG_VIEW_PAGER_FRAGMENT = "TAG_VIEW_PAGER_FRAGMENT";
     public static final String TAG_SUB_REDDIT_FRAGMENT = "TAG_SUB_REDDIT_FRAGMENT";
     public static final String TAG_COMMENTS_FRAGMENT = "TAG_COMMENTS_NORMAL_FRAGMENT";
+    public static final String TAG_NAVIGATION_FRAGMENT = "TAG_NAVIGATION_FRAGMENT";
     public static final String EXTRA_REDDIT_TOKEN = "EXTRA_REDDIT_TOKEN";
+
     public static final int NULL_RESULT = 4;
 
     public AccountManager mAccountManager;
@@ -64,13 +66,9 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
         if (!Fresco.hasBeenInitialized()) Fresco.initialize(this);
         initApi();
         replaceFragmentPlaceHolders();
-//        initNavigationDrawer();
+        setUpNavigationDrawer();
     }
 
-//    private void initNavigationDrawer() {
-//        DrawerLayout drawerLayout = findViewById(R.id.subredditDrawerLayout);
-//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, null, "hello", "goodbye");
-//    }
 
     private void replaceFragmentPlaceHolders() {
         ViewPagerFragment savedFragment = (ViewPagerFragment) getSupportFragmentManager()
@@ -82,18 +80,20 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
             fragmentTransaction.add(R.id.placeHolder, viewPagerFragment, TAG_VIEW_PAGER_FRAGMENT);
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
+
         }
+    }
 
-        SubredditNavigationFragment saveNavFragment = (SubredditNavigationFragment) getSupportFragmentManager()
-                .findFragmentByTag(TAG_SUB_REDDIT_FRAGMENT);
+    public void setUpNavigationDrawer() {
+        SubredditNavigationFragment savedFragment = (SubredditNavigationFragment)
+                getSupportFragmentManager().findFragmentByTag(TAG_NAVIGATION_FRAGMENT);
 
-        if (saveNavFragment == null) {
-            SubredditNavigationFragment subredditNavigationFragment = new SubredditNavigationFragment();
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.drawerFragmentPlaceHolder, subredditNavigationFragment, TAG_SUB_REDDIT_FRAGMENT);
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
+        if (savedFragment == null) {
+            SubredditNavigationFragment navFragment = new SubredditNavigationFragment();
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.add(R.id.navigationPlaceHolder, navFragment, TAG_NAVIGATION_FRAGMENT)
+                    .addToBackStack(null)
+                    .commit();
         }
     }
 
