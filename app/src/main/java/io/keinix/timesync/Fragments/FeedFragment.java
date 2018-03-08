@@ -27,6 +27,7 @@ import io.keinix.timesync.reddit.Api;
 import io.keinix.timesync.reddit.RedditVoteHelper;
 import io.keinix.timesync.reddit.model.Data_;
 import io.keinix.timesync.reddit.model.RedditFeed;
+import io.keinix.timesync.reddit.model.SubReddit;
 import io.keinix.timesync.reddit.model.VoteResult;
 import retrofit2.Call;
 
@@ -47,10 +48,6 @@ public class FeedFragment extends Fragment {
         //TODO: put the methods in the onclickListeners
         Call<VoteResult> vote(String id, String voteType);
 
-        void share(int index);
-
-        void launchCommentFragment(int index);
-
         void populateRedditFeed(FeedAdapter adapter);
 
         Call<RedditFeed> appendFeed(String after);
@@ -64,6 +61,7 @@ public class FeedFragment extends Fragment {
         int getPostInitVoteType();
 
         int getOriginalPostPosition();
+
     }
 
     @Nullable

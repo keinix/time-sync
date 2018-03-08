@@ -29,7 +29,7 @@ public class SubredditNavigationFragment extends android.support.v4.app.Fragment
     }
 
     public void setUpRecyclerView() {
-        subRecyclerView.setAdapter(new SubRedditAdapter());
+        subRecyclerView.setAdapter(new SubRedditAdapter(getActivity()));
         subRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 }

@@ -9,6 +9,7 @@ import java.util.Map;
 
 import io.keinix.timesync.reddit.model.RedditAccessToken;
 import io.keinix.timesync.reddit.model.RedditFeed;
+import io.keinix.timesync.reddit.model.SubReddit;
 import io.keinix.timesync.reddit.model.VoteResult;
 import io.keinix.timesync.reddit.model.comment.CommentBase;
 import retrofit2.Call;
@@ -79,4 +80,7 @@ public interface Api {
     @Field("parent") String parent,
     @Field("text") String text
     );
+
+    @GET("subreddits/mine/subscriber")
+    Call<JsonObject> getSubReddits();
 }

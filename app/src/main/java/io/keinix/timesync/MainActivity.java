@@ -30,6 +30,7 @@ import io.keinix.timesync.reddit.RedditAuthInterceptor;
 import io.keinix.timesync.reddit.RedditConstants;
 import io.keinix.timesync.reddit.TokenAuthenticator;
 import io.keinix.timesync.reddit.model.RedditFeed;
+import io.keinix.timesync.reddit.model.SubReddit;
 import io.keinix.timesync.reddit.model.VoteResult;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -129,13 +130,6 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
         return mApi.vote(voteType, id);
     }
 
-
-
-    @Override
-    public void share(int index) {
-
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "OnResult called in ACTIVITY");
@@ -149,19 +143,6 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
 
     }
 
-    @Override
-    public void launchCommentFragment(int index) {
-        CommentsFragment commentsFragment = new CommentsFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(CommentsFragment.KEY_INDEX, index);
-        commentsFragment.setArguments(bundle);
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.placeHolder, commentsFragment, TAG_COMMENTS_FRAGMENT);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
 
     @Override
     public void populateRedditFeed(FeedAdapter adapter) {
