@@ -23,6 +23,7 @@ import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.QueryName;
 
 public interface Api {
 
@@ -82,5 +83,5 @@ public interface Api {
     );
 
     @GET("subreddits/mine/subscriber")
-    Call<JsonObject> getSubReddits();
+    Call<JsonElement> getSubReddits(@Query("limit") String limit);
 }

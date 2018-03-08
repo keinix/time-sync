@@ -8,7 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
@@ -71,19 +73,18 @@ public class SubRedditAdapter extends Adapter {
     }
 
     public void getSubReddits() {
-        mApi.getSubReddits().enqueue(new Callback<JsonObject>() {
+
+        mApi.getSubReddits("100").enqueue(new Callback<JsonElement>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+            public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+
                 if (response.isSuccessful()) {
-                    Log.d(TAG, "Responce: " + response.body());
                     notifyDataSetChanged();
                 }
-                Log.d(TAG, "Not Successful: " + response);
-                Log.d(TAG, "Response body: " + response.body());
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
+            public void onFailure(Call<JsonElement> call, Throwable t) {
                 Log.d(TAG, "onFail: " + t.toString());
             }
         });
