@@ -8,14 +8,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.Api;
 import io.keinix.timesync.reddit.RedditAuthInterceptor;
@@ -79,6 +85,7 @@ public class SubRedditAdapter extends Adapter {
             public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
 
                 if (response.isSuccessful()) {
+                    populateSubReddits(response.body());
                     notifyDataSetChanged();
                 }
             }
@@ -88,17 +95,30 @@ public class SubRedditAdapter extends Adapter {
                 Log.d(TAG, "onFail: " + t.toString());
             }
         });
+    }
 
+    public void populateSubReddits(JsonElement json) {
+        Gson gson = new Gson();
+        JsonArray subRedditChildren =  json.getAsJsonObject().getAsJsonObject("data").getAsJsonArray("children");
+        for (JsonElement child : subRedditChildren) {
+            JsonObject subreddit = child.getAsJsonObject().getAsJsonObject("data");
+            mSubReddits.add(gson.fromJson(subreddit, SubReddit.class));
+        }
     }
 
     public class SubRedditViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.subNameTextView) TextView subNameTextView;
+        @BindView(R.id.subImageView) SimpleDraweeView subDraweeView;
 
         public SubRedditViewHolder(View itemView) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
         }
 
         public void bindView(int position) {
-
+            SubReddit subreddit = mSubReddits.get(position);
+            subNameTextView.setText(subreddit.getDisplayNamePrefixed());
+            if (subreddit.getIconImg() != null) subDraweeView.setImageURI(subreddit.getIconImg());
         }
     }
 }

@@ -1,39 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorPrimaryDark"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    
+    android:layout_height="wrap_content"
+    android:layout_marginTop="3dp">
+
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
         android:orientation="horizontal"
-        android:background="@color/colorPrimaryDark">
-        
-        <ImageButton
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/starImageView"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            app:roundAsCircle="true"
             android:id="@+id/subImageView"
             android:layout_width="40dp"
             android:layout_height="40dp"/>
-        
+
         <TextView
             android:id="@+id/subNameTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="r/InterestingAsFuck"
-            android:textColor="@color/white"
-            android:paddingLeft="15dp"
-            android:textSize="26sp"
-            android:gravity="center_vertical"/>
-
-        <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:paddingLeft="30dp"
-            android:gravity="end"
-            android:src="@drawable/ic_star_white_24dp"/>
+            android:gravity="center_vertical"
+            android:paddingTop="4dp"
+            android:paddingLeft="15dp"
+            android:maxLength="16"
+            android:text="r/InterestingAsFuck"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            />
 
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/starImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:gravity="end"
+        android:src="@drawable/ic_star_white_24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
     
     
 
