@@ -2,12 +2,15 @@ package io.keinix.timesync.adapters;
 
 import android.accounts.AccountManager;
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +21,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -106,19 +111,45 @@ public class SubRedditAdapter extends Adapter {
         }
     }
 
+    public void sortSubReddits(List<SubReddit> subreddits) {
+        Collections.sort(subreddits, new Comparator<SubReddit>() {
+            @Override
+            public int compare(SubReddit sub1, SubReddit sub2) {
+                sub1.getDisplayNamePrefixed().replace("/r")
+                return 0;
+            }
+        });
+
+        }
+    }
+
     public class SubRedditViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.subNameTextView) TextView subNameTextView;
         @BindView(R.id.subImageView) SimpleDraweeView subDraweeView;
+        @BindView(R.id.starImageView) ImageButton starImageView;
+
+        int starSelectedColor;
 
         public SubRedditViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            starSelectedColor = ContextCompat.getColor(mContext, R.color.upVoteColor);
         }
 
         public void bindView(int position) {
+            setStarColor(position);
             SubReddit subreddit = mSubReddits.get(position);
             subNameTextView.setText(subreddit.getDisplayNamePrefixed());
             if (subreddit.getIconImg() != null) subDraweeView.setImageURI(subreddit.getIconImg());
+        }
+
+        private void setStarColor(int position) {
+            starImageView.getDrawable().mutate();
+            if (mSubReddits.get(position).isFavorited()) {
+                starImageView.getDrawable().setColorFilter(starSelectedColor, PorterDuff.Mode.MULTIPLY);
+            } else {
+                starImageView.getDrawable().clearColorFilter();
+            }
         }
     }
 }
