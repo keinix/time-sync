@@ -91,6 +91,7 @@ public class SubRedditAdapter extends Adapter {
 
                 if (response.isSuccessful()) {
                     populateSubReddits(response.body());
+                    sortSubReddits(mSubReddits);
                     notifyDataSetChanged();
                 }
             }
@@ -112,15 +113,16 @@ public class SubRedditAdapter extends Adapter {
     }
 
     public void sortSubReddits(List<SubReddit> subreddits) {
-        Collections.sort(subreddits, new Comparator<SubReddit>() {
-            @Override
-            public int compare(SubReddit sub1, SubReddit sub2) {
-                sub1.getDisplayNamePrefixed().replace("/r")
-                return 0;
-            }
+
+        Collections.sort(subreddits, (sub1, sub2) -> {
+            String name1 = sub1.getDisplayName();
+            String name2 = sub2.getDisplayName();
+
+            return name1.compareTo(name2);
         });
 
-        }
+        Collections.sort(subreddits, (sub1, sub2) ->
+                Boolean.compare(sub2.isFavorited(), sub1.isFavorited()));
     }
 
     public class SubRedditViewHolder extends RecyclerView.ViewHolder {

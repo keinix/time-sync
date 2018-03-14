@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorPrimaryDark"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="3dp">
@@ -19,6 +20,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.facebook.drawee.view.SimpleDraweeView
+            fresco:placeholderImage="@drawable/subreddit_planet_icon"
             app:roundAsCircle="true"
             android:id="@+id/subImageView"
             android:layout_width="40dp"

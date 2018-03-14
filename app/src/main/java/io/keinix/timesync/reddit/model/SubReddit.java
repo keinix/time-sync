@@ -29,6 +29,18 @@ public class SubReddit {
     @Expose
     private String displayNamePrefixed;
 
+    @SerializedName("display_name")
+    @Expose
+    private String displayName;
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
     @SerializedName("subscribers")
     @Expose
     private int subscriber;
@@ -122,6 +134,7 @@ public class SubReddit {
                 ", isFavorited=" + isFavorited +
                 ", iconImg='" + iconImg + '\'' +
                 ", displayNamePrefixed='" + displayNamePrefixed + '\'' +
+                ", displayName='" + displayName + '\'' +
                 ", subscriber=" + subscriber +
                 ", keyColor='" + keyColor + '\'' +
                 ", headerTitle='" + headerTitle + '\'' +
