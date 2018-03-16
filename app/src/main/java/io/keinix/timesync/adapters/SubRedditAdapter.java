@@ -2,6 +2,7 @@ package io.keinix.timesync.adapters;
 
 import android.accounts.AccountManager;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +29,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.keinix.timesync.Activities.SubredditActivity;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.Api;
 import io.keinix.timesync.reddit.RedditAuthInterceptor;
@@ -129,6 +132,7 @@ public class SubRedditAdapter extends Adapter {
         @BindView(R.id.subNameTextView) TextView subNameTextView;
         @BindView(R.id.subImageView) SimpleDraweeView subDraweeView;
         @BindView(R.id.starImageView) ImageButton starImageView;
+        @BindView(R.id.subredditLinearLayout) LinearLayout subredditLayout;
 
         int starSelectedColor;
 
@@ -143,6 +147,22 @@ public class SubRedditAdapter extends Adapter {
             SubReddit subreddit = mSubReddits.get(position);
             subNameTextView.setText(subreddit.getDisplayNamePrefixed());
             if (subreddit.getIconImg() != null) subDraweeView.setImageURI(subreddit.getIconImg());
+
+            starImageView.setOnClickListener(v -> {
+                if (subreddit.isFavorited()) {
+                    starImageView.getDrawable().clearColorFilter();
+                    subreddit.setFavorited(false);
+                } else {
+                    starImageView.getDrawable().setColorFilter(starSelectedColor, PorterDuff.Mode.MULTIPLY);
+                    subreddit.setFavorited(true);
+                }
+            });
+
+            subredditLayout.setOnClickListener(v -> {
+                Intent intent = new Intent(mContext, SubredditActivity.class);
+                intent.putExtra(SubredditActivity.KEY_SUBREDDIT, subreddit);
+                mContext.startActivity(intent);
+            });
         }
 
         private void setStarColor(int position) {

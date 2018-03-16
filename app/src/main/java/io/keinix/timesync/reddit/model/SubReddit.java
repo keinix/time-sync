@@ -1,9 +1,12 @@
 package io.keinix.timesync.reddit.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class SubReddit {
+public class SubReddit implements Parcelable {
 
     @SerializedName("banner_img")
     @Expose
@@ -125,6 +128,9 @@ public class SubReddit {
         this.headerTitle = headerTitle;
     }
 
+    public SubReddit() {
+    }
+
     @Override
     public String toString() {
         return "SubReddit{" +
@@ -139,5 +145,49 @@ public class SubReddit {
                 ", keyColor='" + keyColor + '\'' +
                 ", headerTitle='" + headerTitle + '\'' +
                 '}';
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(bannerImage);
+        parcel.writeString(description);
+        parcel.writeString(title);
+        parcel.writeByte((byte) (isFavorited ? 1 : 0));
+        parcel.writeString(iconImg);
+        parcel.writeString(displayNamePrefixed);
+        parcel.writeString(displayName);
+        parcel.writeString(keyColor);
+        parcel.writeString(headerTitle);
+        parcel.writeInt(subscriber);
+    }
+
+    private SubReddit(Parcel in) {
+        bannerImage = in.readString();
+        description = in.readString();
+        title = in.readString();
+        isFavorited = in.readByte() != 0;
+        iconImg = in.readString();
+        displayNamePrefixed = in.readString();
+        displayName = in.readString();
+        keyColor = in.readString();
+        headerTitle = in.readString();
+        subscriber = in.readInt();
+    }
+
+    public static final Creator<SubReddit> CREATOR = new Creator<SubReddit>() {
+        @Override
+        public SubReddit createFromParcel(Parcel parcel) {
+            return new SubReddit(parcel);
+        }
+
+        @Override
+        public SubReddit[] newArray(int i) {
+            return new SubReddit[i];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 }
