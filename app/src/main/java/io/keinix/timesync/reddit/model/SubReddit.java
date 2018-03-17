@@ -36,14 +36,6 @@ public class SubReddit implements Parcelable {
     @Expose
     private String displayName;
 
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
     @SerializedName("subscribers")
     @Expose
     private int subscriber;
@@ -56,8 +48,29 @@ public class SubReddit implements Parcelable {
     @Expose
     private String headerTitle;
 
+    @SerializedName("user_is_subscriber")
+    @Expose
+    private boolean isSubcriber;
+
+    public boolean isSubcriber() {
+        return isSubcriber;
+    }
+
+    public void setSubcriber(boolean subcriber) {
+        isSubcriber = subcriber;
+    }
+
+
     public String getBannerImage() {
         return bannerImage;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public void setBannerImage(String bannerImage) {
@@ -159,6 +172,7 @@ public class SubReddit implements Parcelable {
         parcel.writeString(keyColor);
         parcel.writeString(headerTitle);
         parcel.writeInt(subscriber);
+        parcel.writeByte((byte) (isSubcriber ? 1 : 0));
     }
 
     private SubReddit(Parcel in) {
@@ -172,6 +186,7 @@ public class SubReddit implements Parcelable {
         keyColor = in.readString();
         headerTitle = in.readString();
         subscriber = in.readInt();
+        isSubcriber = in.readByte() != 0;
     }
 
     public static final Creator<SubReddit> CREATOR = new Creator<SubReddit>() {

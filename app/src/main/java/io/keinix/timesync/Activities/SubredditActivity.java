@@ -1,5 +1,6 @@
 package io.keinix.timesync.Activities;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
@@ -38,7 +39,11 @@ public class SubredditActivity extends AppCompatActivity {
             subredditIconDraweeView.getDrawable().clearColorFilter();
         }
         subredditNameTextView.setText(mSubReddit.getDisplayNamePrefixed());
-        if (mSubReddit.
+        if (mSubReddit.isSubcriber()) {
+            int subColor = ContextCompat.getColor(this, R.color.colorAccent);
+            subscribeButton.setText("Subscribed");
+            subscribeButton.setTextColor(subColor);
+        }
     }
 
 }
