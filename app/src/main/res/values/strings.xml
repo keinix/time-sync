@@ -4,4 +4,5 @@
     <string name="title_activity_login">LoginActivity</string>
     <string name="navOpen">Navigation droor Open</string>
     <string name="navClose">Navigation droor Cloed</string>
+    <string name="Subscribers">Subscribers</string>
 </resources>

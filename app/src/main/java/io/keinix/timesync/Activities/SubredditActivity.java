@@ -8,6 +8,10 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import org.w3c.dom.Text;
+
+import java.text.DecimalFormat;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.timesync.R;
@@ -19,6 +23,9 @@ public class SubredditActivity extends AppCompatActivity {
     @BindView(R.id.subredditIconDraweeView) SimpleDraweeView subredditIconDraweeView;
     @BindView(R.id.subredditNameTextView) TextView subredditNameTextView;
     @BindView(R.id.subscribeButton) Button subscribeButton;
+    @BindView(R.id.subCountTextView) TextView subCountTextView;
+    @BindView(R.id.subDescriptionTextView) TextView subDescriptionTextView;
+
     public static final String KEY_SUBREDDIT = "KEY_SUBREDDIT";
 
     private SubReddit mSubReddit;
@@ -38,12 +45,20 @@ public class SubredditActivity extends AppCompatActivity {
             subredditIconDraweeView.setImageURI(mSubReddit.getIconImg());
             subredditIconDraweeView.getDrawable().clearColorFilter();
         }
+
         subredditNameTextView.setText(mSubReddit.getDisplayNamePrefixed());
         if (mSubReddit.isSubcriber()) {
             int subColor = ContextCompat.getColor(this, R.color.colorAccent);
             subscribeButton.setText("Subscribed");
             subscribeButton.setTextColor(subColor);
         }
+        DecimalFormat decimalFormat = new DecimalFormat("#,###,###");
+        String formatedSubCount = decimalFormat.format(mSubReddit.getSubscriber());
+        String subText = formatedSubCount + "Subscribers";
+        subCountTextView.setText(subText);
+
+        if (mSubReddit.getPublicDescription() != null) subDescriptionTextView.setText(mSubReddit.getPublicDescription());
+
     }
 
 }
