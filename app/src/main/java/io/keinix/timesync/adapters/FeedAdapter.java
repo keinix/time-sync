@@ -1,10 +1,14 @@
 package io.keinix.timesync.adapters;
 
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.Collections;
@@ -33,20 +37,30 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
 
     public FeedItemInterface mFeedItemInterface;
     private RedditFeed mRedditFeed;
-    public FeedFragment mFeedFragment;
     private String mAfter;
     public Map<String, Integer> mLocalVoteTracker;
     public boolean initLoadComplete;
+    private RecyclerView mRecyclerView;
+    private LinearLayoutManager mLinearLayoutManager;
+    private ProgressBar mProgressBar;
+    private boolean mLoading = false;
 
 
-    public FeedAdapter(FeedItemInterface feedItemInterface, FeedFragment feedFragment) {
+
+    public FeedAdapter(FeedItemInterface feedItemInterface, LinearLayoutManager linearLayoutManager, ProgressBar progressBar) {
         mFeedItemInterface = feedItemInterface;
-        mFeedFragment = feedFragment;
+        mLinearLayoutManager = linearLayoutManager;
+        mProgressBar = progressBar;
         mLocalVoteTracker = Collections.synchronizedMap(new HashMap<>());
         mAfter = "";
     }
 
-
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        mRecyclerView = recyclerView;
+        setOnScroll();
+    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -103,7 +117,7 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
         Log.d(TAG, "response "+ response.toString());
 
         if (response.isSuccessful()) {
-            mFeedFragment.feedProgressBar.setVisibility(View.INVISIBLE);
+            mProgressBar.setVisibility(View.INVISIBLE);
             mRedditFeed = response.body();
             mAfter = response.body().getData().getAfter();
             populateLocalVoteTracker(mRedditFeed.getData().getChildren());
@@ -129,6 +143,22 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
         }
     }
 
+    public void setOnScroll() {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int lastVisibleItem = mLinearLayoutManager.findLastVisibleItemPosition();
+
+                if (!mLoading && mLinearLayoutManager.getItemCount() <= (lastVisibleItem + 5) && initLoadComplete) {
+                    Log.d(TAG, "onScrolled Activated.");
+                    mLoading = true;
+                    appendRedditFeed();
+                }
+            }
+        });
+    }
+
     public void appendRedditFeed() {
         mFeedItemInterface.appendFeed(mAfter).enqueue(new Callback<RedditFeed>() {
             @Override
@@ -144,7 +174,8 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
 
                     populateLocalVoteTracker(response.body().getData().getChildren());
                     notifyItemRangeInserted(previousFeedLength, response.body().getData().getChildren().size());
-                    mFeedFragment.setLoaded();
+//                    mFeedFragment.setLoaded();
+                    mLoading = false;
                 } else {
                     Log.d(TAG, "appendRedditFeed: response NOT Successful: " + response.toString());
                 }
@@ -153,7 +184,8 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
             @Override
             public void onFailure(Call<RedditFeed> call, Throwable t) {
                 Log.d(TAG, "onFailure called from appendRedditFeed");
-                mFeedFragment.setLoaded();
+//                mFeedFragment.setLoaded();
+                mLoading = false;
             }
         });
     }

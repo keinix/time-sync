@@ -82,8 +82,8 @@
                     android:layout_height="30dp"
                     android:layout_marginEnd="12dp"
                     android:layout_marginTop="88dp"
-                    android:background="@color/colorPrimary"
-                    android:text="subscribe"
+                    android:background="@drawable/button_subscribe"
+                    android:text="   subscribe   "
                     android:textColor="@color/white"
                     fresco:layout_constraintEnd_toEndOf="parent"
                     fresco:layout_constraintTop_toTopOf="parent"/>

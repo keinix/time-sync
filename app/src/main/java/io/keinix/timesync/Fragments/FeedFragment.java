@@ -74,23 +74,23 @@ public class FeedFragment extends Fragment {
         setHasOptionsMenu(true);
 
 
-        mFeedAdapter = new FeedAdapter(mFeedItemInterface, this);
-        feedRecyclerView.setAdapter(mFeedAdapter);
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
+        mFeedAdapter = new FeedAdapter(mFeedItemInterface, mLinearLayoutManager, feedProgressBar);
+        feedRecyclerView.setAdapter(mFeedAdapter);
         feedRecyclerView.setLayoutManager(mLinearLayoutManager);
-        feedRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int lastVisibleItem = mLinearLayoutManager.findLastVisibleItemPosition();
-
-                if (!mLoading && mLinearLayoutManager.getItemCount() <= (lastVisibleItem + 5) && mFeedAdapter.initLoadComplete) {
-                    Log.d(TAG, "onScrolled Activated.");
-                    mLoading = true;
-                    mFeedAdapter.appendRedditFeed();
-                }
-            }
-        });
+//        feedRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//                int lastVisibleItem = mLinearLayoutManager.findLastVisibleItemPosition();
+//
+//                if (!mLoading && mLinearLayoutManager.getItemCount() <= (lastVisibleItem + 5) && mFeedAdapter.initLoadComplete) {
+//                    Log.d(TAG, "onScrolled Activated.");
+//                    mLoading = true;
+//                    mFeedAdapter.appendRedditFeed();
+//                }
+//            }
+//        });
         feedProgressBar.setVisibility(View.VISIBLE);
         mFeedItemInterface.populateRedditFeed(mFeedAdapter);
         return view;
