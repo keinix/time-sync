@@ -74,7 +74,8 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:roundAsCircle="true"
                     app:roundingBorderColor="@color/white"
-                    app:roundingBorderWidth="1dp"/>
+                    app:roundingBorderWidth="1dp"
+                    android:layout_marginLeft="20dp"/>
 
                 <Button
                     android:id="@+id/subscribeButton"
@@ -86,7 +87,8 @@
                     android:text="   subscribe   "
                     android:textColor="@color/white"
                     fresco:layout_constraintEnd_toEndOf="parent"
-                    fresco:layout_constraintTop_toTopOf="parent"/>
+                    fresco:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginRight="12dp"/>
 
                 <TextView
                     android:id="@+id/subCountTextView"
@@ -98,7 +100,8 @@
                     android:textSize="16sp"
                     fresco:layout_constraintStart_toStartOf="parent"
                     fresco:layout_constraintTop_toBottomOf="@+id/subredditNameTextView"
-                    tools:text="100,000  Subscribers" />
+                    tools:text="100,000  Subscribers"
+                    android:layout_marginLeft="8dp"/>
 
                 <TextView
                     android:id="@+id/subDescriptionTextView"
@@ -119,7 +122,19 @@
 
         </android.support.v7.widget.CardView>
 
+        <ProgressBar
+            android:id="@+id/subredditProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/subredditCardView"/>
+
         <android.support.v7.widget.RecyclerView
+            android:nestedScrollingEnabled="false"
             android:id="@+id/subredditRecyclerView"
             app:layout_constraintTop_toBottomOf="@id/subredditCardView"
             android:layout_width="match_parent"

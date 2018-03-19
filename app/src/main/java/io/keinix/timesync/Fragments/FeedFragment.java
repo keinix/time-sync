@@ -61,7 +61,6 @@ public class FeedFragment extends Fragment {
         int getPostInitVoteType();
 
         int getOriginalPostPosition();
-
     }
 
     @Nullable

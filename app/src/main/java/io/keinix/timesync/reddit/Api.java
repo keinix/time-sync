@@ -39,7 +39,12 @@ public interface Api {
 
     // **below use RedditAuthInterceptor and TokenAuthenticator**
     @GET(".")
-    Call<RedditFeed> getFeed ();
+    Call<RedditFeed> getFeed();
+
+    @GET("{subreddit}")
+    Call<RedditFeed> getSubRedditFeed(
+        @Path("subreddit") String subreddit
+    );
 
     @GET(".")
     Call<RedditFeed> appendFeed (

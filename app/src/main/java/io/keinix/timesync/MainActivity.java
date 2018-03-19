@@ -124,12 +124,6 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
         }
     }
 
-    // -----------Feed Fragment Interface Methods-----------------
-    @Override
-    public Call<VoteResult> vote(String id, String voteType) {
-        return mApi.vote(voteType, id);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "OnResult called in ACTIVITY");
@@ -141,6 +135,12 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
             mOriginalPostPosition = data.getIntExtra(CommentsActivity.KEY_ORIGINAL_POST_POSITION, NULL_RESULT);
         }
 
+    }
+
+    // -----------Feed Fragment Interface Methods-----------------
+    @Override
+    public Call<VoteResult> vote(String id, String voteType) {
+        return mApi.vote(voteType, id);
     }
 
 
