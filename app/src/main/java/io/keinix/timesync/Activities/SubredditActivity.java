@@ -8,7 +8,12 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -28,6 +33,7 @@ import io.keinix.timesync.reddit.TokenAuthenticator;
 import io.keinix.timesync.reddit.model.RedditFeed;
 import io.keinix.timesync.reddit.model.SubReddit;
 import io.keinix.timesync.reddit.model.VoteResult;
+import io.keinix.timesync.utils.MarkDownParser;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -43,6 +49,8 @@ public class SubredditActivity extends AppCompatActivity implements FeedFragment
     @BindView(R.id.subCountTextView) TextView subCountTextView;
     @BindView(R.id.subDescriptionTextView) TextView subDescriptionTextView;
     @BindView(R.id.subredditProgressBar) ProgressBar mProgressBar;
+    @BindView(R.id.infoImageButton) ImageButton infoImageButton;
+
 
     public static final String KEY_SUBREDDIT = "KEY_SUBREDDIT";
     public static final String TAG = SubredditActivity.class.getSimpleName();
@@ -58,7 +66,7 @@ public class SubredditActivity extends AppCompatActivity implements FeedFragment
         mSubReddit = getIntent().getParcelableExtra(KEY_SUBREDDIT);
         bindSubredditView();
         initApi();
-        prepareRecyclerView();
+        //prepareRecyclerView();
         setTitle(mSubReddit.getDisplayNamePrefixed());
     }
 
@@ -82,6 +90,8 @@ public class SubredditActivity extends AppCompatActivity implements FeedFragment
 
         if (mSubReddit.getPublicDescription() != null) subDescriptionTextView.setText(mSubReddit.getPublicDescription());
 
+        infoImageButton.setOnClickListener(v -> launchPopUP(bindPopUp()));
+
     }
 
     public void prepareRecyclerView() {
@@ -104,6 +114,22 @@ public class SubredditActivity extends AppCompatActivity implements FeedFragment
                 .client(client.build())
                 .build()
                 .create(Api.class);
+    }
+
+    public void launchPopUP(View view) {
+        PopupWindow popupWindow = new PopupWindow(view,
+                WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        popupWindow.showAsDropDown(view, 0, 0);
+    }
+
+    public View bindPopUp() {
+        View view = LayoutInflater.from(this).inflate(R.layout.pop_up_details, null);
+        TextView name = view.findViewById(R.id.popUpSubredditName);
+        TextView details = view.findViewById(R.id.popUpDetailsTextView);
+
+        name.setText(mSubReddit.getDisplayNamePrefixed());
+        MarkDownParser.parse(this, details, mSubReddit.getDescription());
+        return view;
     }
 
 
