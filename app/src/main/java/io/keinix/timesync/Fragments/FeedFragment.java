@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -36,6 +37,7 @@ public class FeedFragment extends Fragment {
 
     @BindView(R.id.feedRecyclerView) Container feedRecyclerView;
      public @BindView(R.id.feedProgressBar) ProgressBar feedProgressBar;
+     @BindView(R.id.swipeRefresh) SwipeRefreshLayout swipeRefreshLayout;
 
     FeedItemInterface mFeedItemInterface;
     private FeedAdapter mFeedAdapter;
@@ -92,6 +94,11 @@ public class FeedFragment extends Fragment {
 //        });
         feedProgressBar.setVisibility(View.VISIBLE);
         mFeedItemInterface.populateRedditFeed(mFeedAdapter);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            swipeRefreshLayout.setRefreshing(false);
+            feedProgressBar.setVisibility(View.VISIBLE);
+            mFeedItemInterface.populateRedditFeed(mFeedAdapter);
+        });
         return view;
     }
 
