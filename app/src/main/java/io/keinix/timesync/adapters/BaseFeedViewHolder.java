@@ -56,7 +56,7 @@ public class BaseFeedViewHolder extends RecyclerView.ViewHolder {
         SimpleExoPlayerViewHelper mExoPlayerViewHelper;
         protected FeedFragment.FeedItemInterface mFeedItemInterface;
         protected FeedAdapter mAdapter;
-        protected RedditVoteHelper mRedditVoteHelper;
+        protected RedditVoteHelper mBaseRedditVoteHelper;
 
         protected int mIndex;
         protected int mUpVoteColor;
@@ -89,7 +89,7 @@ public class BaseFeedViewHolder extends RecyclerView.ViewHolder {
             String shareText = "www.reddit.com" + post.getPermalink();
             shareImageButton.setOnClickListener(v -> ShareUtil.shareText(mFeedItemInterface.getContext(), shareText));
 
-            mRedditVoteHelper = new RedditVoteHelper(mFeedItemInterface.getContext(),
+            mBaseRedditVoteHelper = new RedditVoteHelper(mFeedItemInterface.getContext(),
                     upVoteImageButton, downVoteImageButton, upVoteCountTextView, mFeedItemInterface.getApi(),
                     ItemDetailsHelper.parseVoteType(post.isLiked()), id);
         }

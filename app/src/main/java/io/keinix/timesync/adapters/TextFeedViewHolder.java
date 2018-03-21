@@ -47,7 +47,7 @@ public class TextFeedViewHolder extends BaseFeedViewHolder {
         intent.putExtra(CommentsActivity.KEY_SELF_TEXT, post.getSelfText());
         intent.putExtra(CommentsActivity.KEY_VOTE_COUNT, post.getUps());
         intent.putExtra(CommentsActivity.KEY_ORIGINAL_POST_POSITION, position);
-        intent.putExtra(CommentsActivity.KEY_INIT_VOTE_TYPE, mRedditVoteHelper.getVoteStatus());
+        intent.putExtra(CommentsActivity.KEY_INIT_VOTE_TYPE, mBaseRedditVoteHelper.getVoteStatus());
         ((MainActivity) mFeedItemInterface.getContext()).startActivityForResult(intent, CommentsActivity.REQUEST_CODE);
     }
 }

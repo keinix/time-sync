@@ -20,8 +20,10 @@ import io.keinix.timesync.Fragments.FeedFragment;
 import io.keinix.timesync.MainActivity;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.ItemDetailsHelper;
+import io.keinix.timesync.reddit.RedditVoteHelper;
 import io.keinix.timesync.reddit.model.Data_;
 import io.keinix.timesync.utils.OnSwipeTouchListener;
+import io.keinix.timesync.utils.ShareUtil;
 
 
 public class ImageFeedViewHolder extends BaseFeedViewHolder {
@@ -36,6 +38,7 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
 
     private boolean isGif;
     private Uri mGifUri;
+    private int mPosition;
 
     public ImageFeedViewHolder(View itemView, FeedAdapter adapter, FeedFragment.FeedItemInterface feedItemInterface) {
         super(itemView, adapter, feedItemInterface);
@@ -45,6 +48,7 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
     public void bindView(int position) {
         super.bindView(position);
         Data_ post =  mAdapter.getRedditFeed().getData().getChildren().get(position).getData();
+        mPosition = position;
         setPostImage(post, postImageView);
         setViewIcon(post);
         postImageView.setOnClickListener(view -> {
@@ -70,6 +74,8 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
             packIntent(post, intent, position);
             ((MainActivity) mFeedItemInterface.getContext()).startActivityForResult(intent, CommentsActivity.REQUEST_CODE);
         });
+
+
     }
 
     private void packIntent(Data_ post, Intent intent, int position) {
@@ -88,7 +94,7 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
             intent.putExtra(CommentsActivity.KEY_COMMENTS_LAYOUT_TYPE, CommentsActivity.VALUE_IMAGE_COMMENTS_LAYOUT);
         }
 
-        intent.putExtra(CommentsActivity.KEY_INIT_VOTE_TYPE, mRedditVoteHelper.getVoteStatus());
+        intent.putExtra(CommentsActivity.KEY_INIT_VOTE_TYPE, mBaseRedditVoteHelper.getVoteStatus());
         intent.putExtra(CommentsActivity.KEY_POST_SUBREDDIT, post.getSubredditNamePrefixed());
         intent.putExtra(CommentsActivity.KEY_VOTE_TYPE, ItemDetailsHelper.parseVoteType(post.isLiked()));
         intent.putExtra(CommentsActivity.KEY_POST_SUBREDDIT_NO_PREFIX, post.getSubreddit());
@@ -122,6 +128,18 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
             public void onSwipeLeft() { popupWindow.dismiss(); }
         });
 
+        RedditVoteHelper redditVoteHelper = new RedditVoteHelper(mFeedItemInterface.getContext(), mPopUpUpVoteImageButton,
+                mPopUpDownVoteImageButton, mPopUpVoteCountTextView, mFeedItemInterface.getApi(),
+                ItemDetailsHelper.parseVoteType(post.isLiked()), post.getName());
+
+        popupWindow.setOnDismissListener(() -> {
+            if (redditVoteHelper.wasVoteCast()) {
+                mBaseRedditVoteHelper.setVoteStatus(redditVoteHelper.getVoteStatus());
+                mBaseRedditVoteHelper.setInitialVoteColors();
+               // mAdapter.notifyItemChanged(mPosition);
+            }
+        });
+
         popupWindow.showAsDropDown(popUpView, 0, 0);
     }
 
@@ -135,9 +153,19 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
          mPopUpCommentCountTextView = popUpView.findViewById(R.id.popUpCommentCountTextView);
          mPopUpVoteCountTextView = popUpView.findViewById(R.id.popUpVoteCountTextView);
 
-        setPoPUpVoteColor(post.getName());
-        setVoteOnClick(mIndex, post.getName(), post, mPopUpUpVoteImageButton, mPopUpDownVoteImageButton, mPopUpVoteCountTextView);
+        mPopUpVoteCountTextView.setText(String.valueOf(post.getUps()));
+        mPopUpCommentCountTextView.setText(String.valueOf(post.getNumComments()));
         setPostImage(post, mPopUpDraweeView);
+        String shareText = "www.reddit.com" + post.getPermalink();
+        mPopUpShareImageButton.setOnClickListener(v ->
+                ShareUtil.shareText(mFeedItemInterface.getContext(), shareText));
+
+        mPopUpCommentImageButton.setOnClickListener(v -> {
+            Intent intent = new Intent(mFeedItemInterface.getContext(), CommentsActivity.class);
+
+            packIntent(post, intent, mPosition);
+            ((MainActivity) mFeedItemInterface.getContext()).startActivityForResult(intent, CommentsActivity.REQUEST_CODE);
+        });
 
         return popUpView;
     }

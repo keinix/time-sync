@@ -44,6 +44,7 @@ public class RedditVoteHelper {
     private int mColorWhite;
 
     private boolean setResults;
+    private boolean voteWasCast;
 
     public RedditVoteHelper(Context context, ImageButton upButton,
                             ImageButton downButton, TextView voteCount, Api api, int voteStatus, String id) {
@@ -76,6 +77,7 @@ public class RedditVoteHelper {
     //default is triggered when not vote has been cast
     public void setOnClick() {
         mUpVoteImageButton.setOnClickListener(v -> {
+            voteWasCast = true;
         switch (mVoteStatus) {
             case VALUE_UPVOTED:
                 mUpVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
@@ -100,6 +102,7 @@ public class RedditVoteHelper {
                 break;
         }});
         mDownVoteImageButton.setOnClickListener(v -> {
+            voteWasCast = true;
         switch (mVoteStatus) {
             case VALUE_UPVOTED:
                 mDownVoteImageButton.getDrawable().setColorFilter(mDownVoteColor, PorterDuff.Mode.MULTIPLY);
@@ -182,11 +185,7 @@ public class RedditVoteHelper {
         mVoteStatus = voteStatus;
     }
 
-    public void setResults() {
-        setResults = true;
-    }
-
-    public void launchResultCall() {
-
+    public boolean wasVoteCast() {
+        return voteWasCast;
     }
 }
