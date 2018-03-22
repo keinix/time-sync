@@ -1,13 +1,12 @@
 package io.keinix.timesync.adapters;
 
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -16,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.keinix.timesync.Fragments.FeedFragment;
 import io.keinix.timesync.Fragments.FeedFragment.FeedItemInterface;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.model.Child;
@@ -44,23 +42,42 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
     private LinearLayoutManager mLinearLayoutManager;
     private ProgressBar mProgressBar;
     private boolean mLoading = false;
+    private boolean isNestedScroll;
+    private NestedScrollView mNestedScrollView;
 
 
 
     public FeedAdapter(FeedItemInterface feedItemInterface, LinearLayoutManager linearLayoutManager, ProgressBar progressBar) {
+        isNestedScroll = false;
         mFeedItemInterface = feedItemInterface;
         mLinearLayoutManager = linearLayoutManager;
         mProgressBar = progressBar;
         mLocalVoteTracker = Collections.synchronizedMap(new HashMap<>());
         mAfter = "";
     }
+    public FeedAdapter(FeedItemInterface feedItemInterface, LinearLayoutManager linearLayoutManager,
+                       ProgressBar progressBar, NestedScrollView nestedScrollView) {
+        isNestedScroll = true;
+        mFeedItemInterface = feedItemInterface;
+        mLinearLayoutManager = linearLayoutManager;
+        mProgressBar = progressBar;
+        mNestedScrollView = nestedScrollView;
+        mLocalVoteTracker = Collections.synchronizedMap(new HashMap<>());
+        mAfter = "";
+    }
+
 
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         mRecyclerView = recyclerView;
-        setOnScroll();
+        if (isNestedScroll) {
+            setOnScroll(mNestedScrollView);
+        } else {
+            setOnScroll();
+        }
     }
+
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -158,6 +175,17 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
             }
         });
     }
+    public void setOnScroll(NestedScrollView nestedScrollView) {
+        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
+                (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if(v.getChildAt(v.getChildCount() - 1) != null) {
+                if ((scrollY >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight())) &&
+                        scrollY > oldScrollY) {
+                    appendRedditFeed();
+                }
+            }
+        });
+    }
 
     public void appendRedditFeed() {
         mFeedItemInterface.appendFeed(mAfter).enqueue(new Callback<RedditFeed>() {
@@ -174,17 +202,12 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
 
                     populateLocalVoteTracker(response.body().getData().getChildren());
                     notifyItemRangeInserted(previousFeedLength, response.body().getData().getChildren().size());
-//                    mFeedFragment.setLoaded();
                     mLoading = false;
-                } else {
-                    Log.d(TAG, "appendRedditFeed: response NOT Successful: " + response.toString());
                 }
             }
 
             @Override
             public void onFailure(Call<RedditFeed> call, Throwable t) {
-                Log.d(TAG, "onFailure called from appendRedditFeed");
-//                mFeedFragment.setLoaded();
                 mLoading = false;
             }
         });
@@ -203,7 +226,11 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
         return mRedditFeed;
     }
 
-    public void setRedditFeed(RedditFeed redditFeed) {
-        mRedditFeed = redditFeed;
+    public boolean isNestedScroll() {
+        return isNestedScroll;
+    }
+
+    public void setNestedScroll(boolean nestedScroll) {
+        isNestedScroll = nestedScroll;
     }
 }

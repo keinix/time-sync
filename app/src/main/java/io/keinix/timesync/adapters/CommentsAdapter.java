@@ -44,7 +44,8 @@ public class CommentsAdapter extends RecyclerView.Adapter {
     private ProgressBar mCommentsProgressBar;
     private CommentsFragment mFragment;
 
-    public CommentsAdapter(CommentsFragment.CommentsInterface commentsInterface, ProgressBar progressBar, CommentsFragment fragment) {
+    public CommentsAdapter(CommentsFragment.CommentsInterface commentsInterface,
+                           ProgressBar progressBar, CommentsFragment fragment) {
         mCommentsInterface = commentsInterface;
         mCommentTree = new ArrayList<>();
         mCommentsProgressBar = progressBar;
@@ -134,15 +135,6 @@ public class CommentsAdapter extends RecyclerView.Adapter {
             upCountTextView.setText(String.valueOf(mComment.getScore()));
             setCommentTreeMargins(baseConstraintLayout, mComment);
 
-            //change to red when usernames match
-//            int red = ContextCompat.getColor(mCommentsInterface.getContext(), R.color.red);
-//            int accent = ContextCompat.getColor(mCommentsInterface.getContext(), R.color.colorAccent);
-//            if (mComment.isSubmitter()) {
-//                detailsTextView.setTextColor(red);
-//            } else {
-//                detailsTextView.setTextColor(accent);
-//            }
-
              new RedditVoteHelper(mCommentsInterface.getContext(),
                     upVoteImageButton, downVoteImageButton, upCountTextView,
                     mCommentsInterface.getApi(), ItemDetailsHelper.parseVoteType(mComment.getLikes()),
@@ -214,9 +206,6 @@ public class CommentsAdapter extends RecyclerView.Adapter {
                 default:
                     return false;
             }
-
         }
-
-
     }
 }

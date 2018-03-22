@@ -18,6 +18,8 @@ public abstract class MarkDownParser {
 
     public static void parse(Context context, TextView textView, String text) {
         String parsedText = text.replace("&gt;", ">");
+        parsedText.replace("&nbsp", " ");
+
         Parser parser = Markwon.createParser();
 
             int blockQuoteColor = ContextCompat.getColor(context, R.color.colorAccent);

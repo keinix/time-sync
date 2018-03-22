@@ -51,6 +51,12 @@ public interface Api {
             @Query("after") String after
     );
 
+    @GET("{subreddit}")
+    Call<RedditFeed> appendSubredditFeed (
+          @Path("subreddit") String subreddit,
+          @Query("after") String after
+    );
+
     @FormUrlEncoded
     @POST("api/vote/")
     Call<VoteResult> vote (

@@ -136,7 +136,6 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
             if (redditVoteHelper.wasVoteCast()) {
                 mBaseRedditVoteHelper.setVoteStatus(redditVoteHelper.getVoteStatus());
                 mBaseRedditVoteHelper.setInitialVoteColors();
-               // mAdapter.notifyItemChanged(mPosition);
             }
         });
 

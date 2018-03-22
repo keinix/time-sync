@@ -3,6 +3,7 @@ package io.keinix.timesync.Activities;
 import android.accounts.AccountManager;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -50,6 +51,7 @@ public class SubredditActivity extends AppCompatActivity implements FeedFragment
     @BindView(R.id.subDescriptionTextView) TextView subDescriptionTextView;
     @BindView(R.id.subredditProgressBar) ProgressBar mProgressBar;
     @BindView(R.id.infoImageButton) ImageButton infoImageButton;
+    @BindView(R.id.subredditNestedScrollView) NestedScrollView mNestedScrollView;
 
 
     public static final String KEY_SUBREDDIT = "KEY_SUBREDDIT";
@@ -66,8 +68,9 @@ public class SubredditActivity extends AppCompatActivity implements FeedFragment
         mSubReddit = getIntent().getParcelableExtra(KEY_SUBREDDIT);
         bindSubredditView();
         initApi();
-        //prepareRecyclerView();
+        prepareRecyclerView();
         setTitle(mSubReddit.getDisplayNamePrefixed());
+        setUpSubButton();
     }
 
     private void bindSubredditView() {
@@ -96,7 +99,7 @@ public class SubredditActivity extends AppCompatActivity implements FeedFragment
 
     public void prepareRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        FeedAdapter feedAdapter = new FeedAdapter(this, linearLayoutManager, mProgressBar);
+        FeedAdapter feedAdapter = new FeedAdapter(this, linearLayoutManager, mProgressBar, mNestedScrollView);
         mRecyclerView.setAdapter(feedAdapter);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         populateRedditFeed(feedAdapter);
@@ -132,6 +135,22 @@ public class SubredditActivity extends AppCompatActivity implements FeedFragment
         return view;
     }
 
+    private void setUpSubButton() {
+        int white = ContextCompat.getColor(this, R.color.white);
+        int accent = ContextCompat.getColor(this, R.color.colorAccent);
+        subscribeButton.setOnClickListener(v -> {
+            if (mSubReddit.isSubcriber()) {
+                subscribeButton.setTextColor(white);
+                subscribeButton.setText("   Subscribe   ");
+                mSubReddit.setSubcriber(false);
+            } else {
+                subscribeButton.setText("   Subscribed   ");
+                subscribeButton.setTextColor(accent);
+                mSubReddit.setSubcriber(true);
+            }
+        });
+    }
+
 
      // Interface methods //
 
@@ -150,7 +169,7 @@ public class SubredditActivity extends AppCompatActivity implements FeedFragment
 
     @Override
     public Call<RedditFeed> appendFeed(String after) {
-        return mApi.appendFeed(after);
+        return mApi.appendSubredditFeed(mSubReddit.getDisplayNamePrefixed(), after);
     }
 
     @Override
