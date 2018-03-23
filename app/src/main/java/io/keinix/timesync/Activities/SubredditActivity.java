@@ -1,7 +1,9 @@
 package io.keinix.timesync.Activities;
 
 import android.accounts.AccountManager;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
@@ -27,12 +29,15 @@ import java.text.DecimalFormat;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.timesync.Fragments.FeedFragment;
+import io.keinix.timesync.MainActivity;
 import io.keinix.timesync.R;
 import io.keinix.timesync.adapters.FeedAdapter;
 import io.keinix.timesync.reddit.Api;
 import io.keinix.timesync.reddit.RedditAuthInterceptor;
 import io.keinix.timesync.reddit.RedditConstants;
+import io.keinix.timesync.reddit.RedditVoteHelper;
 import io.keinix.timesync.reddit.TokenAuthenticator;
+import io.keinix.timesync.reddit.model.Data_;
 import io.keinix.timesync.reddit.model.RedditFeed;
 import io.keinix.timesync.reddit.model.SubReddit;
 import io.keinix.timesync.reddit.model.VoteResult;
@@ -62,6 +67,10 @@ public class SubredditActivity extends AppCompatActivity implements FeedFragment
     public static final String TAG = SubredditActivity.class.getSimpleName();
     public static final String ACTION_SUBSCRIBE = "sub";
     public static final String ACTION_UNSUBSCRIBE = "unsub";
+    private FeedAdapter mAdapter;
+    private int mCommentsResultVoteValue;
+    private int mOriginalPostPosition;
+    private int mInitVoteType;
 
     private SubReddit mSubReddit;
     private Api mApi;
@@ -105,11 +114,11 @@ public class SubredditActivity extends AppCompatActivity implements FeedFragment
 
     public void prepareRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        FeedAdapter feedAdapter = new FeedAdapter(this, linearLayoutManager, mProgressBar, mNestedScrollView);
-        feedAdapter.setFromSubReddit(true);
-        mRecyclerView.setAdapter(feedAdapter);
+        mAdapter = new FeedAdapter(this, linearLayoutManager, mProgressBar, mNestedScrollView);
+        mAdapter.setFromSubReddit(true);
+        mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(linearLayoutManager);
-        populateRedditFeed(feedAdapter);
+        populateRedditFeed(mAdapter);
     }
 
     public void initApi() {
@@ -180,8 +189,42 @@ public class SubredditActivity extends AppCompatActivity implements FeedFragment
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if ( resultCode == Activity.RESULT_OK && requestCode == CommentsActivity.REQUEST_CODE) {
+            mCommentsResultVoteValue = data.getIntExtra(CommentsActivity.KEY_VOTE_TYPE, MainActivity.NULL_RESULT);
+            mInitVoteType = data.getIntExtra(CommentsActivity.KEY_INIT_VOTE_TYPE, MainActivity.NULL_RESULT);
+            mOriginalPostPosition = data.getIntExtra(CommentsActivity.KEY_ORIGINAL_POST_POSITION, MainActivity.NULL_RESULT);
+            processVoteFromCommentSection();
+        }
+    }
 
-     // Interface methods //
+    private void processVoteFromCommentSection() {
+        if (mCommentsResultVoteValue != MainActivity.NULL_RESULT) {
+
+            if (mCommentsResultVoteValue != mInitVoteType) {
+                Data_ post = mAdapter.getRedditFeed().getData().getChildren().get(mOriginalPostPosition).getData();
+                Boolean isLiked;
+
+                switch (mCommentsResultVoteValue){
+                    case RedditVoteHelper.VALUE_UPVOTED:
+                        isLiked = true;
+                        break;
+                    case RedditVoteHelper.VALUE_DOWNVOTED:
+                        isLiked = false;
+                        break;
+                    default:
+                        isLiked = null;
+                        break;
+                }
+                post.setLiked(isLiked);
+                mAdapter.notifyItemChanged(mOriginalPostPosition);
+            }
+        }
+    }
+
+    // Interface methods //
 
     @Override
     public Call<VoteResult> vote(String id, String voteType) {
