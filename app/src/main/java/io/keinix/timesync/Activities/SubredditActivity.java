@@ -17,8 +17,10 @@ import android.widget.ImageButton;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.gson.JsonElement;
 
 import java.text.DecimalFormat;
 
@@ -37,6 +39,8 @@ import io.keinix.timesync.reddit.model.VoteResult;
 import io.keinix.timesync.utils.MarkDownParser;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -56,6 +60,8 @@ public class SubredditActivity extends AppCompatActivity implements FeedFragment
 
     public static final String KEY_SUBREDDIT = "KEY_SUBREDDIT";
     public static final String TAG = SubredditActivity.class.getSimpleName();
+    public static final String ACTION_SUBSCRIBE = "sub";
+    public static final String ACTION_UNSUBSCRIBE = "unsub";
 
     private SubReddit mSubReddit;
     private Api mApi;
@@ -144,10 +150,32 @@ public class SubredditActivity extends AppCompatActivity implements FeedFragment
                 subscribeButton.setTextColor(white);
                 subscribeButton.setText("   Subscribe   ");
                 mSubReddit.setSubcriber(false);
+                subscribe(ACTION_UNSUBSCRIBE);
             } else {
                 subscribeButton.setText("   Subscribed   ");
                 subscribeButton.setTextColor(accent);
                 mSubReddit.setSubcriber(true);
+                subscribe(ACTION_SUBSCRIBE);
+            }
+        });
+    }
+
+    public void subscribe(String action) {
+
+        mApi.subscribe(action, mSubReddit.getName()).enqueue(new Callback<JsonElement>() {
+            @Override
+            public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                Log.d(TAG, "response: " + response);
+                if (action.equals(ACTION_SUBSCRIBE)) {
+                    Toast.makeText(SubredditActivity.this, "Subscribed", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(SubredditActivity.this, "Unsubscribed", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonElement> call, Throwable t) {
+                Toast.makeText(SubredditActivity.this, "There was a problem :(", Toast.LENGTH_SHORT).show();
             }
         });
     }

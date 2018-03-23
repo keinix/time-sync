@@ -95,4 +95,11 @@ public interface Api {
 
     @GET("subreddits/mine/subscriber")
     Call<JsonElement> getSubReddits(@Query("limit") String limit);
+
+    @POST("api/subscribe")
+    @FormUrlEncoded
+    Call<JsonElement> subscribe(
+        @Field("action") String action,
+        @Field("sr") String subName
+    );
 }

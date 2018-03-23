@@ -83,8 +83,6 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
                 ((MainActivity) mFeedItemInterface.getContext()).startActivityForResult(intent, CommentsActivity.REQUEST_CODE);
             }
         });
-
-
     }
 
     private void packIntent(Data_ post, Intent intent, int position) {

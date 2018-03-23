@@ -56,6 +56,18 @@ public class SubReddit implements Parcelable {
     @Expose
     private String publicDescription;
 
+    @SerializedName("name")
+    @Expose
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getPublicDescription() {
         return publicDescription;
     }
@@ -169,6 +181,9 @@ public class SubReddit implements Parcelable {
                 ", subscriber=" + subscriber +
                 ", keyColor='" + keyColor + '\'' +
                 ", headerTitle='" + headerTitle + '\'' +
+                ", isSubcriber=" + isSubcriber +
+                ", publicDescription='" + publicDescription + '\'' +
+                ", name='" + name + '\'' +
                 '}';
     }
 
@@ -186,6 +201,7 @@ public class SubReddit implements Parcelable {
         parcel.writeInt(subscriber);
         parcel.writeByte((byte) (isSubcriber ? 1 : 0));
         parcel.writeString(publicDescription);
+        parcel.writeString(name);
     }
 
     private SubReddit(Parcel in) {
@@ -201,6 +217,7 @@ public class SubReddit implements Parcelable {
         subscriber = in.readInt();
         isSubcriber = in.readByte() != 0;
         publicDescription = in.readString();
+        name = in.readString();
     }
 
     public static final Creator<SubReddit> CREATOR = new Creator<SubReddit>() {
