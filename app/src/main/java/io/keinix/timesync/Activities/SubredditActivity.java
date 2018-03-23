@@ -100,6 +100,7 @@ public class SubredditActivity extends AppCompatActivity implements FeedFragment
     public void prepareRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         FeedAdapter feedAdapter = new FeedAdapter(this, linearLayoutManager, mProgressBar, mNestedScrollView);
+        feedAdapter.setFromSubReddit(true);
         mRecyclerView.setAdapter(feedAdapter);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         populateRedditFeed(feedAdapter);

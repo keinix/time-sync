@@ -16,6 +16,7 @@ import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import io.keinix.timesync.Activities.CommentsActivity;
+import io.keinix.timesync.Activities.SubredditActivity;
 import io.keinix.timesync.Fragments.FeedFragment;
 import io.keinix.timesync.MainActivity;
 import io.keinix.timesync.R;
@@ -66,13 +67,21 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
             Intent intent = new Intent(mFeedItemInterface.getContext(), CommentsActivity.class);
 
             packIntent(post, intent, position);
-            ((MainActivity) mFeedItemInterface.getContext()).startActivityForResult(intent, CommentsActivity.REQUEST_CODE);
+            if (mAdapter.isFromSubReddit()) {
+                ((SubredditActivity) mFeedItemInterface.getContext()).startActivityForResult(intent, CommentsActivity.REQUEST_CODE);
+            } else {
+                ((MainActivity) mFeedItemInterface.getContext()).startActivityForResult(intent, CommentsActivity.REQUEST_CODE);
+            }
         });
         commentCountTextView.setOnClickListener(v -> {
             Intent intent = new Intent(mFeedItemInterface.getContext(), CommentsActivity.class);
 
             packIntent(post, intent, position);
-            ((MainActivity) mFeedItemInterface.getContext()).startActivityForResult(intent, CommentsActivity.REQUEST_CODE);
+            if (mAdapter.isFromSubReddit()) {
+                ((SubredditActivity) mFeedItemInterface.getContext()).startActivityForResult(intent, CommentsActivity.REQUEST_CODE);
+            } else {
+                ((MainActivity) mFeedItemInterface.getContext()).startActivityForResult(intent, CommentsActivity.REQUEST_CODE);
+            }
         });
 
 
@@ -163,7 +172,12 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
             Intent intent = new Intent(mFeedItemInterface.getContext(), CommentsActivity.class);
 
             packIntent(post, intent, mPosition);
-            ((MainActivity) mFeedItemInterface.getContext()).startActivityForResult(intent, CommentsActivity.REQUEST_CODE);
+            mFeedItemInterface.getContext().getClass();
+            if (mAdapter.isFromSubReddit()) {
+                ((SubredditActivity) mFeedItemInterface.getContext()).startActivityForResult(intent, CommentsActivity.REQUEST_CODE);
+            } else {
+                ((MainActivity) mFeedItemInterface.getContext()).startActivityForResult(intent, CommentsActivity.REQUEST_CODE);
+            }
         });
 
         return popUpView;

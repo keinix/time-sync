@@ -159,7 +159,6 @@ public class RedditVoteHelper {
                 if (!response.isSuccessful()) {
                     Log.d(TAG, "Response: " + response.toString());
                     Toast.makeText(mContext, "Vote Not Counted: network problem", Toast.LENGTH_SHORT).show();
-
                 }
             }
 

@@ -137,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
 
     }
 
+
     // -----------Feed Fragment Interface Methods-----------------
     @Override
     public Call<VoteResult> vote(String id, String voteType) {
@@ -187,4 +188,5 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
         Intent intent = new Intent(this, AddAccountActivity.class);
         startActivity(intent);
     }
+
 }

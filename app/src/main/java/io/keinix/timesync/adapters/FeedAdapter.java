@@ -44,6 +44,7 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
     private boolean mLoading = false;
     private boolean isNestedScroll;
     private NestedScrollView mNestedScrollView;
+    private boolean isFromSubReddit;
 
 
 
@@ -220,6 +221,14 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
         Log.d(TAG, "Call request header: " + call.request().headers());
         Log.d(TAG, "Call request toString: " + call.request().toString());
         Log.d(TAG, t.toString());
+    }
+
+    public boolean isFromSubReddit() {
+        return isFromSubReddit;
+    }
+
+    public void setFromSubReddit(boolean fromSubReddit) {
+        isFromSubReddit = fromSubReddit;
     }
 
     public RedditFeed getRedditFeed() {

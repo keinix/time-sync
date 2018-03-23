@@ -2,11 +2,13 @@ package io.keinix.timesync.adapters;
 
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import butterknife.BindView;
 import io.keinix.timesync.Activities.CommentsActivity;
+import io.keinix.timesync.Activities.SubredditActivity;
 import io.keinix.timesync.Fragments.FeedFragment;
 import io.keinix.timesync.MainActivity;
 import io.keinix.timesync.R;
@@ -48,6 +50,12 @@ public class TextFeedViewHolder extends BaseFeedViewHolder {
         intent.putExtra(CommentsActivity.KEY_VOTE_COUNT, post.getUps());
         intent.putExtra(CommentsActivity.KEY_ORIGINAL_POST_POSITION, position);
         intent.putExtra(CommentsActivity.KEY_INIT_VOTE_TYPE, mBaseRedditVoteHelper.getVoteStatus());
-        ((MainActivity) mFeedItemInterface.getContext()).startActivityForResult(intent, CommentsActivity.REQUEST_CODE);
+
+        Log.d(TAG, "isFromSubReddit: " + mAdapter.isFromSubReddit());
+        if (mAdapter.isFromSubReddit()) {
+            ((SubredditActivity) mFeedItemInterface.getContext()).startActivityForResult(intent, CommentsActivity.REQUEST_CODE);
+        } else {
+            ((MainActivity) mFeedItemInterface.getContext()).startActivityForResult(intent, CommentsActivity.REQUEST_CODE);
+        }
     }
 }
