@@ -192,7 +192,7 @@ public class SubredditActivity extends AppCompatActivity implements FeedFragment
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if ( resultCode == Activity.RESULT_OK && requestCode == CommentsActivity.REQUEST_CODE) {
+        if (resultCode == Activity.RESULT_OK && requestCode == CommentsActivity.REQUEST_CODE) {
             mCommentsResultVoteValue = data.getIntExtra(CommentsActivity.KEY_VOTE_TYPE, MainActivity.NULL_RESULT);
             mInitVoteType = data.getIntExtra(CommentsActivity.KEY_INIT_VOTE_TYPE, MainActivity.NULL_RESULT);
             mOriginalPostPosition = data.getIntExtra(CommentsActivity.KEY_ORIGINAL_POST_POSITION, MainActivity.NULL_RESULT);

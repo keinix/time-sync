@@ -19,7 +19,14 @@ public class MessagesFragment extends Fragment {
         void tempLogin();
     }
 
+    public static final String KEY_MESSAGE_TYPE = "VALUE_MESSAGE_TYPE";
+    public static final String VALUE_MESSAGE_TYPE_MESSAGE = "MESSAGE_TYPE_MESSAGE";
+    public static final String VALUE_MESSAGE_TYPE_NOTIFICATION = "MESSAGE_TYPE_NOTIFICATION";
+
+
     @BindView(R.id.tempLoginButton) Button tempLoginButton;
+
+
 
     @Nullable
     @Override
@@ -31,7 +38,6 @@ public class MessagesFragment extends Fragment {
         tempLoginButton.setOnClickListener(v -> {
             messagesInterface.tempLogin();
         });
-
         return view;
     }
 }
