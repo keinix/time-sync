@@ -26,7 +26,8 @@ public class ViewPagerFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_viewpager, container, false);
         ViewPager viewPager = view.findViewById(R.id.viewPager);
         final FeedFragment feedFragment = new FeedFragment();
-        final MessagesFragment messagesFragment = new MessagesFragment();
+        //final MessagesFragment messagesFragment = new MessagesFragment();
+        final MessagesViewPagerFragment messagesViewPagerFragment= new MessagesViewPagerFragment();
         final AccountFragment accountFragment = new AccountFragment();
         mHighlightColor = ContextCompat.getColor(getActivity(), R.color.colorAccent);
         mColorWhite = ContextCompat.getColor(getActivity(), R.color.white);
@@ -40,7 +41,7 @@ public class ViewPagerFragment extends Fragment {
             public Fragment getItem(int position) {
                 switch (position) {
                     case 0: return feedFragment;
-                    case 1: return messagesFragment;
+                    case 1: return messagesViewPagerFragment;
                     default: return accountFragment;
                 }
             }
