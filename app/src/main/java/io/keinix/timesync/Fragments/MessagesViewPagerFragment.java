@@ -23,7 +23,7 @@ public class MessagesViewPagerFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_viewpager, container, false);
+        View view = inflater.inflate(R.layout.fragment_messages_viewpager, container, false);
         ButterKnife.bind(this, view);
         setUpViewPagerFragments();
         setUpViewpagerTabs();
@@ -34,10 +34,12 @@ public class MessagesViewPagerFragment extends Fragment {
         MessagesFragment notificationsFragment = new MessagesFragment();
         Bundle notificationBundle = new Bundle();
         notificationBundle.putString(MessagesFragment.KEY_MESSAGE_TYPE, MessagesFragment.VALUE_MESSAGE_TYPE_NOTIFICATION);
+        notificationsFragment.setArguments(notificationBundle);
 
         MessagesFragment messagesFragment = new MessagesFragment();
         Bundle messagesBundle = new Bundle();
         messagesBundle.putString(MessagesFragment.KEY_MESSAGE_TYPE, MessagesFragment.VALUE_MESSAGE_TYPE_MESSAGE);
+        messagesFragment.setArguments(messagesBundle);
 
         mViewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
             @Override
@@ -58,6 +60,6 @@ public class MessagesViewPagerFragment extends Fragment {
     private void setUpViewpagerTabs() {
         mTabLayout.setupWithViewPager(mViewPager);
         mTabLayout.getTabAt(0).setText("Messages");
-        mTabLayout.getTabAt(2).setText("Notifications");
+        mTabLayout.getTabAt(1).setText("Notifications");
     }
 }

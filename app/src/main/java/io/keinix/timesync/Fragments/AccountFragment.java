@@ -10,19 +10,20 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.keinix.timesync.Activities.AddAccountActivity;
 import io.keinix.timesync.R;
 
 
 public class AccountFragment extends Fragment {
 
-    @BindView(R.id.tempLoginButton)
-    Button tempLoginButton;
+    @BindView(R.id.tempLoginButton) Button tempLoginButton;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_account, container, false);
+        ButterKnife.bind(this, view);
 
         tempLoginButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), AddAccountActivity.class);
