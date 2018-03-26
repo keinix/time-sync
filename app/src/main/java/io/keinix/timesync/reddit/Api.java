@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import java.util.List;
 import java.util.Map;
 
+import io.keinix.timesync.reddit.model.Message;
 import io.keinix.timesync.reddit.model.RedditAccessToken;
 import io.keinix.timesync.reddit.model.RedditFeed;
 import io.keinix.timesync.reddit.model.SubReddit;
@@ -101,5 +102,10 @@ public interface Api {
     Call<JsonElement> subscribe(
         @Field("action") String action,
         @Field("sr") String subName
+    );
+
+    @GET("message/inbox")
+    Call<JsonElement> getMessages(
+
     );
 }

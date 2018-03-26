@@ -15,6 +15,13 @@ import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import io.keinix.timesync.Activities.AddAccountActivity;
@@ -25,15 +32,19 @@ import io.keinix.timesync.Fragments.MessagesFragment;
 import io.keinix.timesync.Fragments.SubredditNavigationFragment;
 import io.keinix.timesync.Fragments.ViewPagerFragment;
 import io.keinix.timesync.adapters.FeedAdapter;
+import io.keinix.timesync.adapters.MessagesAdapter;
 import io.keinix.timesync.reddit.Api;
 import io.keinix.timesync.reddit.RedditAuthInterceptor;
 import io.keinix.timesync.reddit.RedditConstants;
 import io.keinix.timesync.reddit.TokenAuthenticator;
+import io.keinix.timesync.reddit.model.Message;
 import io.keinix.timesync.reddit.model.RedditFeed;
 import io.keinix.timesync.reddit.model.SubReddit;
 import io.keinix.timesync.reddit.model.VoteResult;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -187,6 +198,40 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
     public void tempLogin() {
         Intent intent = new Intent(this, AddAccountActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void getMessages(MessagesAdapter adapter, boolean isNotification) {
+
+        mApi.getMessages().enqueue(new Callback<JsonElement>() {
+            @Override
+            public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                adapter.setMessages(populateMessageList(response.body(), isNotification));
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<JsonElement> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public List<Message> populateMessageList(JsonElement jsonElement, boolean isNotification) {
+        List<Message> tempMessages = new ArrayList<>();
+        Gson gson = new Gson();
+        JsonArray baseMessageArray = jsonElement.getAsJsonObject()
+                .getAsJsonObject("data")
+                .getAsJsonArray("children");
+
+        for (JsonElement messageElement : baseMessageArray) {
+            JsonObject message = messageElement.getAsJsonObject().getAsJsonObject("data");
+            boolean wasComment = message.getAsJsonPrimitive("was_comment").getAsBoolean();
+            if (isNotification != wasComment) {
+                tempMessages.add(gson.fromJson(message, Message.class));
+            }
+        }
+        return tempMessages;
     }
 
 }
