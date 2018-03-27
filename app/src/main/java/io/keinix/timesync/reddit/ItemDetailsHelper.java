@@ -9,6 +9,19 @@ public abstract class ItemDetailsHelper {
         return ((systemTime - createdUtc) / 60) / 60;
     }
 
+    public static String getTimeWithUnit(long createdUtc) {
+        long timeSincePosted = getTimeSincePosted(createdUtc);
+
+        if (timeSincePosted / 30 >= 1) {
+            timeSincePosted = timeSincePosted / 30;
+            return  timeSincePosted + "mo";
+        } else if (timeSincePosted / 7 >= 1) {
+            timeSincePosted = timeSincePosted / 7;
+            return timeSincePosted + "w";
+        }
+        return timeSincePosted + "h";
+    }
+
     public static String getUserDetails(String author, Long createdUtc) {
         return "u/" + author + " \u2022 " + getTimeSincePosted(createdUtc) + "h";
     }

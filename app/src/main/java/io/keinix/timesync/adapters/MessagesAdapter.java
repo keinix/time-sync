@@ -1,5 +1,6 @@
 package io.keinix.timesync.adapters;
 
+import android.content.ClipData;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.timesync.Fragments.MessagesFragment;
 import io.keinix.timesync.R;
+import io.keinix.timesync.reddit.ItemDetailsHelper;
 import io.keinix.timesync.reddit.model.Message;
 
 public class MessagesAdapter extends Adapter {
@@ -75,6 +77,23 @@ public class MessagesAdapter extends Adapter {
 
         public void bindNotification(int position) {
             Message message = mMessages.get(position);
+            String bottomText = message.getSubject() +
+                    ItemDetailsHelper.getTimeWithUnit(message.getCreatedUtc());
+            topTextView.setText(getNoticicationText(message));
+            middleTextView.setText(message.getBody());
+            bottomTextView.setText(bottomText);
+        }
+
+        public void bindMessage(int position) {
+            Message message = mMessages.get(position);
+            String bottomText = message.getAuthor() +
+                    ItemDetailsHelper.getTimeWithUnit(message.getCreatedUtc());
+            topTextView.setText(message.getSubject());
+            middleTextView.setText(message.getBody());
+            bottomTextView.setText(bottomText);
+        }
+
+        private String getNoticicationText(Message message) {
             String subjectText;
             switch (message.getSubject()) {
                 case "comment reply":
@@ -85,11 +104,9 @@ public class MessagesAdapter extends Adapter {
                     break;
                 default: subjectText = userNameMentionNotification;
             }
-            topTextView.setText(message.);
-        }
-
-        public void bindMessage(int position) {
-            Message message = mMessages.get(position);
+            subjectText.replace("$user$",  "u/" + message.getAuthor());
+            subjectText.replace("$subreddit$", message.getSubbreditNamePrefixed());
+            return subjectText;
         }
     }
 }
