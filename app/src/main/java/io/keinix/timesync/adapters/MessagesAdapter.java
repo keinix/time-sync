@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView.Adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
@@ -23,11 +24,15 @@ public class MessagesAdapter extends Adapter {
     private MessagesFragment.MessagesInterface mMessagesInterface;
     private List<Message> mMessages;
     private boolean mIsNotification;
+    private ProgressBar mProgressBar;
 
-    public MessagesAdapter(MessagesFragment.MessagesInterface messagesInterface, boolean isNotification) {
+    public MessagesAdapter(MessagesFragment.MessagesInterface messagesInterface, boolean isNotification, ProgressBar progressBar) {
         mMessages = new ArrayList<>();
         mIsNotification = isNotification;
         mMessagesInterface = messagesInterface;
+        mProgressBar = progressBar;
+        mMessagesInterface.getMessages(this, mIsNotification);
+        mProgressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -57,7 +62,7 @@ public class MessagesAdapter extends Adapter {
         private String postReplyNotification = "$user$ replied to you post in $subreddit$";
         private String userNameMentionNotification = "$user$ mentioned you in $subreddit$";
 
-        @BindView(R.id.messagesTextView) TextView topTextView;
+        @BindView(R.id.messageTopTextView) TextView topTextView;
         @BindView(R.id.messageMiddleTextView) TextView middleTextView;
         @BindView(R.id.messageBottomTextView) TextView bottomTextView;
 
@@ -77,7 +82,7 @@ public class MessagesAdapter extends Adapter {
 
         public void bindNotification(int position) {
             Message message = mMessages.get(position);
-            String bottomText = message.getSubject() +
+            String bottomText = message.getSubject() + " \u2022 " +
                     ItemDetailsHelper.getTimeWithUnit(message.getCreatedUtc());
             topTextView.setText(getNoticicationText(message));
             middleTextView.setText(message.getBody());
@@ -86,7 +91,7 @@ public class MessagesAdapter extends Adapter {
 
         public void bindMessage(int position) {
             Message message = mMessages.get(position);
-            String bottomText = message.getAuthor() +
+            String bottomText = message.getAuthor() + " \u2022 " +
                     ItemDetailsHelper.getTimeWithUnit(message.getCreatedUtc());
             topTextView.setText(message.getSubject());
             middleTextView.setText(message.getBody());
@@ -104,8 +109,8 @@ public class MessagesAdapter extends Adapter {
                     break;
                 default: subjectText = userNameMentionNotification;
             }
-            subjectText.replace("$user$",  "u/" + message.getAuthor());
-            subjectText.replace("$subreddit$", message.getSubbreditNamePrefixed());
+            subjectText = subjectText.replace("$user$",  "u/" + message.getAuthor());
+            subjectText = subjectText.replace("$subreddit$", message.getSubbreditNamePrefixed());
             return subjectText;
         }
     }

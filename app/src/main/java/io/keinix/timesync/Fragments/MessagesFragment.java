@@ -4,10 +4,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import java.util.List;
 
@@ -33,6 +35,10 @@ public class MessagesFragment extends Fragment {
     public boolean isNotification;
 
     @BindView(R.id.feedRecyclerView) Container mRecyclerView;
+    @BindView(R.id.feedProgressBar) ProgressBar mProgressBar;
+    @BindView(R.id.swipeRefresh) SwipeRefreshLayout mSwipeRefreshLayout;
+
+    private MessagesAdapter mAdapter;
 
 
     @Nullable
@@ -42,8 +48,10 @@ public class MessagesFragment extends Fragment {
         ButterKnife.bind(this, view);
         final MessagesInterface messagesInterface = (MessagesInterface) getActivity();
         determineFragmentType();
-        mRecyclerView.setAdapter(new MessagesAdapter(messagesInterface, isNotification));
+        mAdapter = new MessagesAdapter(messagesInterface, isNotification, mProgressBar);
+        mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        setSwipe(messagesInterface);
         return view;
     }
 
@@ -53,5 +61,12 @@ public class MessagesFragment extends Fragment {
         } else {
             isNotification = false;
         }
+    }
+
+    private void setSwipe(MessagesInterface messagesInterface) {
+        mSwipeRefreshLayout.setOnRefreshListener(() -> {
+            mSwipeRefreshLayout.setRefreshing(false);
+            messagesInterface.getMessages(mAdapter, isNotification);
+        });
     }
 }

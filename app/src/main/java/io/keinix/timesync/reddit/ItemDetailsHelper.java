@@ -12,11 +12,11 @@ public abstract class ItemDetailsHelper {
     public static String getTimeWithUnit(long createdUtc) {
         long timeSincePosted = getTimeSincePosted(createdUtc);
 
-        if (timeSincePosted / 30 >= 1) {
-            timeSincePosted = timeSincePosted / 30;
+        if (timeSincePosted / 720 >= 1) {
+            timeSincePosted = timeSincePosted / 720;
             return  timeSincePosted + "mo";
-        } else if (timeSincePosted / 7 >= 1) {
-            timeSincePosted = timeSincePosted / 7;
+        } else if (timeSincePosted / 168 >= 1) {
+            timeSincePosted = timeSincePosted / 168;
             return timeSincePosted + "w";
         }
         return timeSincePosted + "h";

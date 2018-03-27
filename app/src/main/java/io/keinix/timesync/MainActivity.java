@@ -203,11 +203,15 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
     @Override
     public void getMessages(MessagesAdapter adapter, boolean isNotification) {
 
-        mApi.getMessages().enqueue(new Callback<JsonElement>() {
+        mApi.getMessages("100").enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
-                adapter.setMessages(populateMessageList(response.body(), isNotification));
-                adapter.notifyDataSetChanged();
+                if (response.isSuccessful()) {
+                    adapter.setMessages(populateMessageList(response.body(), isNotification));
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Log.d(TAG, "Response was not successful: " + response);
+                }
             }
 
             @Override
@@ -227,8 +231,14 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
         for (JsonElement messageElement : baseMessageArray) {
             JsonObject message = messageElement.getAsJsonObject().getAsJsonObject("data");
             boolean wasComment = message.getAsJsonPrimitive("was_comment").getAsBoolean();
-            if (isNotification != wasComment) {
-                tempMessages.add(gson.fromJson(message, Message.class));
+            if (isNotification) {
+                if (wasComment) {
+                    tempMessages.add(gson.fromJson(message, Message.class));
+                }
+            } else {
+                if (!wasComment) {
+                    tempMessages.add(gson.fromJson(message, Message.class));
+                }
             }
         }
         return tempMessages;

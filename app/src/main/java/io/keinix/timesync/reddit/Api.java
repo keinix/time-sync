@@ -105,7 +105,5 @@ public interface Api {
     );
 
     @GET("message/inbox")
-    Call<JsonElement> getMessages(
-
-    );
+    Call<JsonElement> getMessages(@Query("limit") String limit);
 }
