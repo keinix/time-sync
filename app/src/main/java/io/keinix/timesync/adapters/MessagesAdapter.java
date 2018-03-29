@@ -56,7 +56,7 @@ public class MessagesAdapter extends Adapter {
         mMessages = messages;
     }
 
-    public class MessagesViewHolder extends RecyclerView.ViewHolder{
+    public class MessagesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private String commentReplyNotification = "$user$ replied to your comment in $subreddit$";
         private String postReplyNotification = "$user$ replied to you post in $subreddit$";
@@ -82,7 +82,9 @@ public class MessagesAdapter extends Adapter {
 
         public void bindNotification(int position) {
             Message message = mMessages.get(position);
-            String bottomText = message.getSubject() + " \u2022 " +
+            String capSubject = message.getSubject().substring(0,1).toUpperCase() +
+                    message.getSubject().substring(1);
+            String bottomText =  capSubject + " \u2022 " +
                     ItemDetailsHelper.getTimeWithUnit(message.getCreatedUtc());
             topTextView.setText(getNoticicationText(message));
             middleTextView.setText(message.getBody());
@@ -113,5 +115,11 @@ public class MessagesAdapter extends Adapter {
             subjectText = subjectText.replace("$subreddit$", message.getSubbreditNamePrefixed());
             return subjectText;
         }
+
+        @Override
+        public void onClick(View view) {
+
+        }
+
     }
 }
