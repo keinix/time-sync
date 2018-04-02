@@ -3,6 +3,7 @@ package io.keinix.timesync.adapters;
 import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -105,6 +106,7 @@ public class SubRedditAdapter extends Adapter {
             }
         });
     }
+
 
     public void populateSubReddits(JsonElement json) {
         Gson gson = new Gson();
