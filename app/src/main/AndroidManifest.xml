@@ -54,6 +54,8 @@
         </activity>
         <activity android:name=".Activities.SubredditActivity">
         </activity>
+        <activity android:name=".Activities.PostActivity">
+        </activity>
     </application>
 
 </manifest>
