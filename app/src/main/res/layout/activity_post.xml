@@ -121,10 +121,12 @@
         android:textColorHint="@color/colorCountText"
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:textAlignment="textStart"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText"/>
+        app:layout_constraintTop_toBottomOf="@+id/editText"
+        android:gravity="start"/>
 
     <ImageButton
         android:id="@+id/postLibraryImageButton"

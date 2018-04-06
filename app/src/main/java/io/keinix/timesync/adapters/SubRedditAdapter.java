@@ -130,6 +130,10 @@ public class SubRedditAdapter extends Adapter {
                 Boolean.compare(sub2.isFavorited(), sub1.isFavorited()));
     }
 
+    public List<SubReddit> getSubList() { return mSubReddits; }
+
+
+
     public class SubRedditViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.subNameTextView) TextView subNameTextView;
         @BindView(R.id.subImageView) SimpleDraweeView subDraweeView;

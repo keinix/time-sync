@@ -268,4 +268,9 @@ public class SubredditActivity extends AppCompatActivity implements FeedFragment
     public int getOriginalPostPosition() {
         return 0;
     }
+
+    @Override
+    public void launchPostActivity() {
+
+    }
 }

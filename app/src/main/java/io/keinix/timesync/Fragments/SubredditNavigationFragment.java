@@ -10,14 +10,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.timesync.R;
 import io.keinix.timesync.adapters.SubRedditAdapter;
+import io.keinix.timesync.reddit.model.SubReddit;
 
 public class SubredditNavigationFragment extends android.support.v4.app.Fragment {
 
     @BindView(R.id.subRedditRecyclerView) RecyclerView subRecyclerView;
+
+    SubRedditAdapter mSubRedditAdapter;
 
     @Nullable
     @Override
@@ -29,7 +34,10 @@ public class SubredditNavigationFragment extends android.support.v4.app.Fragment
     }
 
     public void setUpRecyclerView() {
-        subRecyclerView.setAdapter(new SubRedditAdapter(getActivity()));
+        mSubRedditAdapter = new SubRedditAdapter(getActivity());
+        subRecyclerView.setAdapter(mSubRedditAdapter);
         subRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
+
+    public List<SubReddit> getSubreddits() { return mSubRedditAdapter.getSubList(); }
 }

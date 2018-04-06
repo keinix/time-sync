@@ -27,6 +27,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import io.keinix.timesync.Activities.AddAccountActivity;
 import io.keinix.timesync.Activities.CommentsActivity;
+import io.keinix.timesync.Activities.PostActivity;
 import io.keinix.timesync.Fragments.CommentsFragment;
 import io.keinix.timesync.Fragments.FeedFragment;
 import io.keinix.timesync.Fragments.MessagesFragment;
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
     private int mCommentsResultVoteValue = NULL_RESULT;
     private int mInitVoteType;
     private int mOriginalPostPosition;
+    private SubredditNavigationFragment mNavFragment;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,9 +104,9 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
                 getSupportFragmentManager().findFragmentByTag(TAG_NAVIGATION_FRAGMENT);
 
         if (savedFragment == null) {
-            SubredditNavigationFragment navFragment = new SubredditNavigationFragment();
+            mNavFragment = new SubredditNavigationFragment();
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.add(R.id.navigationPlaceHolder, navFragment, TAG_NAVIGATION_FRAGMENT)
+            fragmentTransaction.add(R.id.navigationPlaceHolder, mNavFragment, TAG_NAVIGATION_FRAGMENT)
                     .addToBackStack(null)
                     .commit();
         }
@@ -193,6 +195,17 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
     @Override
     public int getOriginalPostPosition() {
         return mOriginalPostPosition;
+    }
+
+    @Override
+    public void launchPostActivity() {
+        ArrayList<String> subNames = new ArrayList<>();
+        for (SubReddit subReddit : mNavFragment.getSubreddits()) {
+            subNames.add(subReddit.getDisplayNamePrefixed());
+        }
+        Intent intent = new Intent(this, PostActivity.class);
+        intent.putStringArrayListExtra(PostActivity.KEY_SUB_LIST, subNames);
+        startActivity(intent);
     }
 
     // -----------Message Fragment Interface Methods-----------------

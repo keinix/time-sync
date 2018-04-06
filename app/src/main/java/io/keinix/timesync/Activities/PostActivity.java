@@ -4,10 +4,17 @@ import android.graphics.PorterDuff;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,23 +28,29 @@ public class PostActivity extends AppCompatActivity {
     @BindView(R.id.postLibraryImageButton) ImageButton libraryImageButton;
     @BindView(R.id.postBodyEditText) EditText bodyEditText;
     @BindView(R.id.postLibraryDescripTextView) TextView libraryDescripTextView;
+    @BindView(R.id.subredditSpinner) Spinner subredditSpinner;
 
-
+    public static final String TAG = PostActivity.class.getSimpleName();
     public static final String POST_TYPE_TEXT = "POST_TYPE_TEXT";
     public static final String POST_TYPE_LINK = "POST_TYPE_LINK";
     public static final String POST_TYPE_PIC = "POST_TYPE_PIC";
+    public static final String KEY_SUB_LIST = "KEY_SUB_LIST";
 
     private String postType;
+    private ArrayList<String> mSubNames;
+    private String selectedSubreddit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
         ButterKnife.bind(this);
+        mSubNames = getIntent().getStringArrayListExtra(KEY_SUB_LIST);
         postType = POST_TYPE_TEXT;
         setIconColor();
         setVisibility();
         setUpOnClick();
+        setUpSpinner();
     }
 
     public void setUpOnClick() {
@@ -97,5 +110,24 @@ public class PostActivity extends AppCompatActivity {
                 libraryImageButton.setVisibility(View.VISIBLE);
                 libraryDescripTextView.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void setUpSpinner() {
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mSubNames);
+        subredditSpinner.setAdapter(adapter);
+
+        subredditSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
+               selectedSubreddit = adapterView.getItemAtPosition(pos).toString();
+                Toast.makeText(PostActivity.this, selectedSubreddit, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 }

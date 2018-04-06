@@ -49,6 +49,7 @@ public class FeedFragment extends Fragment {
     private LinearLayoutManager mLinearLayoutManager;
     public static final String TAG = FeedFragment.class.getSimpleName();
 
+    // implemented in MainActivity and SubredditActivity
     public interface FeedItemInterface {
         //TODO: implement this in MainActivity then get a reference using getActivity()
         //TODO: put the methods in the onclickListeners
@@ -67,6 +68,8 @@ public class FeedFragment extends Fragment {
         int getPostInitVoteType();
 
         int getOriginalPostPosition();
+
+        void launchPostActivity();
     }
 
     @Nullable
@@ -128,8 +131,7 @@ public class FeedFragment extends Fragment {
 
     public void setUpFab() {
         fab.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), PostActivity.class);
-            getActivity().startActivity(intent);
+            mFeedItemInterface.launchPostActivity();
         });
     }
 
