@@ -1,8 +1,10 @@
 package io.keinix.timesync.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -21,6 +23,7 @@ import android.widget.ProgressBar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import im.ene.toro.widget.Container;
+import io.keinix.timesync.Activities.PostActivity;
 import io.keinix.timesync.MainActivity;
 import io.keinix.timesync.R;
 import io.keinix.timesync.adapters.FeedAdapter;
@@ -38,6 +41,7 @@ public class FeedFragment extends Fragment {
     @BindView(R.id.feedRecyclerView) Container feedRecyclerView;
      public @BindView(R.id.feedProgressBar) ProgressBar feedProgressBar;
      @BindView(R.id.swipeRefresh) SwipeRefreshLayout swipeRefreshLayout;
+     @BindView(R.id.postFab) FloatingActionButton fab;
 
     FeedItemInterface mFeedItemInterface;
     private FeedAdapter mFeedAdapter;
@@ -79,21 +83,9 @@ public class FeedFragment extends Fragment {
         mFeedAdapter = new FeedAdapter(mFeedItemInterface, mLinearLayoutManager, feedProgressBar);
         feedRecyclerView.setAdapter(mFeedAdapter);
         feedRecyclerView.setLayoutManager(mLinearLayoutManager);
-//        feedRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//                int lastVisibleItem = mLinearLayoutManager.findLastVisibleItemPosition();
-//
-//                if (!mLoading && mLinearLayoutManager.getItemCount() <= (lastVisibleItem + 5) && mFeedAdapter.initLoadComplete) {
-//                    Log.d(TAG, "onScrolled Activated.");
-//                    mLoading = true;
-//                    mFeedAdapter.appendRedditFeed();
-//                }
-//            }
-//        });
         feedProgressBar.setVisibility(View.VISIBLE);
         mFeedItemInterface.populateRedditFeed(mFeedAdapter);
+        setUpFab();
         swipeRefreshLayout.setOnRefreshListener(() -> {
             swipeRefreshLayout.setRefreshing(false);
             feedProgressBar.setVisibility(View.VISIBLE);
@@ -132,6 +124,13 @@ public class FeedFragment extends Fragment {
         Log.d(TAG, "FEED FRAGMENT ON RESUME");
         processVoteFromCommentSection();
         super.onResume();
+    }
+
+    public void setUpFab() {
+        fab.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), PostActivity.class);
+            getActivity().startActivity(intent);
+        });
     }
 
     private void processVoteFromCommentSection() {
