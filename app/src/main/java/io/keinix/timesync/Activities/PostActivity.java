@@ -114,14 +114,17 @@ public class PostActivity extends AppCompatActivity {
 
     public void setUpSpinner() {
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mSubNames);
+                new ArrayAdapter<>(this, R.layout.spinner_item, mSubNames);
         subredditSpinner.setAdapter(adapter);
 
         subredditSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
-               selectedSubreddit = adapterView.getItemAtPosition(pos).toString();
-                Toast.makeText(PostActivity.this, selectedSubreddit, Toast.LENGTH_SHORT).show();
+                int accentColor = ContextCompat.getColor(PostActivity.this, R.color.colorAccent);
+                selectedSubreddit = adapterView.getItemAtPosition(pos).toString();
+                ((TextView) adapterView.getChildAt(0)).setTextColor(accentColor);
+                ((TextView) adapterView.getChildAt(0)).setTextSize(20);
+                ((TextView) adapterView.getChildAt(0)).setPadding(10, 16,0,0);
             }
 
             @Override
