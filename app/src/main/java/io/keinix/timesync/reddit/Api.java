@@ -106,4 +106,14 @@ public interface Api {
 
     @GET("message/inbox")
     Call<JsonElement> getMessages(@Query("limit") String limit);
+
+    @POST("api/submit")
+    @FormUrlEncoded
+    Call<JsonElement> post(
+        @Field("kind") String kind,
+        @Field("sr") String subName,
+        @Field("title") String title,
+        @Field("text") String text,
+        @Field("url") String url
+    );
 }

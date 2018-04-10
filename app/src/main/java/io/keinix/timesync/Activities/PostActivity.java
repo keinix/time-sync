@@ -5,6 +5,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,13 +15,19 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.google.gson.JsonElement;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.timesync.R;
+import io.keinix.timesync.reddit.Api;
+import io.keinix.timesync.reddit.ApiHelper;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PostActivity extends AppCompatActivity {
 
@@ -27,6 +36,7 @@ public class PostActivity extends AppCompatActivity {
     @BindView(R.id.postPicImageButton) ImageButton picImageButton;
     @BindView(R.id.postLibraryImageButton) ImageButton libraryImageButton;
     @BindView(R.id.postBodyEditText) EditText bodyEditText;
+    @BindView(R.id.postTitleEditText) EditText postTitleEditText;
     @BindView(R.id.postLibraryDescripTextView) TextView libraryDescripTextView;
     @BindView(R.id.subredditSpinner) Spinner subredditSpinner;
 
@@ -36,6 +46,7 @@ public class PostActivity extends AppCompatActivity {
     public static final String POST_TYPE_PIC = "POST_TYPE_PIC";
     public static final String KEY_SUB_LIST = "KEY_SUB_LIST";
 
+    private Api mApi;
     private String postType;
     private ArrayList<String> mSubNames;
     private String selectedSubreddit;
@@ -47,6 +58,7 @@ public class PostActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         mSubNames = getIntent().getStringArrayListExtra(KEY_SUB_LIST);
         postType = POST_TYPE_TEXT;
+        mApi = ApiHelper.initApi(this);
         setIconColor();
         setVisibility();
         setUpOnClick();
@@ -124,7 +136,7 @@ public class PostActivity extends AppCompatActivity {
                 selectedSubreddit = adapterView.getItemAtPosition(pos).toString();
                 ((TextView) adapterView.getChildAt(0)).setTextColor(accentColor);
                 ((TextView) adapterView.getChildAt(0)).setTextSize(20);
-                ((TextView) adapterView.getChildAt(0)).setPadding(10, 16,0,0);
+                adapterView.getChildAt(0).setPadding(10, 16,0,0);
             }
 
             @Override
@@ -132,5 +144,61 @@ public class PostActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.post_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.postMenuButton:
+            submitPost();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void submitPost() {
+       String kind = null;
+       String subReddit = selectedSubreddit.substring(1);
+       String title = postTitleEditText.getText().toString();
+       String text = null;
+       String url = null;
+
+       switch (postType) {
+           case POST_TYPE_TEXT:
+               kind = "self";
+               text = bodyEditText.getText().toString();
+               break;
+           case POST_TYPE_LINK:
+               kind = "link";
+               url = bodyEditText.getText().toString();
+               break;
+       }
+
+       mApi.post(kind, subReddit, title, text, url).enqueue(new Callback<JsonElement>() {
+           @Override
+           public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+               if (response.isSuccessful()) {
+                   Log.d(TAG, "Response was successful");
+                   Log.d(TAG, "response: " +  response);
+               Log.d(TAG, "response body: " +  response.body());
+               } else {
+                   Log.d(TAG, "Response was NOT successful");
+                   Log.d(TAG, "response: " +  response);
+                   Log.d(TAG, "response body: " +  response.body());
+               }
+           }
+
+           @Override
+           public void onFailure(Call<JsonElement> call, Throwable t) {
+               Log.d(TAG, "onFail Called from Post");
+           }
+       });
     }
 }
