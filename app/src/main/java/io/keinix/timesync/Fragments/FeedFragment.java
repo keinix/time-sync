@@ -83,7 +83,7 @@ public class FeedFragment extends Fragment {
 
 
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
-        mFeedAdapter = new FeedAdapter(mFeedItemInterface, mLinearLayoutManager, feedProgressBar);
+        mFeedAdapter = new FeedAdapter(mFeedItemInterface, mLinearLayoutManager, feedProgressBar, fab);
         feedRecyclerView.setAdapter(mFeedAdapter);
         feedRecyclerView.setLayoutManager(mLinearLayoutManager);
         feedProgressBar.setVisibility(View.VISIBLE);

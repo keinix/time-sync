@@ -1,5 +1,6 @@
 package io.keinix.timesync.adapters;
 
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -45,6 +46,7 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
     private boolean isNestedScroll;
     private NestedScrollView mNestedScrollView;
     private boolean isFromSubReddit;
+    private FloatingActionButton mFab;
 
 
 
@@ -56,6 +58,18 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
         mLocalVoteTracker = Collections.synchronizedMap(new HashMap<>());
         mAfter = "";
     }
+
+    public FeedAdapter(FeedItemInterface feedItemInterface, LinearLayoutManager linearLayoutManager,
+                       ProgressBar progressBar, FloatingActionButton fab) {
+        isNestedScroll = false;
+        mFeedItemInterface = feedItemInterface;
+        mLinearLayoutManager = linearLayoutManager;
+        mProgressBar = progressBar;
+        mLocalVoteTracker = Collections.synchronizedMap(new HashMap<>());
+        mAfter = "";
+        mFab = fab;
+    }
+
     public FeedAdapter(FeedItemInterface feedItemInterface, LinearLayoutManager linearLayoutManager,
                        ProgressBar progressBar, NestedScrollView nestedScrollView) {
         isNestedScroll = true;
@@ -166,6 +180,14 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+
+                if (mFab != null) {
+                    if (dy > 0) {
+                        mFab.hide();
+                    } else if (dy < 0 ) {
+                        mFab.show();
+                    }
+                }
                 int lastVisibleItem = mLinearLayoutManager.findLastVisibleItemPosition();
 
                 if (!mLoading && mLinearLayoutManager.getItemCount() <= (lastVisibleItem + 5) && initLoadComplete) {
