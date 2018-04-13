@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.JsonElement;
 
@@ -109,11 +110,13 @@ public class PostActivity extends AppCompatActivity {
         switch (postType) {
             case POST_TYPE_TEXT:
                 bodyEditText.setVisibility(View.VISIBLE);
+                bodyEditText.setHint("Post Body...");
                 libraryImageButton.setVisibility(View.INVISIBLE);
                 libraryDescripTextView.setVisibility(View.INVISIBLE);
                 break;
             case POST_TYPE_LINK:
                 bodyEditText.setVisibility(View.VISIBLE);
+                bodyEditText.setHint("Url...");
                 libraryImageButton.setVisibility(View.INVISIBLE);
                 libraryDescripTextView.setVisibility(View.INVISIBLE);
                 break;
@@ -165,7 +168,7 @@ public class PostActivity extends AppCompatActivity {
 
     private void submitPost() {
        String kind = null;
-       String subReddit = selectedSubreddit.substring(1);
+       String subReddit = selectedSubreddit;
        String title = postTitleEditText.getText().toString();
        String text = null;
        String url = null;
@@ -185,14 +188,10 @@ public class PostActivity extends AppCompatActivity {
            @Override
            public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                if (response.isSuccessful()) {
-                   Log.d(TAG, "Response was successful");
-                   Log.d(TAG, "response: " +  response);
-               Log.d(TAG, "response body: " +  response.body());
-               } else {
-                   Log.d(TAG, "Response was NOT successful");
-                   Log.d(TAG, "response: " +  response);
-                   Log.d(TAG, "response body: " +  response.body());
+                   Toast.makeText(PostActivity.this, "Posted", Toast.LENGTH_SHORT).show();
+                   finish();
                }
+
            }
 
            @Override

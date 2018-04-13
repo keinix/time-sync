@@ -15,6 +15,8 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.timesync.R;
+import io.keinix.timesync.reddit.Api;
+import io.keinix.timesync.reddit.ApiHelper;
 import io.keinix.timesync.reddit.ItemDetailsHelper;
 import io.keinix.timesync.utils.MarkDownParser;
 
@@ -34,6 +36,9 @@ public class ReplyActivity extends AppCompatActivity {
     public static final String KEY_PARENT_ID = "KEY_PARENT_ID";
     public static final int REQUEST_CODE = 102;
 
+    // reply to a message
+    public static final String KEY_MESSAGE_TYPE = "KEY_MESSAGE_TYPE";
+
     private String mAuthor;
     private String mBody;
     private String mParentId;
@@ -41,6 +46,7 @@ public class ReplyActivity extends AppCompatActivity {
     private int mPosition;
     private int mReplyDepth;
     private boolean mIsReplyToOp;
+    private boolean mIsMessageReply;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +54,23 @@ public class ReplyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_reply);
         getSupportActionBar().setHomeButtonEnabled(true);
         ButterKnife.bind(this);
-        unPackIntent();
+        // submitted form MessagesAdapter
+        mIsMessageReply = getIntent().getBooleanExtra(KEY_MESSAGE_TYPE, false);
+        if (mIsMessageReply) {
+            unPackIntentFromMessage();
+        } else {
+            unPackIntent();
+        }
         bindView();
+    }
+
+    private void unPackIntentFromMessage() {
+        Intent intent = getIntent();
+        mAuthor = intent.getStringExtra(KEY_AUTHOR);
+        mBody = intent.getStringExtra(KEY_BODY);
+        mCreatedUtc = intent.getLongExtra(KEY_CREATED_UTC, 0);
+        mParentId = intent.getStringExtra(KEY_PARENT_ID);
+        mIsReplyToOp = intent.getBooleanExtra(KEY_IS_REPLY_TO_OP, false);
     }
 
     public void unPackIntent() {
@@ -101,5 +122,9 @@ public class ReplyActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void replyToMessage() {
+        Api api = ApiHelper.initApi(this);
     }
 }

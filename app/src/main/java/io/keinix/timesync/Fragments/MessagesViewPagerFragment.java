@@ -59,7 +59,7 @@ public class MessagesViewPagerFragment extends Fragment {
 
     private void setUpViewpagerTabs() {
         mTabLayout.setupWithViewPager(mViewPager);
-        mTabLayout.getTabAt(0).setText("Messages");
-        mTabLayout.getTabAt(1).setText("Notifications");
+        mTabLayout.getTabAt(0).setText("Notifications");
+        mTabLayout.getTabAt(1).setText("Messages");
     }
 }

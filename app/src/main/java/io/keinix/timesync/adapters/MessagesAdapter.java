@@ -1,6 +1,7 @@
 package io.keinix.timesync.adapters;
 
 import android.content.ClipData;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.view.LayoutInflater;
@@ -15,6 +16,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import io.keinix.timesync.Activities.ReplyActivity;
 import io.keinix.timesync.Fragments.MessagesFragment;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.ItemDetailsHelper;
@@ -66,8 +69,10 @@ public class MessagesAdapter extends Adapter {
         @BindView(R.id.messageMiddleTextView) TextView middleTextView;
         @BindView(R.id.messageBottomTextView) TextView bottomTextView;
 
+        private Message mMessage;
 
-        public MessagesViewHolder(View itemView) {
+
+        public MessagesViewHolder(View itemView)  {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
@@ -81,22 +86,22 @@ public class MessagesAdapter extends Adapter {
         }
 
         public void bindNotification(int position) {
-            Message message = mMessages.get(position);
-            String capSubject = message.getSubject().substring(0,1).toUpperCase() +
-                    message.getSubject().substring(1);
+            mMessage = mMessages.get(position);
+            String capSubject = mMessage.getSubject().substring(0,1).toUpperCase() +
+                    mMessage.getSubject().substring(1);
             String bottomText =  capSubject + " \u2022 " +
-                    ItemDetailsHelper.getTimeWithUnit(message.getCreatedUtc());
-            topTextView.setText(getNoticicationText(message));
-            middleTextView.setText(message.getBody());
+                    ItemDetailsHelper.getTimeWithUnit(mMessage.getCreatedUtc());
+            topTextView.setText(getNoticicationText(mMessage));
+            middleTextView.setText(mMessage.getBody());
             bottomTextView.setText(bottomText);
         }
 
         public void bindMessage(int position) {
-            Message message = mMessages.get(position);
-            String bottomText = message.getAuthor() + " \u2022 " +
-                    ItemDetailsHelper.getTimeWithUnit(message.getCreatedUtc());
-            topTextView.setText(message.getSubject());
-            middleTextView.setText(message.getBody());
+            mMessage = mMessages.get(position);
+            String bottomText = mMessage.getAuthor() + " \u2022 " +
+                    ItemDetailsHelper.getTimeWithUnit(mMessage.getCreatedUtc());
+            topTextView.setText(mMessage.getSubject());
+            middleTextView.setText(mMessage.getBody());
             bottomTextView.setText(bottomText);
         }
 
@@ -118,6 +123,24 @@ public class MessagesAdapter extends Adapter {
 
         @Override
         public void onClick(View view) {
+            if (mIsNotification) {
+                messageOnClick();
+            } else {
+                notificationOnClick();
+            }
+        }
+
+        private void messageOnClick() {
+            Intent intent = new Intent(mMessagesInterface.getContext(), ReplyActivity.class);
+            intent.putExtra(ReplyActivity.KEY_MESSAGE_TYPE, true);
+            intent.putExtra(ReplyActivity.KEY_PARENT_ID, mMessage.getName());
+            intent.putExtra(ReplyActivity.KEY_BODY, mMessage.getBody());
+            intent.putExtra(ReplyActivity.KEY_AUTHOR, mMessage.getAuthor());
+            intent.putExtra(ReplyActivity.KEY_CREATED_UTC, mMessage.getCreatedUtc());
+            mMessagesInterface.getContext().startActivity(intent);
+        }
+
+        private void notificationOnClick() {
 
         }
 
