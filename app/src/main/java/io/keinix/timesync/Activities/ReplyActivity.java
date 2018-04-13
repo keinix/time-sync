@@ -12,6 +12,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonObject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.timesync.R;
@@ -19,6 +21,9 @@ import io.keinix.timesync.reddit.Api;
 import io.keinix.timesync.reddit.ApiHelper;
 import io.keinix.timesync.reddit.ItemDetailsHelper;
 import io.keinix.timesync.utils.MarkDownParser;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ReplyActivity extends AppCompatActivity {
 
@@ -110,21 +115,41 @@ public class ReplyActivity extends AppCompatActivity {
                 if (cm.getActiveNetwork() == null) {
                     Toast.makeText(this, "No Network Connection", Toast.LENGTH_SHORT).show();
                 } else {
-                    Intent intent = new Intent();
-                    intent.putExtra(KEY_REPLY_BODY, replyEditText.getText().toString());
-                    intent.putExtra(KEY_POSITION, mPosition);
-                    intent.putExtra(KEY_DEPTH, mReplyDepth);
-                    intent.putExtra(KEY_PARENT_ID, mParentId);
-                    intent.putExtra(KEY_IS_REPLY_TO_OP, mIsReplyToOp);
-                    setResult(RESULT_OK, intent);
-                    finish();
+                    if (mIsMessageReply) {
+                        replyToMessage();
+                    } else {
+                        replyToAComment();
+                    }
                 }
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    public void replyToAComment() {
+        Intent intent = new Intent();
+        intent.putExtra(KEY_REPLY_BODY, replyEditText.getText().toString());
+        intent.putExtra(KEY_POSITION, mPosition);
+        intent.putExtra(KEY_DEPTH, mReplyDepth);
+        intent.putExtra(KEY_PARENT_ID, mParentId);
+        intent.putExtra(KEY_IS_REPLY_TO_OP, mIsReplyToOp);
+        setResult(RESULT_OK, intent);
+        finish();
+    }
+
     public void replyToMessage() {
         Api api = ApiHelper.initApi(this);
+        api.comment(mParentId, replyEditText.getText().toString()).enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                Toast.makeText(ReplyActivity.this, "replied", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Toast.makeText(ReplyActivity.this, "there was a problem :(", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
