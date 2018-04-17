@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.keinix.timesync.Activities.CommentsActivity;
 import io.keinix.timesync.Activities.ReplyActivity;
 import io.keinix.timesync.Fragments.MessagesFragment;
 import io.keinix.timesync.R;
@@ -24,6 +26,8 @@ import io.keinix.timesync.reddit.ItemDetailsHelper;
 import io.keinix.timesync.reddit.model.Message;
 
 public class MessagesAdapter extends Adapter {
+
+    public static final String TAG = MessagesAdapter.class.getSimpleName();
     private MessagesFragment.MessagesInterface mMessagesInterface;
     private List<Message> mMessages;
     private boolean mIsNotification;
@@ -75,6 +79,7 @@ public class MessagesAdapter extends Adapter {
         public MessagesViewHolder(View itemView)  {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
         }
 
         public void bindView(int position) {
@@ -123,14 +128,16 @@ public class MessagesAdapter extends Adapter {
 
         @Override
         public void onClick(View view) {
+            Log.d(TAG, "onClick");
             if (mIsNotification) {
-                messageOnClick();
-            } else {
                 notificationOnClick();
+            } else {
+                messageOnClick();
             }
         }
 
         private void messageOnClick() {
+            Log.d(TAG, "messageOnClick");
             Intent intent = new Intent(mMessagesInterface.getContext(), ReplyActivity.class);
             intent.putExtra(ReplyActivity.KEY_MESSAGE_TYPE, true);
             intent.putExtra(ReplyActivity.KEY_PARENT_ID, mMessage.getName());
@@ -141,7 +148,8 @@ public class MessagesAdapter extends Adapter {
         }
 
         private void notificationOnClick() {
-
+            Intent intent = new Intent(mMessagesInterface.getContext(), CommentsActivity.class);
+            intent.putExtra(CommentsActivity.KEY_INIT_VOTE_TYPE, ItemDetailsHelper.parseVoteType())
         }
 
     }

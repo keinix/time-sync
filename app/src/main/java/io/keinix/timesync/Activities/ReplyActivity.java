@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
+
+import java.time.LocalDate;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,6 +29,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ReplyActivity extends AppCompatActivity {
+
+    public static final String TAG = ReplyActivity.class.getSimpleName();
 
     @BindView(R.id.replyBodyTextView) TextView bodyTextView;
     @BindView(R.id.replyAuthorTextView) TextView authorTextView;
@@ -143,6 +148,9 @@ public class ReplyActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 Toast.makeText(ReplyActivity.this, "replied", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "Response: " + response);
+                Log.d(TAG, "Response body : " + response.body());
+
                 finish();
             }
 

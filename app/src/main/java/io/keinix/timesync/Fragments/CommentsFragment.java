@@ -184,7 +184,6 @@ public class CommentsFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mAdapter = new CommentsAdapter(mCommentsInterface, mcommentsProgressBar, this);
         mCommentsRecyclerView.setAdapter(mAdapter);
-
         mCommentsRecyclerView.setLayoutManager(mLayoutManager);
     }
 
