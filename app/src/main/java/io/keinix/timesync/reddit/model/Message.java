@@ -1,5 +1,7 @@
 package io.keinix.timesync.reddit.model;
 
+import android.view.ViewDebug;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -38,6 +40,18 @@ public class Message {
     @SerializedName("created_utc")
     @Expose
     private long createdUtc;
+
+    @SerializedName("context")
+    @Expose
+    private String contextUrl;
+
+    public String getContextUrl() {
+        return contextUrl;
+    }
+
+    public void setContextUrl(String contextUrl) {
+        this.contextUrl = contextUrl;
+    }
 
     public String getSubject() {
         return subject;

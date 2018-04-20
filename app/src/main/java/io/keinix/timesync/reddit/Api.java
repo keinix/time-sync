@@ -116,4 +116,9 @@ public interface Api {
         @Field("text") String text,
         @Field("url") String url
     );
+
+    @GET("{context}" )
+    Call<JsonElement> getPostfromMessage(
+        @Path(value = ("context"), encoded = true) String context
+    );
 }
