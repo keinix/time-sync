@@ -43,6 +43,12 @@ public class FeedFragment extends Fragment {
      @BindView(R.id.swipeRefresh) SwipeRefreshLayout swipeRefreshLayout;
      @BindView(R.id.postFab) FloatingActionButton fab;
 
+     public static final String KEY_FEED_TYPE = "KEY_FEED_TYPE";
+     public static final String VALUE_FEED_TYPE_MAIN = "VALUE_FEED_TYPE_MAIN";
+     public static final String VALUE_FEED_TYPE_UPVOTED = "VALUE_FEED_TYPE_UPVOTED";
+     public static final String VALUE_FEED_TYPE_SAVED = "VALUE_FEED_TYPE_SAVED";
+     public static final String VALUE_FEED_TYPE_POSTS = "VALUE_FEED_TYPE_POSTS";
+
     FeedItemInterface mFeedItemInterface;
     private FeedAdapter mFeedAdapter;
     private boolean mLoading;
