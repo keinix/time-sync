@@ -118,7 +118,7 @@ public class SubredditActivity extends AppCompatActivity implements FeedFragment
         mAdapter.setFromSubReddit(true);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(linearLayoutManager);
-        populateRedditFeed(mAdapter);
+        populateRedditFeed(mAdapter, "");
     }
 
     public void initApi() {
@@ -234,7 +234,7 @@ public class SubredditActivity extends AppCompatActivity implements FeedFragment
 
     //TODO: put the sub Api call here and some boolean to trigger a different response
     @Override
-    public void populateRedditFeed(FeedAdapter adapter) {
+    public void populateRedditFeed(FeedAdapter adapter, String feedType) {
         Log.d(TAG, "REFRESH TRIGGERED");
         mApi.getSubRedditFeed(mSubReddit.getDisplayNamePrefixed()).enqueue(adapter);
     }

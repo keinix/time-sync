@@ -1,5 +1,7 @@
 package io.keinix.timesync.Fragments;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -32,6 +34,7 @@ import io.keinix.timesync.MainActivity;
 import io.keinix.timesync.R;
 import io.keinix.timesync.adapters.FeedAdapter;
 import io.keinix.timesync.reddit.Api;
+import io.keinix.timesync.reddit.RedditConstants;
 import io.keinix.timesync.reddit.RedditVoteHelper;
 import io.keinix.timesync.reddit.model.Data_;
 import io.keinix.timesync.reddit.model.RedditFeed;
@@ -59,9 +62,9 @@ public class FeedFragment extends Fragment {
 
     FeedItemInterface mFeedItemInterface;
     private FeedAdapter mFeedAdapter;
-    private boolean mLoading;
     private LinearLayoutManager mLinearLayoutManager;
     public static final String TAG = FeedFragment.class.getSimpleName();
+    private String mFeedType;
 
     // implemented in MainActivity and SubredditActivity
     public interface FeedItemInterface {
@@ -69,7 +72,7 @@ public class FeedFragment extends Fragment {
         //TODO: put the methods in the onclickListeners
         Call<VoteResult> vote(String id, String voteType);
 
-        void populateRedditFeed(FeedAdapter adapter);
+        void populateRedditFeed(FeedAdapter adapter, String feedType);
 
         Call<RedditFeed> appendFeed(String after);
 
@@ -92,6 +95,12 @@ public class FeedFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_feed, container, false);
         ButterKnife.bind(this, view);
         mFeedItemInterface = (FeedItemInterface) getActivity();
+        if (getArguments() != null) {
+            mFeedType = getArguments().getString(KEY_FEED_TYPE);
+        } else {
+            mFeedType = VALUE_FEED_TYPE_MAIN;
+        }
+        checkUserName();
         getActivity().setTitle("RedditFeed");
         setHasOptionsMenu(true);
 
@@ -101,23 +110,26 @@ public class FeedFragment extends Fragment {
         feedRecyclerView.setAdapter(mFeedAdapter);
         feedRecyclerView.setLayoutManager(mLinearLayoutManager);
         feedProgressBar.setVisibility(View.VISIBLE);
-        mFeedItemInterface.populateRedditFeed(mFeedAdapter);
+        mFeedItemInterface.populateRedditFeed(mFeedAdapter, mFeedType);
         setUpFab();
-        checkUserName();
         swipeRefreshLayout.setOnRefreshListener(() -> {
             swipeRefreshLayout.setRefreshing(false);
             feedProgressBar.setVisibility(View.VISIBLE);
-            mFeedItemInterface.populateRedditFeed(mFeedAdapter);
+            mFeedItemInterface.populateRedditFeed(mFeedAdapter, mFeedType);
         });
         return view;
     }
 
     public void checkUserName() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mFeedItemInterface.getContext());
-        String username = prefs.getString(KEY_USER_NAME, KEY_NO_USER_NAME);
-        Log.d(TAG, "username from Prefs: " + username);
-        if (username.equals(KEY_NO_USER_NAME)) {
-            getUserName(prefs.edit());
+        AccountManager am = AccountManager.get(mFeedItemInterface.getContext());
+        Account[] accounts = am.getAccountsByType(RedditConstants.ACCOUNT_TYPE);
+        if (accounts.length > 0) {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mFeedItemInterface.getContext());
+            String username = prefs.getString(KEY_USER_NAME, KEY_NO_USER_NAME);
+            Log.d(TAG, "username from Prefs: " + username);
+            if (username.equals(KEY_NO_USER_NAME)) {
+                getUserName(prefs.edit());
+            }
         }
     }
 
@@ -138,13 +150,6 @@ public class FeedFragment extends Fragment {
         });
     }
 
-
-
-
-    public void setLoaded() {
-        mLoading = false;
-    }
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.feed_menu, menu);
@@ -157,7 +162,7 @@ public class FeedFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.refreshFeedMenu:
                 feedProgressBar.setVisibility(View.VISIBLE);
-                mFeedItemInterface.populateRedditFeed(mFeedAdapter);
+                mFeedItemInterface.populateRedditFeed(mFeedAdapter, mFeedType);
                 break;
         }
         return super.onOptionsItemSelected(item);

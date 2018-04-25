@@ -4,15 +4,13 @@ import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.PersistableBundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -28,7 +26,6 @@ import butterknife.ButterKnife;
 import io.keinix.timesync.Activities.AddAccountActivity;
 import io.keinix.timesync.Activities.CommentsActivity;
 import io.keinix.timesync.Activities.PostActivity;
-import io.keinix.timesync.Fragments.CommentsFragment;
 import io.keinix.timesync.Fragments.FeedFragment;
 import io.keinix.timesync.Fragments.MessagesFragment;
 import io.keinix.timesync.Fragments.SubredditNavigationFragment;
@@ -54,14 +51,13 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
         MessagesFragment.MessagesInterface {
 
     public static final String TAG = MainActivity.class.getSimpleName();
-    public static final String TAG_FEED_FRAGMENT = "TAG_FEED_FRAGMENT";
-    public static final String TAG_MESSAGES_FRAGMENT = "TAG_MESSAGES_FRAGMENT";
-    public static final String TAB_ACCOUNT_FRAGMENT = "TAB_ACCOUNT_FRAGMENT";
     public static final String TAG_VIEW_PAGER_FRAGMENT = "TAG_VIEW_PAGER_FRAGMENT";
-    public static final String TAG_SUB_REDDIT_FRAGMENT = "TAG_SUB_REDDIT_FRAGMENT";
-    public static final String TAG_COMMENTS_FRAGMENT = "TAG_COMMENTS_NORMAL_FRAGMENT";
     public static final String TAG_NAVIGATION_FRAGMENT = "TAG_NAVIGATION_FRAGMENT";
-    public static final String EXTRA_REDDIT_TOKEN = "EXTRA_REDDIT_TOKEN";
+
+    // used to call Api.getPersonal()
+    public static final String REDDIT_FEED_TYPE_UPVATED = "upvoted";
+    public static final String REDDIT_FEED_TYPE_SAVED = "saved";
+    public static final String REDDIT_FEED_TYPE_SUBMITTED = "submitted";
 
     public static final int NULL_RESULT = 4;
 
@@ -160,12 +156,30 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
         return mApi.vote(voteType, id);
     }
 
-
     @Override
-    public void populateRedditFeed(FeedAdapter adapter) {
-        Log.d(TAG, "REFRESH TRIGGERED");
-            mApi.getFeed().enqueue(adapter);
+    public void populateRedditFeed(FeedAdapter adapter, String feedType) {
+        String username = "";
+        if (!feedType.equals(FeedFragment.VALUE_FEED_TYPE_MAIN)) {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            username = prefs.getString(FeedFragment.KEY_USER_NAME, FeedFragment.KEY_NO_USER_NAME);
+        }
+
+        switch (feedType) {
+            case FeedFragment.VALUE_FEED_TYPE_MAIN:
+                mApi.getFeed().enqueue(adapter);
+                break;
+            case FeedFragment.VALUE_FEED_TYPE_POSTS:
+                mApi.getPersonal(username, REDDIT_FEED_TYPE_SUBMITTED).enqueue(adapter);
+                break;
+            case FeedFragment.VALUE_FEED_TYPE_SAVED:
+                mApi.getPersonal(username, REDDIT_FEED_TYPE_SAVED).enqueue(adapter);
+                break;
+            case FeedFragment.VALUE_FEED_TYPE_UPVOTED:
+                mApi.getPersonal(username, REDDIT_FEED_TYPE_UPVATED).enqueue(adapter);
+                break;
+        }
     }
+
 
     @Override
     public Call<RedditFeed> appendFeed(String after) {

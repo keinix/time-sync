@@ -122,8 +122,9 @@ public interface Api {
         @Path(value = ("context"), encoded = true) String context
     );
 
-    @GET("user/{username}/upvoted")
-    Call<RedditFeed> getUpvoted(
-      @Path("username") String username
+    @GET("user/{username}/{type}")
+    Call<RedditFeed> getPersonal(
+      @Path("username") String username,
+      @Path("type") String type
     );
 }

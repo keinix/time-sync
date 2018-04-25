@@ -27,9 +27,12 @@ public abstract class ItemDetailsHelper {
     }
 
     public static String getPostDetails(Data_ post) {
-        String domain = post.getDomain();
-        if (domain.startsWith("self")) {
-            domain = "self";
+        String domain = "";
+        if (post.getDomain() != null) {
+             domain = post.getDomain();
+            if (domain.startsWith("self")) {
+                domain = "self";
+            }
         }
         return post.getSubredditNamePrefixed() +
                 " \u2022 " + getTimeSincePosted(post.getCreatedUtc()) + "h" + " \u2022 " +

@@ -30,26 +30,31 @@ public class AccountViewPagerFragment extends Fragment {
     }
 
     public void setUpViewPager() {
-        Bundle args = new Bundle();
+        Bundle argsUpVoted = new Bundle();
+        Bundle argsSaved = new Bundle();
+        Bundle argsPosts = new Bundle();
+
         FeedFragment upVotesFragment = new FeedFragment();
+        argsUpVoted.putString(FeedFragment.KEY_FEED_TYPE, FeedFragment.VALUE_FEED_TYPE_UPVOTED);
+        upVotesFragment.setArguments(argsUpVoted);
+
         FeedFragment savedFragment = new FeedFragment();
+        argsSaved.putString(FeedFragment.KEY_FEED_TYPE, FeedFragment.VALUE_FEED_TYPE_SAVED);
+        savedFragment.setArguments(argsSaved);
+
         FeedFragment postsFragment = new FeedFragment();
+        argsPosts.putString(FeedFragment.KEY_FEED_TYPE, FeedFragment.VALUE_FEED_TYPE_POSTS);
+        postsFragment.setArguments(argsPosts);
 
         mViewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
             @Override
             public android.support.v4.app.Fragment getItem(int position) {
                 switch (position) {
                     case 0:
-                        args.putString(FeedFragment.KEY_FEED_TYPE, FeedFragment.VALUE_FEED_TYPE_UPVOTED);
-                        upVotesFragment.setArguments(args);
                         return upVotesFragment;
                     case 1:
-                        args.putString(FeedFragment.KEY_FEED_TYPE, FeedFragment.VALUE_FEED_TYPE_SAVED);
-                        savedFragment.setArguments(args);
                         return savedFragment;
                     default:
-                        args.putString(FeedFragment.KEY_FEED_TYPE, FeedFragment.VALUE_FEED_TYPE_POSTS);
-                        postsFragment.setArguments(args);
                         return postsFragment;
                 }
             }
