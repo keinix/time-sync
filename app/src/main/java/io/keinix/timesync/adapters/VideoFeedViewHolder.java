@@ -53,6 +53,10 @@ public class VideoFeedViewHolder extends BaseFeedViewHolder implements ToroPlaye
                     + timeSincePosted + "h";
 
             Intent intent = new Intent(mFeedItemInterface.getContext(), CommentsActivity.class);
+            String selfText = post.getSelfText() != null ? post.getSelfText() : "";
+            selfText = (selfText.length() == 0 && post.getBody() != null) ? post.getBody() : selfText;
+
+            intent.putExtra(CommentsActivity.KEY_SELF_TEXT, selfText);
             intent.putExtra(CommentsActivity.KEY_COMMENTS_LAYOUT_TYPE, CommentsActivity.VALUE_VIDEO_COMMENTS_LAYOUT);
             intent.putExtra(CommentsActivity.KEY_VIDEO_URI, mVideoUri.toString());
             intent.putExtra(CommentsActivity.KEY_POST_SUBREDDIT, post.getSubredditNamePrefixed());
