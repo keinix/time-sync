@@ -2,7 +2,9 @@ package io.keinix.timesync.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -20,6 +22,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.google.gson.JsonObject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import im.ene.toro.widget.Container;
@@ -34,6 +38,8 @@ import io.keinix.timesync.reddit.model.RedditFeed;
 import io.keinix.timesync.reddit.model.SubReddit;
 import io.keinix.timesync.reddit.model.VoteResult;
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class FeedFragment extends Fragment {
@@ -48,6 +54,8 @@ public class FeedFragment extends Fragment {
      public static final String VALUE_FEED_TYPE_UPVOTED = "VALUE_FEED_TYPE_UPVOTED";
      public static final String VALUE_FEED_TYPE_SAVED = "VALUE_FEED_TYPE_SAVED";
      public static final String VALUE_FEED_TYPE_POSTS = "VALUE_FEED_TYPE_POSTS";
+     public static final String KEY_USER_NAME = "KEY_USER_NAME";
+     public static final String KEY_NO_USER_NAME = "KEY_NO_USER_NAME";
 
     FeedItemInterface mFeedItemInterface;
     private FeedAdapter mFeedAdapter;
@@ -95,12 +103,39 @@ public class FeedFragment extends Fragment {
         feedProgressBar.setVisibility(View.VISIBLE);
         mFeedItemInterface.populateRedditFeed(mFeedAdapter);
         setUpFab();
+        checkUserName();
         swipeRefreshLayout.setOnRefreshListener(() -> {
             swipeRefreshLayout.setRefreshing(false);
             feedProgressBar.setVisibility(View.VISIBLE);
             mFeedItemInterface.populateRedditFeed(mFeedAdapter);
         });
         return view;
+    }
+
+    public void checkUserName() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mFeedItemInterface.getContext());
+        String username = prefs.getString(KEY_USER_NAME, KEY_NO_USER_NAME);
+        Log.d(TAG, "username from Prefs: " + username);
+        if (username.equals(KEY_NO_USER_NAME)) {
+            getUserName(prefs.edit());
+        }
+    }
+
+    public void getUserName(SharedPreferences.Editor editor) {
+        mFeedItemInterface.getApi().getUsername().enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                String userNamePrefixed = response.body().getAsJsonObject("subreddit")
+                        .getAsJsonPrimitive("display_name_prefixed").getAsString();
+                editor.putString(KEY_USER_NAME, userNamePrefixed.substring(2));
+                editor.apply();
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+            }
+        });
     }
 
 

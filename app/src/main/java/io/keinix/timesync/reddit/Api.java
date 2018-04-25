@@ -117,8 +117,13 @@ public interface Api {
         @Field("url") String url
     );
 
-    @GET("{context}" )
+    @GET("{context}")
     Call<JsonElement> getPostfromMessage(
         @Path(value = ("context"), encoded = true) String context
+    );
+
+    @GET("user/{username}/upvoted")
+    Call<RedditFeed> getUpvoted(
+      @Path("username") String username
     );
 }

@@ -31,11 +31,8 @@ public class AccountViewPagerFragment extends Fragment {
 
     public void setUpViewPager() {
         Bundle args = new Bundle();
-
         FeedFragment upVotesFragment = new FeedFragment();
-
         FeedFragment savedFragment = new FeedFragment();
-
         FeedFragment postsFragment = new FeedFragment();
 
         mViewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
