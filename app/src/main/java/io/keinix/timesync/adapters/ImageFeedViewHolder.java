@@ -101,6 +101,11 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
             intent.putExtra(CommentsActivity.KEY_COMMENTS_LAYOUT_TYPE, CommentsActivity.VALUE_IMAGE_COMMENTS_LAYOUT);
         }
 
+        String selfText = post.getSelfText() != null ? post.getSelfText() : "";
+        selfText = (selfText.length() == 0 && post.getBody() != null) ? post.getBody() : selfText;
+        Log.d(TAG, "self Text Before comments: " + selfText);
+
+        intent.putExtra(CommentsActivity.KEY_SELF_TEXT, selfText);
         intent.putExtra(CommentsActivity.KEY_INIT_VOTE_TYPE, mBaseRedditVoteHelper.getVoteStatus());
         intent.putExtra(CommentsActivity.KEY_POST_SUBREDDIT, post.getSubredditNamePrefixed());
         intent.putExtra(CommentsActivity.KEY_VOTE_TYPE, ItemDetailsHelper.parseVoteType(post.isLiked()));
@@ -179,24 +184,6 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
         });
 
         return popUpView;
-    }
-
-    private void setPoPUpVoteColor(String id) {
-        if (mAdapter.mLocalVoteTracker.get(id) != null) {
-            if (mAdapter.mLocalVoteTracker.get(id).equals(VALUE_UPVOTED)) {
-                mPopUpUpVoteImageButton.getDrawable().setColorFilter(mUpVoteColor, PorterDuff.Mode.MULTIPLY);
-                mPopUpVoteCountTextView.setTextColor(mUpVoteColor);
-                mPopUpDownVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
-            } else {
-                mPopUpDownVoteImageButton.getDrawable().setColorFilter(mDownVoteColor, PorterDuff.Mode.MULTIPLY);
-                mPopUpVoteCountTextView.setTextColor(mDownVoteColor);
-                mPopUpDownVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
-            }
-        } else {
-            mPopUpUpVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
-            mPopUpDownVoteImageButton.setColorFilter(mColorWhite, PorterDuff.Mode.MULTIPLY);
-            mPopUpVoteCountTextView.setTextColor(mDefaultCountTextColor);
-        }
     }
 
     private void setPostImage(Data_ post, SimpleDraweeView imageView) {

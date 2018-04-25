@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/colorPrimary">
 
     <android.support.v4.widget.NestedScrollView
@@ -53,11 +54,27 @@
                     android:layout_marginLeft="8dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
-                    android:text="Check out this super interesting post title"
+                    android:text="Check out this super interesting post title "
                     android:textColor="@android:color/white"
                     android:textSize="19sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/postDraweeView"/>
+
+                <TextView
+                    android:id="@+id/imageSelfTextTextView"
+                    tools:text="This is text meant to test the body of the text view lets see if this auto centers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginStart="8dp"
+                    android:textColor="@color/colorCountText"
+                    android:textSize="15sp"
+                    android:paddingLeft="8dp"
+                    fresco:layout_constraintEnd_toEndOf="parent"
+                    fresco:layout_constraintStart_toStartOf="parent"
+                    fresco:layout_constraintTop_toBottomOf="@+id/commentsPostTitle"/>
 
                 <TextView
                     android:id="@+id/commentsSubRedditName"
@@ -84,7 +101,7 @@
                     android:text="u/keinix  \u2022  8hr \u2022 grc.com"
                     android:textColor="@color/colorAccent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/commentsPostTitle"/>
+                    app:layout_constraintTop_toBottomOf="@+id/imageSelfTextTextView"/>
 
                 <ImageButton
                     android:id="@+id/commentPostUpVote"
@@ -97,7 +114,7 @@
                     android:src="@drawable/ic_arrow_upward_white_24dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/commentPostVoteCount"
-                    app:layout_constraintTop_toBottomOf="@+id/commentsPostTitle"/>
+                    app:layout_constraintTop_toBottomOf="@+id/imageSelfTextTextView"/>
 
                 <TextView
                     android:id="@+id/commentPostVoteCount"
@@ -110,7 +127,7 @@
                     android:textColor="@android:color/white"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/commentPostDownVote"
-                    app:layout_constraintTop_toBottomOf="@+id/commentsPostTitle"/>
+                    app:layout_constraintTop_toBottomOf="@+id/imageSelfTextTextView"/>
 
                 <ImageButton
                     android:id="@+id/commentPostDownVote"
@@ -124,7 +141,7 @@
                     android:src="@drawable/ic_arrow_downward_white_24dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/commentsPostTitle"/>
+                    app:layout_constraintTop_toBottomOf="@+id/imageSelfTextTextView"/>
 
             </android.support.constraint.ConstraintLayout>
 

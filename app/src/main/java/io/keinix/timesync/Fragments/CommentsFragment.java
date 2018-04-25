@@ -42,6 +42,7 @@ import io.keinix.timesync.reddit.Api;
 import io.keinix.timesync.reddit.RedditVoteHelper;
 import io.keinix.timesync.reddit.model.comment.Comment;
 import io.keinix.timesync.utils.CopyUtil;
+import io.keinix.timesync.utils.MarkDownParser;
 import io.keinix.timesync.views.WrapContentDraweeView;
 import retrofit2.Call;
 
@@ -67,6 +68,7 @@ public class CommentsFragment extends Fragment {
     @Nullable @BindView(R.id.commentText) TextView mCommentText;
     @Nullable @BindView(R.id.commentsPostTitle) TextView mCommentsPostTitle;
     @Nullable @BindView(R.id.postGifDraweeView) SimpleDraweeView mPostGifDraweeView;
+    @Nullable @BindView(R.id.imageSelfTextTextView) TextView imageSelfTextTextView;
 
     @BindView(R.id.commentsNestScrollView) NestedScrollView mCommentsNextScrollView;
     @BindView(R.id.commentPostVoteCount) TextView mVoteCountTextView;
@@ -167,6 +169,12 @@ public class CommentsFragment extends Fragment {
     }
 
     protected void bindCommentsView() {
+        if (mSelfText.length() >= 1) {
+            imageSelfTextTextView.setVisibility(View.VISIBLE);
+            MarkDownParser.parse(mCommentsInterface.getContext(), imageSelfTextTextView, mSelfText);
+        } else {
+            imageSelfTextTextView.setVisibility(View.INVISIBLE);
+        }
         mCommentsPostDetails.setText(mPostDetails);
         mCommentsPostTitle.setText(mPostTitle);
         mCommentsSubreddit.setText(mPostSubreddit);

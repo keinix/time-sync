@@ -155,6 +155,18 @@ public class Data_ {
     @Expose
     private List<Data_> crossLinks;
 
+    @SerializedName("body")
+    @Expose
+    private String body;
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
     public Boolean getLiked() {
         return isLiked;
     }

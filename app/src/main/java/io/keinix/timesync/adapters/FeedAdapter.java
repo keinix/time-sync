@@ -136,10 +136,13 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
     @Override
     public int getItemViewType(int position) {
         Data_ post = mRedditFeed.getData().getChildren().get(position).getData();
-        if (post.getPreview() == null) {
+        String selfText = post.getSelfText() != null ? post.getSelfText() : "";
+        if (selfText.length() >= 1 && post.getPreview() == null) {
             return VIEW_ITEM_TYPE_TEXT;
-        } else if (post.getDomain().equals("v.redd.it")) {
-            return VIEW_ITEM_TYPE_VIDEO;
+        } else if (post.getDomain() != null) {
+            if (post.getDomain().equals("v.redd.it")){
+                return VIEW_ITEM_TYPE_VIDEO;
+            }
         }
         return VIEW_ITEM_TYPE_IMAGE;
     }
