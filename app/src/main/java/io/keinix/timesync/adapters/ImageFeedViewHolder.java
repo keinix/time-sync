@@ -102,8 +102,6 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
         }
 
         String selfText = post.getSelfText() != null ? post.getSelfText() : "";
-        selfText = (selfText.length() == 0 && post.getBody() != null) ? post.getBody() : selfText;
-        Log.d(TAG, "self Text Before comments: " + selfText);
 
         intent.putExtra(CommentsActivity.KEY_SELF_TEXT, selfText);
         intent.putExtra(CommentsActivity.KEY_INIT_VOTE_TYPE, mBaseRedditVoteHelper.getVoteStatus());

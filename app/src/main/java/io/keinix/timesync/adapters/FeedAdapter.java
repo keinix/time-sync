@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -166,6 +167,7 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
         }
     }
 
+
     private void populateLocalVoteTracker(List<Child> children) {
         for (Child child : children) {
             if (child.getData().isLiked() != null) {
@@ -214,29 +216,32 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
     }
 
     public void appendRedditFeed() {
-        mFeedItemInterface.appendFeed(mAfter).enqueue(new Callback<RedditFeed>() {
-            @Override
-            public void onResponse(Call<RedditFeed> call, Response<RedditFeed> response) {
 
-                if (response.isSuccessful()) {
-                    int previousFeedLength = getItemCount();
-                    mAfter = response.body().getData().getAfter();
+        if (mRedditFeed.getData().getChildren().size() > 25) {
+            mFeedItemInterface.appendFeed(mAfter).enqueue(new Callback<RedditFeed>() {
+                @Override
+                public void onResponse(Call<RedditFeed> call, Response<RedditFeed> response) {
 
-                    mRedditFeed.getData()
-                            .getChildren()
-                            .addAll(response.body().getData().getChildren());
+                    if (response.isSuccessful()) {
+                        int previousFeedLength = getItemCount();
+                        mAfter = response.body().getData().getAfter();
 
-                    populateLocalVoteTracker(response.body().getData().getChildren());
-                    notifyItemRangeInserted(previousFeedLength, response.body().getData().getChildren().size());
+                        mRedditFeed.getData()
+                                .getChildren()
+                                .addAll(response.body().getData().getChildren());
+
+                        populateLocalVoteTracker(response.body().getData().getChildren());
+                        notifyItemRangeInserted(previousFeedLength, response.body().getData().getChildren().size());
+                        mLoading = false;
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<RedditFeed> call, Throwable t) {
                     mLoading = false;
                 }
-            }
-
-            @Override
-            public void onFailure(Call<RedditFeed> call, Throwable t) {
-                mLoading = false;
-            }
-        });
+            });
+        }
     }
 
     @Override

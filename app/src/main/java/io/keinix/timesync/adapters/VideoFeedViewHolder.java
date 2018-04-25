@@ -54,7 +54,6 @@ public class VideoFeedViewHolder extends BaseFeedViewHolder implements ToroPlaye
 
             Intent intent = new Intent(mFeedItemInterface.getContext(), CommentsActivity.class);
             String selfText = post.getSelfText() != null ? post.getSelfText() : "";
-            selfText = (selfText.length() == 0 && post.getBody() != null) ? post.getBody() : selfText;
 
             intent.putExtra(CommentsActivity.KEY_SELF_TEXT, selfText);
             intent.putExtra(CommentsActivity.KEY_COMMENTS_LAYOUT_TYPE, CommentsActivity.VALUE_VIDEO_COMMENTS_LAYOUT);
