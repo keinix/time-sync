@@ -119,15 +119,11 @@ public class SubRedditAdapter extends Adapter {
 
     public void sortSubReddits(List<SubReddit> subreddits) {
 
-        Collections.sort(subreddits, (sub1, sub2) -> {
-            String name1 = sub1.getDisplayName();
-            String name2 = sub2.getDisplayName();
+        Collections.sort(subreddits, (sub1, sub2) ->
+                String.CASE_INSENSITIVE_ORDER.compare(sub1.getDisplayName(), sub2.getDisplayName()));
 
-            return name1.compareTo(name2);
-        });
-
-//        Collections.sort(subreddits, (sub1, sub2) ->
-//                Boolean.compare(sub2.isFavorited(), sub1.isFavorited()));
+        Collections.sort(subreddits, (sub1, sub2) ->
+                Boolean.compare(sub2.isFavorited(), sub1.isFavorited()));
     }
 
     public List<SubReddit> getSubList() { return mSubReddits; }
