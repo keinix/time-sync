@@ -49,17 +49,6 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
     private boolean isFromSubReddit;
     private FloatingActionButton mFab;
 
-
-
-    public FeedAdapter(FeedItemInterface feedItemInterface, LinearLayoutManager linearLayoutManager, ProgressBar progressBar) {
-        isNestedScroll = false;
-        mFeedItemInterface = feedItemInterface;
-        mLinearLayoutManager = linearLayoutManager;
-        mProgressBar = progressBar;
-        mLocalVoteTracker = Collections.synchronizedMap(new HashMap<>());
-        mAfter = "";
-    }
-
     public FeedAdapter(FeedItemInterface feedItemInterface, LinearLayoutManager linearLayoutManager,
                        ProgressBar progressBar, FloatingActionButton fab) {
         isNestedScroll = false;
@@ -217,7 +206,7 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
 
     public void appendRedditFeed() {
 
-        if (mRedditFeed.getData().getChildren().size() > 25) {
+        if (mRedditFeed.getData().getChildren().size() >= 25) {
             mFeedItemInterface.appendFeed(mAfter).enqueue(new Callback<RedditFeed>() {
                 @Override
                 public void onResponse(Call<RedditFeed> call, Response<RedditFeed> response) {

@@ -126,8 +126,8 @@ public class SubRedditAdapter extends Adapter {
             return name1.compareTo(name2);
         });
 
-        Collections.sort(subreddits, (sub1, sub2) ->
-                Boolean.compare(sub2.isFavorited(), sub1.isFavorited()));
+//        Collections.sort(subreddits, (sub1, sub2) ->
+//                Boolean.compare(sub2.isFavorited(), sub1.isFavorited()));
     }
 
     public List<SubReddit> getSubList() { return mSubReddits; }

@@ -9,8 +9,11 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -22,6 +25,7 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.timesync.Activities.AddAccountActivity;
 import io.keinix.timesync.Activities.CommentsActivity;
@@ -69,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
     private int mOriginalPostPosition;
     private SubredditNavigationFragment mNavFragment;
 
+    @BindView(R.id.drawerLayout) DrawerLayout mDrawerLayout;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -106,6 +112,9 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
                     .addToBackStack(null)
                     .commit();
         }
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+
     }
 
     public void initApi() {
@@ -249,6 +258,19 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
 
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    mDrawerLayout.closeDrawer(GravityCompat.START);
+                } else {
+                    mDrawerLayout.openDrawer(GravityCompat.START);
+                }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public List<Message> populateMessageList(JsonElement jsonElement, boolean isNotification) {
