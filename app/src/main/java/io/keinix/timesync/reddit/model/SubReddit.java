@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class SubReddit implements Parcelable {
 
+
     @SerializedName("banner_img")
     @Expose
     private String bannerImage;
@@ -163,9 +164,6 @@ public class SubReddit implements Parcelable {
 
     public void setHeaderTitle(String headerTitle) {
         this.headerTitle = headerTitle;
-    }
-
-    public SubReddit() {
     }
 
     @Override

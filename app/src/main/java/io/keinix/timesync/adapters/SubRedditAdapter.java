@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
+import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
@@ -49,6 +50,7 @@ public class SubRedditAdapter extends Adapter {
     private List<SubReddit> mSubReddits;
     private Api mApi;
     private Context mContext;
+
 
     public SubRedditAdapter(Context context) {
         mSubReddits = new ArrayList<>();
@@ -95,6 +97,7 @@ public class SubRedditAdapter extends Adapter {
 
                 if (response.isSuccessful()) {
                     populateSubReddits(response.body());
+                    checkForSubredditFavorite();
                     sortSubReddits(mSubReddits);
                     notifyDataSetChanged();
                 }
@@ -105,6 +108,15 @@ public class SubRedditAdapter extends Adapter {
                 Log.d(TAG, "onFail: " + t.toString());
             }
         });
+    }
+
+    private void checkForSubredditFavorite() {
+        for (SubReddit sub : mSubReddits) {
+            if (!sub.isFavorited()) {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+                sub.setFavorited(prefs.getBoolean(sub.getDisplayName(), false));
+            }
+        }
     }
 
 
@@ -136,7 +148,11 @@ public class SubRedditAdapter extends Adapter {
         @BindView(R.id.starImageView) ImageButton starImageView;
         @BindView(R.id.subredditLinearLayout) LinearLayout subredditLayout;
 
+        public static final String TYPE_SAVE = "TYPE_SAVE";
+        public static final String TYPE_UNSAVE = "TYPE_UNSAVE";
+
         int starSelectedColor;
+        SubReddit mSubreddit;
 
         public SubRedditViewHolder(View itemView) {
             super(itemView);
@@ -146,25 +162,49 @@ public class SubRedditAdapter extends Adapter {
 
         public void bindView(int position) {
             setStarColor(position);
-            SubReddit subreddit = mSubReddits.get(position);
-            subNameTextView.setText(subreddit.getDisplayNamePrefixed());
-            if (subreddit.getIconImg() != null) subDraweeView.setImageURI(subreddit.getIconImg());
+            mSubreddit = mSubReddits.get(position);
+            subNameTextView.setText(mSubreddit.getDisplayNamePrefixed());
+            if (mSubreddit.getIconImg() != null) subDraweeView.setImageURI(mSubreddit.getIconImg());
 
             starImageView.setOnClickListener(v -> {
-                if (subreddit.isFavorited()) {
+                if (mSubreddit.isFavorited()) {
                     starImageView.getDrawable().clearColorFilter();
-                    subreddit.setFavorited(false);
+                    savePost(TYPE_UNSAVE);
+                    mSubreddit.setFavorited(false);
                 } else {
                     starImageView.getDrawable().setColorFilter(starSelectedColor, PorterDuff.Mode.MULTIPLY);
-                    subreddit.setFavorited(true);
+                    savePost(TYPE_SAVE);
+                    mSubreddit.setFavorited(true);
                 }
             });
 
             subredditLayout.setOnClickListener(v -> {
                 Intent intent = new Intent(mContext, SubredditActivity.class);
-                intent.putExtra(SubredditActivity.KEY_SUBREDDIT, subreddit);
+                intent.putExtra(SubredditActivity.KEY_SUBREDDIT, mSubreddit);
                 mContext.startActivity(intent);
             });
+        }
+
+        private void savePost(String type) {
+            if (type.equals(TYPE_SAVE)) {
+                addFavoriteToPrefs();
+            } else {
+                removeFavoriteFromPrefs();
+            }
+        }
+
+        private void addFavoriteToPrefs() {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean(mSubreddit.getDisplayName(), true);
+            editor.apply();
+        }
+
+        private void removeFavoriteFromPrefs() {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.remove(mSubreddit.getDisplayName());
+            editor.apply();
         }
 
         private void setStarColor(int position) {

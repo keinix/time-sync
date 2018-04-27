@@ -256,6 +256,7 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
             public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                 if (!response.isSuccessful()) {
                     Toast.makeText(CommentsActivity.this, "Saved", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "response baby: :" + response);
                 }
             }
 
@@ -272,6 +273,7 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
             @Override
             public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                 if (!response.isSuccessful()) {
+                    Log.d(TAG, "response: baby:" + response);
                     Toast.makeText(CommentsActivity.this, "Saved", Toast.LENGTH_SHORT).show();
                 }
             }
