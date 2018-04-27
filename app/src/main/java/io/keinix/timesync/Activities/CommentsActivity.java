@@ -4,6 +4,7 @@ import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +29,7 @@ import java.util.List;
 
 import io.keinix.timesync.Fragments.CommentsFragment;
 import io.keinix.timesync.Fragments.CommentsFragmentVideo;
+import io.keinix.timesync.Fragments.FeedFragment;
 import io.keinix.timesync.MainActivity;
 import io.keinix.timesync.R;
 import io.keinix.timesync.reddit.Api;
@@ -294,10 +296,15 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
 
         postReply(parentId, body);
         reply.setBody(body);
-        reply.setAuthor(prefs.getString(RedditConstants.KEY_NAME, "me"));
+        reply.setAuthor(prefs.getString(getUserName(), "me"));
         reply.setCreatedUtc(System.currentTimeMillis() / 1000);
         reply.setDepth(data.getIntExtra(ReplyActivity.KEY_DEPTH, 0));
         return reply;
+    }
+
+    private String getUserName() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return  "u/" + preferences.getString(FeedFragment.KEY_USER_NAME, "me");
     }
 
     public void postReply(String parentId, String text) {
