@@ -21,6 +21,7 @@ import com.google.gson.JsonObject;
 
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
+import org.json.JSONArray;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -165,14 +166,29 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
                 .getAsJsonArray("children");
 
         for (JsonElement comment : commentArray) {
-            tempCommentTree.addAll(parseComments(comment.getAsJsonObject()));
+            comment = comment.getAsJsonObject().get("data");
+            tempCommentTree.addAll(parseComments(comment));
+            //tempCommentTree.addAll(parseComments(comment.getAsJsonObject()));
         }
+        //longInfo(tempCommentTree.toString());
         return tempCommentTree;
     }
 
-    @Override
-    public CommentsActivity getContext() {
-        return this;
+    public List<Comment> parseComments(JsonElement commentJson) {
+        List<Comment> comments = new ArrayList<>();
+        Gson gson = new Gson();
+        comments.add(gson.fromJson(commentJson.getAsJsonObject(), Comment.class));
+        JsonElement reply = commentJson.getAsJsonObject().get("replies");
+        if (reply != null) {
+            if (!reply.isJsonPrimitive()) {
+                JsonArray replyArray = reply.getAsJsonObject().getAsJsonObject("data").getAsJsonArray("children");
+                for (JsonElement replyElement : replyArray) {
+                    replyElement = replyElement.getAsJsonObject().get("data");
+                    comments.addAll(parseComments(replyElement));
+                }
+            }
+        }
+        return comments;
     }
 
     @Override
@@ -180,43 +196,56 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
         return mApi;
     }
 
-
-    public List<Comment> parseComments(JsonObject json) {
-        Gson gson = new Gson();
-        List<Comment> comments = new ArrayList<>();
-        Deque<JsonObject> commentStack = new ArrayDeque<>();
-        commentStack.add(json.getAsJsonObject("data"));
-
-        do {
-            JsonObject currentComment = commentStack.pop();
-            JsonElement currentReplies = currentComment.get("replies");
-
-            //check if comment object
-            if (currentReplies != null) {
-                if (currentReplies.isJsonPrimitive()) {
-                    //remove deleted comments with no replies
-                    if (!currentComment.getAsJsonPrimitive("author")
-                            .getAsString().equals("u/[deleted]")) {
-                        comments.add(gson.fromJson(currentComment, Comment.class));
-                    }
-                } else {
-                    comments.add(gson.fromJson(currentComment, Comment.class));
-                    commentStack.addAll(getReplyChildren(currentReplies.getAsJsonObject()));
-                }
-            }
-        } while (!commentStack.isEmpty());
-        return comments;
+    public static void longInfo(String str) {
+        if(str.length() > 4000) {
+            Log.i(TAG, str.substring(0, 4000));
+            longInfo(str.substring(4000));
+        } else
+            Log.i(TAG, str);
     }
 
-    public List<JsonObject> getReplyChildren(JsonObject json) {
-        JsonArray repliesArray = json.getAsJsonObject("data").getAsJsonArray("children");
-        List<JsonObject> replyChildren = new ArrayList<>();
-
-        for (JsonElement reply : repliesArray) {
-            replyChildren.add(reply.getAsJsonObject().getAsJsonObject("data"));
-        }
-        return replyChildren;
+    @Override
+    public CommentsActivity getContext() {
+        return this;
     }
+
+
+//    public List<Comment> parseComments(JsonObject json) {
+//        Gson gson = new Gson();
+//        List<Comment> comments = new ArrayList<>();
+//        Deque<JsonObject> commentStack = new ArrayDeque<>();
+//        commentStack.add(json.getAsJsonObject("data"));
+//
+//        do {
+//            JsonObject currentComment = commentStack.pop();
+//            JsonElement currentReplies = currentComment.get("replies");
+//
+//            //check if comment object
+//            if (currentReplies != null) {
+//                if (currentReplies.isJsonPrimitive()) {
+//                    //remove deleted comments with no replies
+//                    if (!currentComment.getAsJsonPrimitive("author")
+//                            .getAsString().equals("u/[deleted]")) {
+//                        comments.add(gson.fromJson(currentComment, Comment.class));
+//                    }
+//                } else {
+//                    comments.add(gson.fromJson(currentComment, Comment.class));
+//                    commentStack.addAll(getReplyChildren(currentReplies.getAsJsonObject()));
+//                }
+//            }
+//        } while (!commentStack.isEmpty());
+//        return comments;
+//    }
+//
+//    public List<JsonObject> getReplyChildren(JsonObject json) {
+//        JsonArray repliesArray = json.getAsJsonObject("data").getAsJsonArray("children");
+//        List<JsonObject> replyChildren = new ArrayList<>();
+//
+//        for (JsonElement reply : repliesArray) {
+//            replyChildren.add(reply.getAsJsonObject().getAsJsonObject("data"));
+//        }
+//        return replyChildren;
+//    }
 
 
     @Override
