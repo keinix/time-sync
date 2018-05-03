@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Button;
@@ -16,6 +18,7 @@ import com.google.gson.JsonObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,6 +42,8 @@ public class AddAccountActivity extends AccountAuthenticatorActivity {
     private Retrofit mRetrofit;
     private AccountManager mAccountManager;
 
+    public static final String KEY_NONCE = "KEY_NONCE";
+
     @BindView(R.id.redditLoginButton) Button mRedditLoginButton;
 
     @Override
@@ -53,8 +58,21 @@ public class AddAccountActivity extends AccountAuthenticatorActivity {
     }
 
     private void redditLogin() {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(RedditConstants.REDDIT_URL));
+        String nonce = UUID.randomUUID().toString();
+        storeNonce(nonce);
+        String url = RedditConstants.REDDIT_URL.replace(RedditConstants.REDDIT_STATE, nonce);
+        Log.d(TAG, "Nonce: " + nonce);
+        Log.d(TAG, "Url: " + url);
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         startActivity(intent);
+    }
+
+    private void storeNonce(String nonce) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(KEY_NONCE, nonce);
+        editor.apply();
     }
 
     private void redditConsentCallback() {
@@ -70,9 +88,14 @@ public class AddAccountActivity extends AccountAuthenticatorActivity {
                 Log.e(TAG, "An error has occurred : " + error);
             } else {
                 String state = uri.getQueryParameter("state");
-                if (state.equals(RedditConstants.REDDIT_STATE)) {
+                String afterNonce = getNonce();
+                Log.d(TAG, "AfterState: " + state);
+                Log.d(TAG, "AfterNonce: " + afterNonce);
+                if (state.equals(afterNonce)) {
                     String code = uri.getQueryParameter("code");
                     getAccessToken(code);
+                } else {
+                    Toast.makeText(this, "nonce does not match", Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -116,7 +139,7 @@ public class AddAccountActivity extends AccountAuthenticatorActivity {
                     mAccountManager.addAccountExplicitly(account, "123", userdata);
                     mAccountManager.setAuthToken(account, RedditConstants.KEY_AUTH_TOKEN, response.body().getAccess_token());
                     mAccountManager.setUserData(account, RedditConstants.KEY_REFRESH_TOKEN, response.body().getRefresh_token());
-                    getUserName();
+                    launchFeedActivity();
                 } else {
                     Toast.makeText(AddAccountActivity.this, "There was an error", Toast.LENGTH_SHORT).show();
                 }
@@ -129,35 +152,9 @@ public class AddAccountActivity extends AccountAuthenticatorActivity {
         });
     }
 
-    private void getUserName() {
-        Api api = initApi();
-        api.getUsername().enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                Log.d(TAG, "Response: " + response.body());
-                String name = response.body().get("name").getAsString();
-                SharedPreferences prefs = getPreferences(MODE_PRIVATE);
-                prefs.edit().putString(RedditConstants.KEY_NAME, "u/" + name).apply();
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-
-            }
-        });
-    }
-
-    public Api initApi() {
-        OkHttpClient.Builder client = new OkHttpClient.Builder()
-                .authenticator(new TokenAuthenticator(mAccountManager))
-                .addInterceptor(new RedditAuthInterceptor(mAccountManager, this));
-
-        return new Retrofit.Builder()
-                .baseUrl(RedditConstants.REDDIT_BASE_URL_OAUTH2)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(client.build())
-                .build()
-                .create(Api.class);
+    private void launchFeedActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -175,7 +172,12 @@ public class AddAccountActivity extends AccountAuthenticatorActivity {
 
     @Override
     protected void onDestroy() {
-        // getUserName();
+        Log.d(TAG, "OnDestroy Called");
         super.onDestroy();
+    }
+
+    private String getNonce() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        return prefs.getString(KEY_NONCE, "random");
     }
 }
