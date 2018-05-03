@@ -167,10 +167,12 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
 
         for (JsonElement comment : commentArray) {
             comment = comment.getAsJsonObject().get("data");
-            tempCommentTree.addAll(parseComments(comment));
+            if (comment.getAsJsonObject().getAsJsonPrimitive("link_id") != null) {
+                tempCommentTree.addAll(parseComments(comment));
+            }
             //tempCommentTree.addAll(parseComments(comment.getAsJsonObject()));
         }
-        //longInfo(tempCommentTree.toString());
+        longInfo(tempCommentTree.toString());
         return tempCommentTree;
     }
 
@@ -184,7 +186,9 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
                 JsonArray replyArray = reply.getAsJsonObject().getAsJsonObject("data").getAsJsonArray("children");
                 for (JsonElement replyElement : replyArray) {
                     replyElement = replyElement.getAsJsonObject().get("data");
-                    comments.addAll(parseComments(replyElement));
+                    if (replyElement.getAsJsonObject().getAsJsonPrimitive("link_id") != null) {
+                        comments.addAll(parseComments(replyElement));
+                    }
                 }
             }
         }
