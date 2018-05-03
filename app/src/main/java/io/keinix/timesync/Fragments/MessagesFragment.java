@@ -3,6 +3,7 @@ package io.keinix.timesync.Fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -37,6 +38,7 @@ public class MessagesFragment extends Fragment {
     @BindView(R.id.feedRecyclerView) Container mRecyclerView;
     @BindView(R.id.feedProgressBar) ProgressBar mProgressBar;
     @BindView(R.id.swipeRefresh) SwipeRefreshLayout mSwipeRefreshLayout;
+    @BindView(R.id.postFab) FloatingActionButton fab;
 
     private MessagesAdapter mAdapter;
 
@@ -48,6 +50,7 @@ public class MessagesFragment extends Fragment {
         ButterKnife.bind(this, view);
         final MessagesInterface messagesInterface = (MessagesInterface) getActivity();
         determineFragmentType();
+        fab.setVisibility(View.GONE);
         mAdapter = new MessagesAdapter(messagesInterface, isNotification, mProgressBar);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

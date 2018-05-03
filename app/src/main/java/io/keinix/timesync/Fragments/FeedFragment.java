@@ -177,9 +177,11 @@ public class FeedFragment extends Fragment {
     }
 
     public void setUpFab() {
-        fab.setOnClickListener(v -> {
-            mFeedItemInterface.launchPostActivity();
-        });
+        if (mFeedType.equals(VALUE_FEED_TYPE_MAIN)) {
+            fab.setOnClickListener(v -> mFeedItemInterface.launchPostActivity());
+        } else {
+            fab.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void processVoteFromCommentSection() {

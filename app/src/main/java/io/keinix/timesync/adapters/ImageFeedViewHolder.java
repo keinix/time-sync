@@ -29,13 +29,13 @@ import io.keinix.timesync.utils.ShareUtil;
 
 public class ImageFeedViewHolder extends BaseFeedViewHolder {
 
-    SimpleDraweeView mPopUpDraweeView;
-    ImageButton mPopUpUpVoteImageButton;
-    ImageButton mPopUpDownVoteImageButton;
-    ImageButton mPopUpCommentImageButton;
-    ImageButton mPopUpShareImageButton;
-    TextView mPopUpCommentCountTextView;
-    TextView mPopUpVoteCountTextView;
+    private SimpleDraweeView mPopUpDraweeView;
+    private ImageButton mPopUpUpVoteImageButton;
+    private ImageButton mPopUpDownVoteImageButton;
+    private ImageButton mPopUpCommentImageButton;
+    private ImageButton mPopUpShareImageButton;
+    private TextView mPopUpCommentCountTextView;
+    private TextView mPopUpVoteCountTextView;
 
     private boolean isGif;
     private Uri mGifUri;
