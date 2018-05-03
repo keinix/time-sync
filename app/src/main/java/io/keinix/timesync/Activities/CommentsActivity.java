@@ -155,9 +155,6 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
     public List<Comment> createCommentTree(JsonElement baseCommentElement) {
         int commentArrayIndex = baseCommentElement.getAsJsonArray().size() == 1 ? 0 : 1;
         List<Comment> tempCommentTree = new ArrayList<>();
-        Log.d(TAG, "Json Length: " + baseCommentElement.getAsJsonArray().size());
-
-        //TODO: not being parsed correctly when size == 1
         JsonArray commentArray = baseCommentElement
                 .getAsJsonArray()
                 .get(commentArrayIndex)
@@ -170,9 +167,8 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
             if (comment.getAsJsonObject().getAsJsonPrimitive("link_id") != null) {
                 tempCommentTree.addAll(parseComments(comment));
             }
-            //tempCommentTree.addAll(parseComments(comment.getAsJsonObject()));
         }
-        longInfo(tempCommentTree.toString());
+        // longInfo(tempCommentTree.toString());
         return tempCommentTree;
     }
 
@@ -212,44 +208,6 @@ public class CommentsActivity extends AppCompatActivity implements CommentsFragm
     public CommentsActivity getContext() {
         return this;
     }
-
-
-//    public List<Comment> parseComments(JsonObject json) {
-//        Gson gson = new Gson();
-//        List<Comment> comments = new ArrayList<>();
-//        Deque<JsonObject> commentStack = new ArrayDeque<>();
-//        commentStack.add(json.getAsJsonObject("data"));
-//
-//        do {
-//            JsonObject currentComment = commentStack.pop();
-//            JsonElement currentReplies = currentComment.get("replies");
-//
-//            //check if comment object
-//            if (currentReplies != null) {
-//                if (currentReplies.isJsonPrimitive()) {
-//                    //remove deleted comments with no replies
-//                    if (!currentComment.getAsJsonPrimitive("author")
-//                            .getAsString().equals("u/[deleted]")) {
-//                        comments.add(gson.fromJson(currentComment, Comment.class));
-//                    }
-//                } else {
-//                    comments.add(gson.fromJson(currentComment, Comment.class));
-//                    commentStack.addAll(getReplyChildren(currentReplies.getAsJsonObject()));
-//                }
-//            }
-//        } while (!commentStack.isEmpty());
-//        return comments;
-//    }
-//
-//    public List<JsonObject> getReplyChildren(JsonObject json) {
-//        JsonArray repliesArray = json.getAsJsonObject("data").getAsJsonArray("children");
-//        List<JsonObject> replyChildren = new ArrayList<>();
-//
-//        for (JsonElement reply : repliesArray) {
-//            replyChildren.add(reply.getAsJsonObject().getAsJsonObject("data"));
-//        }
-//        return replyChildren;
-//    }
 
 
     @Override

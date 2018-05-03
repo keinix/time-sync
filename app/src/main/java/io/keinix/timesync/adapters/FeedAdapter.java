@@ -48,6 +48,7 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
     private NestedScrollView mNestedScrollView;
     private boolean isFromSubReddit;
     private FloatingActionButton mFab;
+    private String mFeedType;
 
     public FeedAdapter(FeedItemInterface feedItemInterface, LinearLayoutManager linearLayoutManager,
                        ProgressBar progressBar, FloatingActionButton fab) {
@@ -205,9 +206,8 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
     }
 
     public void appendRedditFeed() {
-
         if (mRedditFeed.getData().getChildren().size() >= 25) {
-            mFeedItemInterface.appendFeed(mAfter).enqueue(new Callback<RedditFeed>() {
+            mFeedItemInterface.appendFeed(mAfter, mFeedType).enqueue(new Callback<RedditFeed>() {
                 @Override
                 public void onResponse(Call<RedditFeed> call, Response<RedditFeed> response) {
 
@@ -240,6 +240,14 @@ public class FeedAdapter extends RecyclerView.Adapter  implements Callback<Reddi
         Log.d(TAG, "Call request header: " + call.request().headers());
         Log.d(TAG, "Call request toString: " + call.request().toString());
         Log.d(TAG, t.toString());
+    }
+
+    public String getFeedType() {
+        return mFeedType;
+    }
+
+    public void setFeedType(String feedType) {
+        mFeedType = feedType;
     }
 
     public boolean isFromSubReddit() {

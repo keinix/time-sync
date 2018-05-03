@@ -124,7 +124,14 @@ public interface Api {
 
     @GET("user/{username}/{type}")
     Call<RedditFeed> getPersonal(
-      @Path("username") String username,
-      @Path("type") String type
+          @Path("username") String username,
+          @Path("type") String type
+    );
+
+    @GET("user/{username}/{type}")
+    Call<RedditFeed> appendPersonal (
+        @Path("username") String username,
+        @Path("type") String type,
+        @Query("after") String after
     );
 }

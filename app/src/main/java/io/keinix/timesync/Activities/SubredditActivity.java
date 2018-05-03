@@ -240,7 +240,7 @@ public class SubredditActivity extends AppCompatActivity implements FeedFragment
     }
 
     @Override
-    public Call<RedditFeed> appendFeed(String after) {
+    public Call<RedditFeed> appendFeed(String after, String type) {
         return mApi.appendSubredditFeed(mSubReddit.getDisplayNamePrefixed(), after);
     }
 

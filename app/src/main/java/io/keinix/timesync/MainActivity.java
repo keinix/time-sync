@@ -191,9 +191,26 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Feed
 
 
     @Override
-    public Call<RedditFeed> appendFeed(String after) {
-         return mApi.appendFeed(after);
+    public Call<RedditFeed> appendFeed(String after, String feedType) {
+        String username = "";
+        if (!feedType.equals(FeedFragment.VALUE_FEED_TYPE_MAIN)) {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            username = prefs.getString(FeedFragment.KEY_USER_NAME, FeedFragment.KEY_NO_USER_NAME);
+        }
+
+        switch (feedType) {
+            case FeedFragment.VALUE_FEED_TYPE_POSTS:
+                return mApi.appendPersonal(username, REDDIT_FEED_TYPE_SUBMITTED, after);
+            case FeedFragment.VALUE_FEED_TYPE_SAVED:
+                return mApi.appendPersonal(username, REDDIT_FEED_TYPE_SAVED, after);
+            case FeedFragment.VALUE_FEED_TYPE_UPVOTED:
+                return mApi.appendPersonal(username, REDDIT_FEED_TYPE_UPVATED, after);
+            default:
+                return mApi.appendFeed(after);
+        }
+
     }
+
 
     @Override
     public Context getContext() {

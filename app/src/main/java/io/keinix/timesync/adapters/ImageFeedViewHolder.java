@@ -53,8 +53,9 @@ public class ImageFeedViewHolder extends BaseFeedViewHolder {
         setPostImage(post, postImageView);
         setViewIcon(post);
         postImageView.setOnClickListener(view -> {
-            if (post.getPostHint().equals("link") && !post.isRedditMediaDomain() &&
-                    !post.getDomain().equals("i.imgur.com")) {
+            if ((post.getPostHint().equals("link") || post.getPostHint().equals("rich:video"))
+                    && !post.isRedditMediaDomain()
+                    && !post.getDomain().equals("i.imgur.com")) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(post.getUrl()));
                 mFeedItemInterface.getContext().startActivity(intent);
             } else {

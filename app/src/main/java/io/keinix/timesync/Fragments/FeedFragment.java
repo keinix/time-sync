@@ -74,7 +74,7 @@ public class FeedFragment extends Fragment {
 
         void populateRedditFeed(FeedAdapter adapter, String feedType);
 
-        Call<RedditFeed> appendFeed(String after);
+        Call<RedditFeed> appendFeed(String after, String feedType);
 
         Context getContext();
 
@@ -107,6 +107,7 @@ public class FeedFragment extends Fragment {
 
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
         mFeedAdapter = new FeedAdapter(mFeedItemInterface, mLinearLayoutManager, feedProgressBar, fab);
+        mFeedAdapter.setFeedType(mFeedType);
         feedRecyclerView.setAdapter(mFeedAdapter);
         feedRecyclerView.setLayoutManager(mLinearLayoutManager);
         feedProgressBar.setVisibility(View.VISIBLE);
